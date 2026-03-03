@@ -157,12 +157,13 @@
             msgBox.style.display = 'block';
             msgBox.style.backgroundColor = '#d4edda';
             msgBox.style.color = '#155724';
-            msgBox.innerText = '🎉 資料已成功送出！';
+            // 修改這裡的文字
+            msgBox.innerHTML = '🎉 資料已成功送出！<br><small>若填寫錯誤，直接重新填報正確版即可，系統會自動取代舊資料。</small>';
             form.reset();
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
-            // 3秒後隱藏訊息
-            setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
+            // 延長顯示時間到 5 秒，讓他們看完提醒
+            setTimeout(() => { msgBox.style.display = 'none'; }, 5000);
         })
         .catch(error => {
             console.error('Error!', error.message);
@@ -178,6 +179,7 @@
 
 </body>
 </html>
+
 
 
 
