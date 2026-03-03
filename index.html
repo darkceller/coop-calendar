@@ -5,46 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>hucc-coop新竹分社活動月曆資訊填報系統</title>
     <style>
-        :root { --primary-color: #4a90e2; --bg-color: #f4f7f6; }
+        :root { --primary-color: #28a745; --bg-color: #f4f7f6; }
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: var(--bg-color); line-height: 1.6; padding: 20px; color: #333; }
         .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
+        .signature { text-align: right; color: #666; font-weight: bold; margin-top: 0; font-size: 0.9em; }
+        .info-box { background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid var(--primary-color); margin-bottom: 20px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.95em; }
         label span { color: #e74c3c; margin-left: 4px; }
         input[type="text"], input[type="date"], select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        input:focus, select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 5px rgba(74,144,226,0.3); }
         button { width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #357abd; }
+        button:hover { background-color: #218838; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
-        .notice { font-size: 0.85em; color: #666; margin-top: 5px; }
-        #message { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; text-align: center; }
+        #message { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; text-align: center; line-height: 1.6; }
         .error-overlay { text-align: center; padding: 40px 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 style="margin-bottom: 5px;">hucc-coop新竹分社活動月曆資訊填報系統</h2>
-    
-    <p style="text-align: right; color: #666; font-weight: bold; margin-top: 0;">
-        新竹分社活動月曆小組 謹啟
-    </p>
+<div class="container" id="mainContainer"> <h2>hucc-coop新竹分社活動月曆資訊填報系統</h2>
+    <p class="signature">新竹分社活動月曆小組 謹啟</p>
 
-    <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; border-left: 4px solid #28a745; margin-bottom: 20px;">
-        <p style="margin: 0; font-size: 0.95em;">
-            請填寫本月預計舉辦的活動資訊，系統將自動彙整。
-        </p>
+    <div class="info-box">
+        <p style="margin: 0; font-size: 0.95em;">請填寫本月預計舉辦的活動資訊，系統將自動彙整。</p>
         <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #555;">
-            📧 如果有網頁操作問題，歡迎 Email 至系統維護者：
-            <a href="mailto:dark.celler@gmail.com" style="color: #007bff; text-decoration: none;">dark.celler@gmail.com</a>
+            📧 如果有網頁操作問題，歡迎 Email：<a href="mailto:dark.celler@gmail.com" style="color: #007bff; text-decoration: none;">dark.celler@gmail.com</a>
         </p>
     </div>
 
-    <form id="submit-to-google-sheet">
-    
-    <form id="infoForm">
-        <div class="form-group">
+    <form id="infoForm"> <div class="form-group">
             <label>1. 姓名<span>*</span></label>
             <input type="text" name="name" placeholder="請輸入姓名" required>
         </div>
@@ -76,7 +66,7 @@
         </div>
 
         <div class="form-group">
-            <label>5. 活動開始與結束時間 (24點制)<span>*</span></label>
+            <label>5. 活動開始與結束時間<span>*</span></label>
             <input type="text" name="timeRange" placeholder="範例：09:00-11:00" required>
         </div>
 
@@ -105,9 +95,8 @@
         </div>
 
         <div class="form-group">
-            <label>9. 活動內容 (15字以內) (選填)</label>
+            <label>9. 活動內容 (15字以內)</label>
             <input type="text" name="content" maxlength="15" placeholder="請簡短描述">
-            <div class="notice">剩餘字數限制：15字</div>
         </div>
 
         <button type="submit" id="submitBtn">提交資料</button>
@@ -117,15 +106,13 @@
 </div>
 
 <script>
-    // ⚠️ 這裡請務必替換成你最新的 Google Apps Script 網址
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwCmFtap49r2sdqCBL70tLU-qVXQrI945FUlI92G15cdIvTKJMAHEoYEjz85I2qD-yb/exec'; 
 
     const form = document.getElementById('infoForm');
-    const container = document.getElementById('mainContainer');
+    const mainContainer = document.getElementById('mainContainer');
     const msgBox = document.getElementById('message');
     const submitBtn = document.getElementById('submitBtn');
 
-    // 時間檢查邏輯：每月 1 號 08:00 至 25 號 17:00
     function checkTime() {
         const now = new Date();
         const day = now.getDate();
@@ -136,72 +123,55 @@
                        (day === 25 && hour < 17);
 
         if (!isOpen) {
-            container.innerHTML = `
+            mainContainer.innerHTML = `
                 <div class="error-overlay">
-                    <h2 style="color: #e74c3c; border: none;">目前非開放填報時間</h2>
+                    <h2 style="color: #e74c3c;">目前非開放填寫時間</h2>
                     <p>開放時段：每月 1 號 08:00 至 25 號 17:00</p>
-                    <p style="color: #666; font-size: 0.9em;">現在時間：${now.toLocaleString()}</p>
-                </div>
-            `;
+                    <p style="color: #666;">現在時間：${now.toLocaleString()}</p>
+                </div>`;
             return false;
         }
         return true;
     }
 
-    // 初始化檢查一次
+    // 初始化檢查
     checkTime();
 
     form.addEventListener('submit', e => {
         e.preventDefault();
-        
-        // 提交前再次檢查時間，防止使用者開著網頁待到過期
         if(!checkTime()) return;
 
         submitBtn.disabled = true;
         submitBtn.innerText = '傳送中...';
         
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-
+        // 修正點：使用 FormData 並移除 no-cors 確保資料能被 GAS 正確讀取
         fetch(scriptURL, {
             method: 'POST',
-            mode: 'no-cors', // 避開跨網域問題
-            body: JSON.stringify(data),
-            headers: { 'Content-Type': 'application/json' }
+            body: new FormData(form)
         })
-        .then(() => {
-            // 顯示成功訊息框
+        .then(response => {
             msgBox.style.display = 'block';
-            msgBox.style.backgroundColor = '#d4edda'; // 淺綠色背景
-            msgBox.style.color = '#155724';           // 深綠色文字
-            msgBox.style.padding = '15px';
-            msgBox.style.borderRadius = '5px';
+            msgBox.style.backgroundColor = '#d4edda';
+            msgBox.style.color = '#155724';
             msgBox.style.border = '1px solid #c3e6cb';
-            
-            // 1. 更新文字內容
             msgBox.innerHTML = `
                 <strong>資料已成功送出！</strong><br>
                 <small>若填寫錯誤，直接重新填報正確版即可，系統會自動取代舊資料。<br>
                 如有多筆資料可繼續填寫。<br>
-                本訊息將在 15 秒後自動關閉。</small>
-            `;
+                本訊息將在 15 秒後自動關閉。</small>`;
 
-            // 重置表單讓使用者可以接著填下一筆
             form.reset();
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
 
-            // 2. 設定 15 秒後關閉訊息 (15000 毫秒)
-            setTimeout(() => { 
-                msgBox.style.display = 'none'; 
-            }, 15000);
+            setTimeout(() => { msgBox.style.display = 'none'; }, 15000);
         })
         .catch(error => {
             console.error('Error!', error.message);
             msgBox.style.display = 'block';
             msgBox.style.backgroundColor = '#f8d7da';
             msgBox.style.color = '#721c24';
-            msgBox.innerText = '❌ 提交失敗，請檢查網路後再試。';
+            msgBox.innerText = '❌ 提交失敗，請確認網址正確或聯絡維護者。';
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
         });
@@ -210,12 +180,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
