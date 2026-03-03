@@ -154,16 +154,31 @@
             headers: { 'Content-Type': 'application/json' }
         })
         .then(() => {
+            // 顯示成功訊息框
             msgBox.style.display = 'block';
-            msgBox.style.backgroundColor = '#d4edda';
-            msgBox.style.color = '#155724';
-            // 修改這裡的文字
-            msgBox.innerHTML = '🎉 資料已成功送出！<br><small>若填寫錯誤，直接重新填報正確版即可，系統會自動取代舊資料。</small>';
+            msgBox.style.backgroundColor = '#d4edda'; // 淺綠色背景
+            msgBox.style.color = '#155724';           // 深綠色文字
+            msgBox.style.padding = '15px';
+            msgBox.style.borderRadius = '5px';
+            msgBox.style.border = '1px solid #c3e6cb';
+            
+            // 1. 更新文字內容
+            msgBox.innerHTML = `
+                <strong>資料已成功送出！</strong><br>
+                <small>若填寫錯誤，直接重新填報正確版即可，系統會自動取代舊資料。<br>
+                如有多筆資料可繼續填寫。<br>
+                本訊息將在 15 秒後自動關閉。</small>
+            `;
+
+            // 重置表單讓使用者可以接著填下一筆
             form.reset();
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
-            // 延長顯示時間到 5 秒，讓他們看完提醒
-            setTimeout(() => { msgBox.style.display = 'none'; }, 5000);
+
+            // 2. 設定 15 秒後關閉訊息 (15000 毫秒)
+            setTimeout(() => { 
+                msgBox.style.display = 'none'; 
+            }, 15000);
         })
         .catch(error => {
             console.error('Error!', error.message);
@@ -179,6 +194,7 @@
 
 </body>
 </html>
+
 
 
 
