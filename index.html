@@ -1,66 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>活動資訊收集</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動資訊填報系統</title>
     <style>
-        body { font-family: sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; width: 100%; }
+        :root { --primary-color: #4a90e2; --bg-color: #f4f7f6; }
+        body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: var(--bg-color); line-height: 1.6; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.95em; }
+        label span { color: #e74c3c; margin-left: 4px; }
+        input[type="text"], input[type="date"], select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        input:focus, select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 5px rgba(74,144,226,0.3); }
+        button { width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #357abd; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .notice { font-size: 0.85em; color: #666; margin-top: 5px; }
+        #message { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; text-align: center; }
+        .error-overlay { text-align: center; padding: 40px 20px; }
     </style>
 </head>
 <body>
+
+<div class="container" id="mainContainer">
     <h2>活動資訊填報</h2>
+    
     <form id="infoForm">
-        <div class="form-group"><label>1. 姓名 (必填)</label><input type="text" name="name" required></div>
-        <div class="form-group"><label>2. 社員編號 (必填)</label><input type="text" name="memberId" required></div>
         <div class="form-group">
-            <label>3. 主辦站所 (必填)</label>
+            <label>1. 姓名<span>*</span></label>
+            <input type="text" name="name" placeholder="請輸入姓名" required>
+        </div>
+
+        <div class="form-group">
+            <label>2. 社員編號<span>*</span></label>
+            <input type="text" name="memberId" placeholder="請輸入編號" required>
+        </div>
+
+        <div class="form-group">
+            <label>3. 主辦站所<span>*</span></label>
             <select name="station" required>
-                <option value="">請選擇</option>
-                <option>中壢</option><option>龍潭</option><option>桃園</option><option>國際</option>
-                <option>新竹</option><option>關新</option><option>縣府</option><option>三葉</option><option>竹北</option>
+                <option value="">請選擇站所</option>
+                <option value="中壢">中壢</option>
+                <option value="龍潭">龍潭</option>
+                <option value="桃園">桃園</option>
+                <option value="國際">國際</option>
+                <option value="新竹">新竹</option>
+                <option value="關新">關新</option>
+                <option value="縣府">縣府</option>
+                <option value="三葉">三葉</option>
+                <option value="竹北">竹北</option>
             </select>
         </div>
-        <div class="form-group"><label>4. 活動日期 (yyyymmdd)</label><input type="text" name="date" placeholder="例如: 20240520" required></div>
-        <div class="form-group"><label>5. 活動開始與結束時間 (24點制)</label><input type="text" name="timeRange" placeholder="例如: 14:00-16:00" required></div>
+
         <div class="form-group">
-            <label>6. 活動類型 (必填)</label>
+            <label>4. 活動日期 (yyyymmdd)<span>*</span></label>
+            <input type="text" name="date" placeholder="範例：20260315" pattern="\d{8}" title="請輸入8碼數字格式" required>
+        </div>
+
+        <div class="form-group">
+            <label>5. 活動開始與結束時間 (24點制)<span>*</span></label>
+            <input type="text" name="timeRange" placeholder="範例：09:00-11:00" required>
+        </div>
+
+        <div class="form-group">
+            <label>6. 活動類型<span>*</span></label>
             <select name="type" required>
-                <option value="">請選擇</option>
-                <option>議題講座</option><option>料理教作</option><option>生產者面對面</option>
-                <option>戶外參訪</option><option>社務會議</option><option>開心社團</option><option>其他</option>
+                <option value="">請選擇類型</option>
+                <option value="議題講座">議題講座</option>
+                <option value="料理教作">料理教作</option>
+                <option value="生產者面對面">生產者面對面</option>
+                <option value="戶外參訪">戶外參訪</option>
+                <option value="社務會議">社務會議</option>
+                <option value="開心社團">開心社團</option>
+                <option value="其他">其他</option>
             </select>
         </div>
-        <div class="form-group"><label>7. 活動名稱 (必填)</label><input type="text" name="title" required></div>
-        <div class="form-group"><label>8. 講師名稱 (選填)</label><input type="text" name="lecturer"></div>
-        <div class="form-group"><label>9. 活動內容 (15字以內)</label><input type="text" name="content" maxlength="15"></div>
-        
+
+        <div class="form-group">
+            <label>7. 活動名稱<span>*</span></label>
+            <input type="text" name="title" placeholder="請輸入名稱" required>
+        </div>
+
+        <div class="form-group">
+            <label>8. 講師名稱 (選填)</label>
+            <input type="text" name="lecturer" placeholder="無則免填">
+        </div>
+
+        <div class="form-group">
+            <label>9. 活動內容 (15字以內) (選填)</label>
+            <input type="text" name="content" maxlength="15" placeholder="請簡短描述">
+            <div class="notice">剩餘字數限制：15字</div>
+        </div>
+
         <button type="submit" id="submitBtn">提交資料</button>
     </form>
+    
+    <div id="message"></div>
+</div>
 
-    <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyOXeuHhgL6T3gem5_4Az8faxboNJfuijjM1KF50gtYCj5ekzGmZ0T0wiII2_0PiJOM/exec'; // 填入你在第一步得到的網址
-        const form = document.getElementById('infoForm');
+<script>
+    // ⚠️ 這裡請務必替換成你最新的 Google Apps Script 網址
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyOXeuHhgL6T3gem5_4Az8faxboNJfuijjM1KF50gtYCj5ekzGmZ0T0wiII2_0PiJOM/exec'; 
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+    const form = document.getElementById('infoForm');
+    const container = document.getElementById('mainContainer');
+    const msgBox = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
 
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors', // 避開跨網域問題
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            }).then(() => {
-                alert('資料已送出！');
-                form.reset();
-            }).catch(error => alert('出錯了：' + error.message));
+    // 時間檢查邏輯：每月 1 號 08:00 至 25 號 17:00
+    function checkTime() {
+        const now = new Date();
+        const day = now.getDate();
+        const hour = now.getHours();
+        
+        const isOpen = (day > 1 && day < 25) || 
+                       (day === 1 && hour >= 8) || 
+                       (day === 25 && hour < 17);
+
+        if (!isOpen) {
+            container.innerHTML = `
+                <div class="error-overlay">
+                    <h2 style="color: #e74c3c; border: none;">目前非開放填報時間</h2>
+                    <p>開放時段：每月 1 號 08:00 至 25 號 17:00</p>
+                    <p style="color: #666; font-size: 0.9em;">現在時間：${now.toLocaleString()}</p>
+                </div>
+            `;
+            return false;
+        }
+        return true;
+    }
+
+    // 初始化檢查一次
+    checkTime();
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        // 提交前再次檢查時間，防止使用者開著網頁待到過期
+        if(!checkTime()) return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = '傳送中...';
+        
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', // 避開跨網域問題
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(() => {
+            msgBox.style.display = 'block';
+            msgBox.style.backgroundColor = '#d4edda';
+            msgBox.style.color = '#155724';
+            msgBox.innerText = '🎉 資料已成功送出！';
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerText = '提交資料';
+            // 3秒後隱藏訊息
+            setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            msgBox.style.display = 'block';
+            msgBox.style.backgroundColor = '#f8d7da';
+            msgBox.style.color = '#721c24';
+            msgBox.innerText = '❌ 提交失敗，請檢查網路後再試。';
+            submitBtn.disabled = false;
+            submitBtn.innerText = '提交資料';
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
-
