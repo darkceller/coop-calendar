@@ -18,6 +18,7 @@
         button:hover { background-color: #218838; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
         #message { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; text-align: center; line-height: 1.6; }
+        .error-overlay { text-align: center; padding: 40px 20px; }
     </style>
 </head>
 <body>
@@ -44,10 +45,7 @@
     </div>
 
     <form id="infoForm">
-        </form>
-</div>
-
-    <form id="infoForm"> <div class="form-group">
+        <div class="form-group">
             <label>1. 姓名<span>*</span></label>
             <input type="text" name="name" placeholder="請輸入姓名" required>
         </div>
@@ -83,7 +81,7 @@
             <input type="text" name="timeRange" placeholder="範例：09:00-11:00" required>
         </div>
 
-        <div class="form-group">
+        <div class="group">
             <label>6. 活動類型<span>*</span></label>
             <select name="type" required>
                 <option value="">請選擇類型</option>
@@ -139,7 +137,7 @@
             mainContainer.innerHTML = `
                 <div class="error-overlay">
                     <h2 style="color: #e74c3c;">目前非開放填寫時間</h2>
-                    <p>開放時段：每月 1 號 08:00 至 25 號 17:00</p>
+                    <p>開放時段：每月 1 日 08:00 至 25 日 17:00</p>
                     <p style="color: #666;">現在時間：${now.toLocaleString()}</p>
                 </div>`;
             return false;
@@ -157,7 +155,6 @@
         submitBtn.disabled = true;
         submitBtn.innerText = '傳送中...';
         
-        // 修正點：使用 FormData 並移除 no-cors 確保資料能被 GAS 正確讀取
         fetch(scriptURL, {
             method: 'POST',
             body: new FormData(form)
@@ -169,7 +166,7 @@
             msgBox.style.border = '1px solid #c3e6cb';
             msgBox.innerHTML = `
                 <strong>資料已成功送出！</strong><br>
-                <small>若填寫錯誤，直接重新填報正確版即可，系統會自動取代舊資料。<br>
+                <small>若填寫錯誤，直接重新填報正確版即可。<br>
                 如有多筆資料可繼續填寫。<br>
                 本訊息將在 15 秒後自動關閉。</small>`;
 
@@ -184,7 +181,7 @@
             msgBox.style.display = 'block';
             msgBox.style.backgroundColor = '#f8d7da';
             msgBox.style.color = '#721c24';
-            msgBox.innerText = '❌ 提交失敗，請確認網址正確或聯絡維護者。';
+            msgBox.innerText = '❌ 提交失敗，請確認網路連線。';
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
         });
@@ -193,7 +190,3 @@
 
 </body>
 </html>
-
-
-
-
