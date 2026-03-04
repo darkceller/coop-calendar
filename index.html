@@ -24,24 +24,30 @@
 </head>
 <body>
 
-<div class="container" id="mainContainer"> <h2>主婦聯盟消費合作社新竹分社活動月曆資訊填報系統</h2>
-    <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; border-left: 5px solid #ffc107; margin-bottom: 20px; font-size: 0.9em; color: #856404;">
-    <strong>📝 填報小提醒：</strong>
-    <ul style="margin: 5px 0 0 20px; padding: 0;">
-        <li><strong>如何修正：</strong> 若填報後發現內容錯誤（如活動名稱、講師），只需針對「相同日期、站所與時間」重新填報一次正確版，系統會自動取代舊資料。</li>
-        <li><strong>自動格式：</strong> 系統會自動將數字與英文轉為半形，方便後續彙整。</li>
-        <li><strong>月份歸檔：</strong> 資料將依「活動日期」自動存入對應月份的工作表（如：26年4月）。</li>
-        <li><strong>勞務費：</strong> 系統以填寫之「姓名/編號」為勞務費撥付依據，請務必填寫實際領款人。</li>
-    </ul>
-</div>
+<div class="container" id="mainContainer">
+    <h2>主婦聯盟消費合作社新竹分社<br>活動月曆資訊填報系統</h2>
     <p class="signature">新竹分社活動月曆小組 謹啟</p>
 
-    <div class="info-box">
-        <p style="margin: 0; font-size: 0.95em;">請填寫本月預計舉辦的活動資訊，系統將自動彙整。</p>
-        <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #555;">
-            📧 如果有網頁操作問題，歡迎 Email：<a href="mailto:dark.celler@gmail.com" style="color: #007bff; text-decoration: none;">dark.celler@gmail.com</a>
+    <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border-left: 6px solid #ffc107; margin-bottom: 25px; color: #856404; line-height: 1.6;">
+        <h3 style="margin-top: 0; color: #b08800; font-size: 1.1em; display: flex; align-items: center;">
+            ⚠️ 填報須知 (請務必閱讀)
+        </h3>
+        <ul style="margin: 10px 0 10px 20px; padding: 0; font-size: 0.95em;">
+            <li><strong>開放時間：</strong> 每月 <span style="color: #d9534f; font-weight: bold;">1 日 08:00 至 25 日 17:00</span>，逾時系統自動關閉。</li>
+            <li><strong>如何修正：</strong> 於時限內針對「相同日期、站所與時間」重新填報即可自動覆蓋舊資料。</li>
+            <li><strong>自動格式：</strong> 系統會將數字與英文強制轉為半形，並依活動日期自動歸檔月份。</li>
+            <li><strong>勞務費：</strong> 以填寫之「姓名/編號」為撥付依據，請務必填寫實際領款人。</li>
+            <li><strong>刪除與逾期：</strong> 需整筆刪除請來信告知；<span style="text-decoration: underline; font-weight: bold;">逾期恕不接受人工補件或修改</span>。</li>
+        </ul>
+        <hr style="border: 0; border-top: 1px solid #ffeeba; margin: 12px 0;">
+        <p style="margin: 0; font-size: 0.85em; color: #666; text-align: center;">
+            📧 系統維護與刪除申請：<a href="mailto:dark.celler@gmail.com" style="color: #007bff; text-decoration: none;">dark.celler@gmail.com</a>
         </p>
     </div>
+
+    <form id="infoForm">
+        </form>
+</div>
 
     <form id="infoForm"> <div class="form-group">
             <label>1. 姓名<span>*</span></label>
@@ -189,5 +195,6 @@
 
 </body>
 </html>
+
 
 
