@@ -17,8 +17,40 @@
         button { width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
         button:hover { background-color: #218838; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
-        #message { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; text-align: center; line-height: 1.6; }
         .error-overlay { text-align: center; padding: 40px 20px; }
+
+        /* --- 彈跳視窗樣式 --- */
+        .modal-overlay {
+            display: none; /* 預設隱藏 */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-content h3 { color: #28a745; margin-top: 0; font-size: 1.5em; }
+        .modal-content p { color: #555; margin-bottom: 25px; line-height: 1.6; }
+        .modal-btn {
+            background-color: var(--primary-color);
+            color: white; border: none; padding: 12px 40px;
+            border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; width: auto;
+        }
+        .modal-btn:hover { background-color: #218838; }
     </style>
 </head>
 <body>
@@ -35,7 +67,7 @@
             <li><strong>開放時間：</strong> 每月 <span style="color: #d9534f; font-weight: bold;">1 日 08:00 至 25 日 17:00</span>，逾時系統自動關閉。</li>
             <li><strong>如何修正：</strong> 於時限內針對「相同日期、站所與時間」重新填報即可自動覆蓋舊資料。</li>
             <li><strong>自動格式：</strong> 系統會將數字與英文強制轉為半形，並依活動日期自動歸檔月份。</li>
-            <li><strong>勞務費：</strong> 以填寫之「姓名/編號」為撥付依據，請務必填寫實際領款人。</li>
+            <li><strong>勞務費：</strong> 以填寫之「姓名/編號」為勞務費撥付依據，請務必填寫實際領款人。</li>
             <li><strong>刪除與逾期：</strong> 需整筆刪除請來信告知；<span style="text-decoration: underline; font-weight: bold;">逾期恕不接受人工補件或修改</span>。</li>
         </ul>
         <hr style="border: 0; border-top: 1px solid #ffeeba; margin: 12px 0;">
@@ -81,7 +113,7 @@
             <input type="text" name="timeRange" placeholder="範例：09:00-11:00" required>
         </div>
 
-        <div class="group">
+        <div class="form-group">
             <label>6. 活動類型<span>*</span></label>
             <select name="type" required>
                 <option value="">請選擇類型</option>
@@ -112,8 +144,14 @@
 
         <button type="submit" id="submitBtn">提交資料</button>
     </form>
-    
-    <div id="message"></div>
+</div>
+
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+        <h3>🎉 提交成功！</h3>
+        <p>您的活動資訊已正確送出。<br><small>若需修正或填寫下一筆，請點擊下方按鈕。</small></p>
+        <button class="modal-btn" onclick="closeModal()">確認並填寫下一筆</button>
+    </div>
 </div>
 
 <script>
@@ -121,8 +159,14 @@
 
     const form = document.getElementById('infoForm');
     const mainContainer = document.getElementById('mainContainer');
-    const msgBox = document.getElementById('message');
     const submitBtn = document.getElementById('submitBtn');
+    const modal = document.getElementById('successModal');
+
+    // 關閉彈跳視窗
+    function closeModal() {
+        modal.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // 回到頂部
+    }
 
     function checkTime() {
         const now = new Date();
@@ -145,7 +189,6 @@
         return true;
     }
 
-    // 初始化檢查
     checkTime();
 
     form.addEventListener('submit', e => {
@@ -160,28 +203,16 @@
             body: new FormData(form)
         })
         .then(response => {
-            msgBox.style.display = 'block';
-            msgBox.style.backgroundColor = '#d4edda';
-            msgBox.style.color = '#155724';
-            msgBox.style.border = '1px solid #c3e6cb';
-            msgBox.innerHTML = `
-                <strong>資料已成功送出！</strong><br>
-                <small>若填寫錯誤，直接重新填報正確版即可。<br>
-                如有多筆資料可繼續填寫。<br>
-                本訊息將在 15 秒後自動關閉。</small>`;
-
+            // 顯示成功彈窗
+            modal.style.display = 'flex';
+            
             form.reset();
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
-
-            setTimeout(() => { msgBox.style.display = 'none'; }, 15000);
         })
         .catch(error => {
             console.error('Error!', error.message);
-            msgBox.style.display = 'block';
-            msgBox.style.backgroundColor = '#f8d7da';
-            msgBox.style.color = '#721c24';
-            msgBox.innerText = '❌ 提交失敗，請確認網路連線。';
+            alert('❌ 提交失敗，請確認網路連線或聯絡維護者。');
             submitBtn.disabled = false;
             submitBtn.innerText = '提交資料';
         });
