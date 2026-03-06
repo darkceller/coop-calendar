@@ -3,77 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主婦聯盟消費合作社新竹分社活動月曆資訊填報系統</title>
+    <title>HCGN-COOP 活動填報系統</title>
     <style>
-        :root { --primary-color: #28a745; --bg-color: #f4f7f6; }
-        body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: var(--bg-color); line-height: 1.6; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
-        .signature { text-align: right; color: #666; font-weight: bold; margin-top: 0; font-size: 0.9em; }
+        :root { 
+            --hcgn-green: #28a745; 
+            --dark-green: #1e7e34;
+            --bg-color: #f8f9fa; 
+        }
+        
+        body { 
+            font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; 
+            background-color: var(--bg-color); 
+            margin: 0; 
+            padding: 0; 
+            color: #333; 
+        }
+
+        /* 1. 綠色 LOGO 區塊 (與主頁一致) */
+        .poster-logo-bar {
+            background-color: var(--hcgn-green);
+            padding: 25px 20px;
+            text-align: center;
+        }
+        .poster-logo-bar img {
+            width: 55%;
+            max-width: 450px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .container { 
+            max-width: 650px; 
+            margin: -20px auto 40px auto; /* 略微往上移與綠區銜接 */
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 2. 標題文字更新 */
+        h2 { 
+            text-align: center; 
+            color: #2c3e50; 
+            margin-bottom: 5px; 
+            font-size: 1.6em;
+            line-height: 1.4;
+        }
+        
+        .signature { text-align: right; color: #666; font-weight: bold; margin-top: 0; font-size: 0.9em; margin-bottom: 25px;}
+        
+        /* 須知區塊優化 */
+        .notice-box {
+            background-color: #fffcf0; 
+            padding: 18px; 
+            border-radius: 10px; 
+            border-left: 6px solid #ffc107; 
+            margin-bottom: 25px; 
+            color: #665200; 
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.95em; }
         label span { color: #e74c3c; margin-left: 4px; }
-        input[type="text"], input[type="date"], select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #218838; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        .error-overlay { text-align: center; padding: 40px 20px; }
+        
+        input[type="text"], select { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
+            box-sizing: border-box; font-size: 16px; transition: border 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--hcgn-green); outline: none; }
 
-        /* --- 彈跳視窗樣式 --- */
+        button { 
+            width: 100%; padding: 15px; background-color: var(--hcgn-green); 
+            color: white; border: none; border-radius: 8px; font-size: 18px; 
+            font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        button:hover { background-color: var(--dark-green); transform: translateY(-2px); }
+        button:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+
+        /* 3. Footer 樣式 (與主頁一致) */
+        .poster-footer {
+            margin-top: 40px; 
+            padding: 30px 20px; 
+            border-top: 1px dashed #ccc;
+            color: #95a5a6; 
+            font-size: 13px; 
+            line-height: 1.8;
+            text-align: center;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 彈窗樣式 */
         .modal-overlay {
-            display: none; /* 預設隱藏 */
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center;
         }
         .modal-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            width: 85%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: fadeIn 0.3s ease-out;
+            background: #fff; padding: 30px; border-radius: 20px; max-width: 400px; width: 85%;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .modal-content h3 { color: #28a745; margin-top: 0; font-size: 1.5em; }
-        .modal-content p { color: #555; margin-bottom: 25px; line-height: 1.6; }
-        .modal-btn {
-            background-color: var(--primary-color);
-            color: white; border: none; padding: 12px 40px;
-            border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; width: auto;
-        }
-        .modal-btn:hover { background-color: #218838; }
+        .modal-btn { background-color: var(--hcgn-green); color: white; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<div class="poster-logo-bar">
+    <img src="logo.png" alt="主婦聯盟生活消費合作社 LOGO">
+</div>
+
 <div class="container" id="mainContainer">
-    <h2>主婦聯盟消費合作社新竹分社<br>活動月曆資訊填報系統</h2>
+    <h2>新竹分社<br>活動月曆資訊填報系統</h2>
     <p class="signature">新竹分社活動月曆小組 謹啟</p>
 
-    <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border-left: 6px solid #ffc107; margin-bottom: 25px; color: #856404; line-height: 1.6;">
-        <h3 style="margin-top: 0; color: #b08800; font-size: 1.1em; display: flex; align-items: center;">
-            ⚠️ 填報須知 (請務必閱讀)
-        </h3>
-        <ul style="margin: 10px 0 10px 20px; padding: 0; font-size: 0.95em;">
-            <li><strong>開放時間：</strong> 每月 <span style="color: #d9534f; font-weight: bold;">1 日 08:00 至 25 日 17:00</span>，逾時系統自動關閉。</li>
-            <li><strong>如何修正：</strong> 於時限內針對「相同日期、站所與時間」重新填報即可自動覆蓋舊資料。</li>
-            <li><strong>自動格式：</strong> 系統會將數字與英文強制轉為半形，並依活動日期自動歸檔月份。</li>
-            <li><strong>勞務費：</strong> 以填寫之「姓名/編號」為勞務費撥付依據，請務必填寫實際領款人。</li>
-            <li><strong>刪除與逾期：</strong> 需整筆刪除請來信告知；<span style="text-decoration: underline; font-weight: bold;">逾期恕不接受人工補件或修改</span>。</li>
+    <div class="notice-box">
+        <strong style="color: #b08800; font-size: 1.1em;">⚠️ 填報須知</strong>
+        <ul style="margin: 10px 0 0 20px; padding: 0;">
+            <li><strong>開放時間：</strong> 每月 1 日 08:00 至 25 日 17:00。</li>
+            <li><strong>如何修正：</strong> 時限內對「同日期/站所/時間」重新填報即可覆蓋。</li>
+            <li><strong>自動格式：</strong> 系統會自動轉為半形字並依日期歸檔月份。</li>
+            <li><strong>勞務費：</strong> 以填寫之「姓名/編號」為撥付依據。</li>
         </ul>
-        <hr style="border: 0; border-top: 1px solid #ffeeba; margin: 12px 0;">
-        <p style="margin: 0; font-size: 0.85em; color: #666; text-align: center;">
-            📧 系統維護與刪除申請：<a href="mailto:dark.celler@gmail.com" style="color: #007bff; text-decoration: none;">dark.celler@gmail.com</a>
-        </p>
     </div>
 
     <form id="infoForm">
@@ -142,13 +197,19 @@
             <input type="text" name="content" maxlength="15" placeholder="請簡短描述">
         </div>
 
-        <button type="submit" id="submitBtn">提交資料</button>
+        <button type="submit" id="submitBtn">提交活動資料</button>
     </form>
+</div>
+
+<div class="poster-footer">
+    <div>版權所有 新竹分社活動月曆小組</div>
+    <div>更新日期：2026-03-06</div>
+    <div>📧 系統維護：dark.celler@gmail.com</div>
 </div>
 
 <div class="modal-overlay" id="successModal">
     <div class="modal-content">
-        <h3>🎉 提交成功！</h3>
+        <h3 style="color: var(--hcgn-green);">🎉 提交成功！</h3>
         <p>您的活動資訊已正確送出。<br><small>若需修正或填寫下一筆，請點擊下方按鈕。</small></p>
         <button class="modal-btn" onclick="closeModal()">確認並填寫下一筆</button>
     </div>
@@ -162,24 +223,20 @@
     const submitBtn = document.getElementById('submitBtn');
     const modal = document.getElementById('successModal');
 
-    // 關閉彈跳視窗
     function closeModal() {
         modal.style.display = 'none';
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // 回到頂部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function checkTime() {
         const now = new Date();
         const day = now.getDate();
         const hour = now.getHours();
-        
-        const isOpen = (day > 1 && day < 25) || 
-                       (day === 1 && hour >= 8) || 
-                       (day === 25 && hour < 17);
+        const isOpen = (day > 1 && day < 25) || (day === 1 && hour >= 8) || (day === 25 && hour < 17);
 
         if (!isOpen) {
             mainContainer.innerHTML = `
-                <div class="error-overlay">
+                <div style="text-align: center; padding: 40px 20px;">
                     <h2 style="color: #e74c3c;">目前非開放填寫時間</h2>
                     <p>開放時段：每月 1 日 08:00 至 25 日 17:00</p>
                     <p style="color: #666;">現在時間：${now.toLocaleString()}</p>
@@ -196,25 +253,22 @@
         if(!checkTime()) return;
 
         submitBtn.disabled = true;
-        submitBtn.innerText = '傳送中...';
+        submitBtn.innerText = '正在傳送資料...';
         
         fetch(scriptURL, {
             method: 'POST',
             body: new FormData(form)
         })
         .then(response => {
-            // 顯示成功彈窗
             modal.style.display = 'flex';
-            
             form.reset();
             submitBtn.disabled = false;
-            submitBtn.innerText = '提交資料';
+            submitBtn.innerText = '提交活動資料';
         })
         .catch(error => {
-            console.error('Error!', error.message);
-            alert('❌ 提交失敗，請確認網路連線或聯絡維護者。');
+            alert('❌ 提交失敗，請檢查網路。');
             submitBtn.disabled = false;
-            submitBtn.innerText = '提交資料';
+            submitBtn.innerText = '提交活動資料';
         });
     });
 </script>
