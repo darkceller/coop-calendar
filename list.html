@@ -13,14 +13,14 @@
             --text-sub: #636e72;
             --bg-gray: #f8f9fa;
             
-            /* 新定義的豐富配色 */
-            --color-cooking: #e67e22;   /* 料理教作 - 橘色 */
-            --color-club: #e84393;      /* 開心社團 - 粉紅 */
-            --color-producer: #0984e3;  /* 生產者面對面 - 藍色 */
-            --color-health: #d63031;    /* 養生保健 - 紅色 */
-            --color-outdoor: #27ae60;   /* 戶外參訪 - 深綠 */
-            --color-meeting: #6c5ce7;   /* 會議/講習 - 紫色 */
-            --color-default: #636e72;   /* 其他 - 灰色 */
+            /* 各類別顏色 */
+            --color-cooking: #e67e22;   /* 料理教作 */
+            --color-club: #e84393;      /* 開心社團 */
+            --color-producer: #0984e3;  /* 生產者面對面 */
+            --color-health: #d63031;    /* 養生保健 */
+            --color-outdoor: #27ae60;   /* 戶外參訪 */
+            --color-meeting: #6c5ce7;   /* 會議/講習 */
+            --color-default: #636e72;
         }
         
         body { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; color: var(--text-main); }
@@ -31,15 +31,16 @@
             overflow: hidden;
         }
 
-        /* 頂部 LOGO 區 */
+        /* 頂部 LOGO 區 - 放大 LOGO */
         .poster-logo-bar {
             background-color: var(--hcgn-green);
-            padding: 25px 40px;
+            padding: 40px 20px; /* 增加上下間距 */
             text-align: center;
         }
         .poster-logo-bar img {
-            max-height: 55px;
-            width: auto;
+            width: 80%; /* 寬度佔比放大至 80% */
+            max-width: 800px; /* 最大限制 */
+            height: auto;
             display: block;
             margin: 0 auto;
         }
@@ -96,7 +97,7 @@
 
 <div id="poster-area">
     <div class="poster-logo-bar">
-        <img src="logo.png" alt="主婦聯盟生活消費合作社 LOGO">
+        <img src="logo-dark.png" alt="主婦聯盟生活消費合作社 LOGO">
     </div>
 
     <div class="poster-header">
@@ -107,7 +108,7 @@
     </div>
 
     <div id="loading">✨ 正在為您準備精美的活動資訊...</div>
-    <div id="no-data">📭 本月份目前尚無已確認的活動資料。</div>
+    <div id="no-data" style="display:none;">📭 本月份目前尚無已確認的活動資料。</div>
     
     <div class="event-grid" id="eventGrid"></div>
 
@@ -129,14 +130,13 @@
 <script>
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
 
-    // 重新定義的顏色邏輯
     function getTypeStyles(type) {
         if (type.includes("料理") || type.includes("教作")) return 'var(--color-cooking)';
-        if (type.includes("社團")) return 'var(--color-club)';
+        if (type.includes("社團") || type.includes("開心")) return 'var(--color-club)';
         if (type.includes("生產者") || type.includes("面對面")) return 'var(--color-producer)';
         if (type.includes("養生") || type.includes("保健")) return 'var(--color-health)';
         if (type.includes("參訪") || type.includes("戶外")) return 'var(--color-outdoor)';
-        if (type.includes("會議") || type.includes("講習")) return 'var(--color-meeting)';
+        if (type.includes("會議") || type.includes("講習") || type.includes("社務")) return 'var(--color-meeting)';
         return 'var(--color-default)';
     }
 
@@ -169,12 +169,15 @@
             const jsonData = JSON.parse(jsonStr);
             const rows = jsonData.table.rows;
             const grid = document.getElementById('eventGrid');
+            const noDataBox = document.getElementById('no-data');
             document.getElementById('loading').style.display = 'none';
 
             if (!rows || rows.length <= 1) {
-                document.getElementById('no-data').style.display = 'block';
+                noDataBox.style.display = 'block';
                 return;
             }
+
+            let validCount = 0;
 
             rows.forEach((row, index) => {
                 if (index === 0) return; 
@@ -182,10 +185,11 @@
                 if (!cols) return;
 
                 const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
-                if (getVal(10).includes("作廢")) return; 
-                const title = getVal(7);
-                if (!title) return; 
+                
+                // 跳過作廢或空白標題
+                if (getVal(10).includes("作廢") || !getVal(7)) return; 
 
+                validCount++;
                 const station = getVal(3);
                 const dateRaw = getVal(4);
                 const time = getVal(5);
@@ -209,7 +213,7 @@
                             <span class="type-badge" style="background:${color}">${type}</span>
                             <span class="station-badge">📍 ${station}站</span>
                         </div>
-                        <div class="event-title">${title}</div>
+                        <div class="event-title">${title = getVal(7)}</div>
                         <div class="info-item"><b>時間</b><span>${time}</span></div>
                         <div class="info-item"><b>講師</b><span>${lecturer}</span></div>
                         ${content ? `<div class="event-desc">${content}</div>` : ''}
@@ -217,6 +221,11 @@
                 `;
                 grid.appendChild(card);
             });
+
+            // 只有當真的沒有任何有效活動時才顯示提示
+            if (validCount === 0) {
+                noDataBox.style.display = 'block';
+            }
         });
 
     function downloadPoster() {
