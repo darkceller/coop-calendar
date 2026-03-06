@@ -3,115 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCGN-COOP 活動海報牆</title>
+    <title>主婦聯盟消費合作社新竹分社 - 活動月曆海報</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { 
             --hcgn-green: #28a745; 
-            --bg-gray: #f4f7f6;
-            --type-health: #e84393; /* 養生保健 - 粉紅 */
-            --type-outdoor: #0984e3; /* 戶外參訪 - 藍 */
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --bg-gray: #f8f9fa;
+            
+            /* 分類配色 - 調高飽和度讓文字更清晰 */
+            --type-health: #d63031;   /* 養生保健 - 紅 */
+            --type-outdoor: #0984e3;  /* 戶外參訪 - 藍 */
             --type-handmake: #e67e22; /* 手作體驗 - 橘 */
-            --type-meeting: #6c5ce7; /* 會議/講習 - 紫 */
-            --type-default: #2d3436; /* 其他 - 深灰 */
+            --type-meeting: #6c5ce7;  /* 會議/講習 - 紫 */
+            --type-default: #2d3436;  /* 其他 - 深灰 */
         }
         
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; }
+        body { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; color: var(--text-main); }
         
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { color: #1c1e21; margin-bottom: 10px; }
-        
+        /* 頁面頂部控制列 */
         .controls { text-align: center; margin-bottom: 30px; }
         .btn-download {
             background-color: var(--hcgn-green); color: white; border: none;
-            padding: 10px 25px; border-radius: 50px; cursor: pointer;
-            font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: 0.3s;
+            padding: 12px 30px; border-radius: 50px; cursor: pointer;
+            font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
         }
-        .btn-download:hover { background-color: #218838; transform: scale(1.05); }
+        .btn-download:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
 
-        /* 海報範圍容器 */
+        /* 海報主體範圍 */
         #poster-area { 
-            background: white; padding: 30px; border-radius: 15px; 
-            max-width: 1100px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background: white; padding: 40px; border-radius: 20px; 
+            max-width: 1000px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         }
 
-        .poster-title { text-align: center; color: var(--hcgn-green); border-bottom: 2px double var(--hcgn-green); padding-bottom: 15px; margin-bottom: 25px; }
+        .poster-header { text-align: center; margin-bottom: 30px; }
+        .org-name { font-size: 28px; font-weight: 800; color: var(--hcgn-green); margin-bottom: 10px; letter-spacing: 2px; }
+        .poster-title-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0; margin-top: 10px; }
+        .main-title { font-size: 24px; font-weight: bold; color: var(--text-main); margin: 0; }
+        .sub-slogan { font-size: 15px; color: var(--text-sub); margin-top: 8px; }
 
         .event-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 20px; 
+            gap: 25px; 
         }
 
         .event-card {
-            background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden;
-            display: flex; flex-direction: column;
+            background: #fff; border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;
+            display: flex; flex-direction: column; transition: border 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
-        /* 動態顏色邊條 */
-        .card-top-bar { height: 6px; width: 100%; }
+        .card-top-bar { height: 8px; width: 100%; }
 
-        .card-content { padding: 18px; flex-grow: 1; }
-        .date-tag { font-size: 13px; font-weight: bold; color: #666; margin-bottom: 8px; display: block; }
-        .station-label { font-size: 12px; background: #f0f2f5; padding: 2px 8px; border-radius: 4px; color: #555; margin-bottom: 10px; display: inline-block; }
+        .card-content { padding: 20px; flex-grow: 1; }
+        .date-tag { font-size: 14px; font-weight: 600; color: var(--hcgn-green); margin-bottom: 10px; display: block; }
         
-        .event-title { font-size: 19px; font-weight: bold; color: #333; margin: 5px 0 12px 0; line-height: 1.4; }
-        
-        /* 動態類型標籤 */
+        .tag-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
         .type-badge {
-            display: inline-block; padding: 3px 12px; border-radius: 20px;
-            color: white; font-size: 12px; font-weight: bold; margin-bottom: 10px;
+            padding: 4px 12px; border-radius: 6px; color: white;
+            font-size: 13px; font-weight: bold;
+        }
+        .station-badge { 
+            background: #f1f2f6; color: #57606f; padding: 4px 12px; 
+            border-radius: 6px; font-size: 13px; font-weight: 600;
+        }
+        
+        .event-title { font-size: 20px; font-weight: 800; color: #000; margin: 10px 0 15px 0; line-height: 1.4; }
+        
+        .info-item { font-size: 15px; color: #2d3436; margin: 6px 0; display: flex; align-items: center; }
+        .info-item b { width: 55px; color: #636e72; font-weight: 600; }
+        
+        .event-desc { 
+            font-size: 14px; color: #4b4b4b; background: #f9f9f9; 
+            padding: 12px; border-radius: 10px; margin-top: 15px; 
+            line-height: 1.6; border: 1px solid #f1f1f1;
         }
 
-        .event-detail { font-size: 14px; color: #555; margin: 4px 0; }
-        .event-detail b { color: #333; }
-        .event-desc { font-size: 13px; color: #777; background: #fafafa; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 3px solid #ddd; }
-
-        #loading { text-align: center; padding: 50px; font-size: 18px; color: #666; }
-        #no-data { text-align: center; padding: 50px; display: none; color: #999; }
+        #loading { text-align: center; padding: 100px; font-size: 18px; color: #a4b0be; }
+        #no-data { text-align: center; padding: 100px; display: none; color: #a4b0be; font-size: 18px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>主婦聯盟新竹分社</h1>
-</div>
-
 <div class="controls">
-    <button class="btn-download" onclick="downloadPoster()">📥 下載活動月曆海報 (PNG)</button>
+    <button class="btn-download" onclick="downloadPoster()">📥 下載本月活動海報 (PNG)</button>
 </div>
 
 <div id="poster-area">
-    <div class="poster-title">
-        <h2 id="monthDisplay">活動月曆載入中...</h2>
-        <p>歡迎社員踴躍報名參加！詳情請洽各站所。</p>
+    <div class="poster-header">
+        <div class="org-name">主婦聯盟消費合作社新竹分社</div>
+        <div class="poster-title-box">
+            <h2 class="main-title" id="monthDisplay">讀取活動月份中...</h2>
+            <p class="sub-slogan">✦ 歡迎社員踴躍報名參加 · 活動詳情請洽各站所 ✦</p>
+        </div>
     </div>
 
-    <div id="loading">讀取最新活動資訊...</div>
-    <div id="no-data">目前尚無活動資料。</div>
+    <div id="loading">✨ 正在為您準備精美的活動資訊...</div>
+    <div id="no-data">📭 本月份目前尚無已確認的活動資料。</div>
     <div class="event-grid" id="eventGrid"></div>
 </div>
+
 <script>
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
 
-    // 定義活動配色的邏輯
     function getTypeStyles(type) {
-        if (type.includes("養生")) return { bg: 'var(--type-health)', bar: 'var(--type-health)' };
-        if (type.includes("參訪") || type.includes("戶外")) return { bg: 'var(--type-outdoor)', bar: 'var(--type-outdoor)' };
-        if (type.includes("手作") || type.includes("體驗")) return { bg: 'var(--type-handmake)', bar: 'var(--type-handmake)' };
-        if (type.includes("會議") || type.includes("講習")) return { bg: 'var(--type-meeting)', bar: 'var(--type-meeting)' };
-        return { bg: 'var(--type-default)', bar: 'var(--hcgn-green)' };
+        if (type.includes("養生")) return 'var(--type-health)';
+        if (type.includes("參訪") || type.includes("戶外")) return 'var(--type-outdoor)';
+        if (type.includes("手作") || type.includes("體驗")) return 'var(--type-handmake)';
+        if (type.includes("會議") || type.includes("講習")) return 'var(--type-meeting)';
+        return 'var(--type-default)';
     }
 
     function getTargetSheetName() {
         const now = new Date();
         now.setMonth(now.getMonth() + 1); 
-        let year = now.getFullYear() - 2000;
+        let fullYear = now.getFullYear(); // 取得 2026
+        let shortYear = fullYear - 2000;  // 取得 26 (用於對應工作表名稱)
         let month = now.getMonth() + 1;
-        const name = year + "年" + month + "月";
-        document.getElementById('monthDisplay').innerText = "📅 " + name + " 活動月曆";
-        return encodeURIComponent(name);
+        
+        document.getElementById('monthDisplay').innerText = `🗓️ ${fullYear}年 ${month}月 活動月曆`;
+        return encodeURIComponent(shortYear + "年" + month + "月");
     }
 
     const sheetName = getTargetSheetName();
@@ -141,10 +155,8 @@
                 if (!cols) return;
 
                 const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
-
-                const note = getVal(10);
-                if (note.includes("作廢")) return; 
-
+                
+                if (getVal(10).includes("作廢")) return; 
                 const title = getVal(7);
                 if (!title) return; 
 
@@ -155,25 +167,27 @@
                 const type = getVal(6);
                 const lecturer = getVal(8) || "無";
                 const content = getVal(9);
+                const color = getTypeStyles(type);
 
-                const styles = getTypeStyles(type);
-
+                // 日期顯示修正 (20260425 -> 2026/04/25)
                 let displayDate = dateRaw;
                 if (dateRaw.length >= 8) {
-                    displayDate = dateRaw.substring(0,4) + "/" + dateRaw.substring(4,6) + "/" + dateRaw.substring(6,8);
+                    displayDate = `${dateRaw.substring(0,4)} / ${dateRaw.substring(4,6)} / ${dateRaw.substring(6,8)}`;
                 }
 
                 const card = document.createElement('div');
                 card.className = 'event-card';
                 card.innerHTML = `
-                    <div class="card-top-bar" style="background:${styles.bar}"></div>
+                    <div class="card-top-bar" style="background:${color}"></div>
                     <div class="card-content">
                         <span class="date-tag">🗓️ ${displayDate}</span>
-                        <div class="type-badge" style="background:${styles.bg}">${type}</div>
-                        <div class="station-label">📍 ${station}站</div>
+                        <div class="tag-row">
+                            <span class="type-badge" style="background:${color}">${type}</span>
+                            <span class="station-badge">📍 ${station}站</span>
+                        </div>
                         <div class="event-title">${title}</div>
-                        <div class="event-detail">🕒 <b>時間：</b>${time}</div>
-                        <div class="event-detail">👤 <b>講師：</b>${lecturer}</div>
+                        <div class="info-item"><b>時間</b><span>${time}</span></div>
+                        <div class="info-item"><b>講師</b><span>${lecturer}</span></div>
                         ${content ? `<div class="event-desc">${content}</div>` : ''}
                     </div>
                 `;
@@ -183,22 +197,25 @@
             if (!hasVisibleEvent) document.getElementById('no-data').style.display = 'block';
         });
 
-    // 海報下載功能
     function downloadPoster() {
         const poster = document.getElementById('poster-area');
         const btn = document.querySelector('.btn-download');
-        btn.innerText = "⏳ 製作中...";
+        const originalText = btn.innerText;
+        btn.innerText = "⏳ 海報製作中，請稍候...";
+        btn.disabled = true;
         
         html2canvas(poster, {
-            scale: 2, // 提升清晰度
+            scale: 2, 
             useCORS: true,
-            backgroundColor: "#ffffff"
+            backgroundColor: "#ffffff",
+            windowWidth: 1000 // 確保手機端截圖寬度一致
         }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `HCGN-活動月曆-${new Date().getTime()}.png`;
+            link.download = `主婦聯盟新竹活動海報-${new Date().toLocaleDateString()}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-            btn.innerText = "📥 下載活動月曆海報 (PNG)";
+            btn.innerText = originalText;
+            btn.disabled = false;
         });
     }
 </script>
