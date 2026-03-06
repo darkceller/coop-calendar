@@ -35,11 +35,12 @@
             text-align: center;
         }
         .poster-logo-bar img {
-            max-height: 50px; /* 限制 LOGO 高度 */
-            width: auto;
-            display: block;
-            margin: 0 auto;
-        }
+        max-height: 60px; /* 稍微放大一點 */
+        width: auto;
+        display: block;
+        margin: 0 auto;
+        object-fit: contain; /* 確保圖片不變形 */
+}
 
         /* 文字標題區 */
         .poster-header { 
@@ -102,7 +103,7 @@
 
 <div id="poster-area">
     <div class="poster-logo-bar">
-        <img src="logo.png" alt="主婦聯盟生活消費合作社 LOGO">
+        <img src="logo-dark.png" alt="主婦聯盟生活消費合作社 LOGO">
     </div>
 
     <div class="poster-header">
@@ -251,3 +252,4 @@
 </script>
 </body>
 </html>
+
