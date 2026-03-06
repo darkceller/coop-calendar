@@ -59,21 +59,13 @@
 <div class="event-grid" id="eventGrid"></div>
 
 <script>
-    // 1. 您的 Spreadsheet ID
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
 
-    /**
-     * 2. 自動計算要抓取的月份
-     * 修正邏輯：永遠顯示「下個月」的活動 (例如 3月顯示 4月活動)
-     */
     function getTargetSheetName() {
         const now = new Date();
-        // 將月份加 1 (getMonth() 是 0-11，所以原本 +1 是當月，現在 +2 是下個月)
         now.setMonth(now.getMonth() + 1); 
-        
-        let year = now.getFullYear() - 2000; // 取得 26
-        let month = now.getMonth() + 1;      // 取得下個月 (1-12)
-        
+        let year = now.getFullYear() - 2000;
+        let month = now.getMonth() + 1;
         const name = year + "年" + month + "月";
         document.getElementById('monthDisplay').innerText = "📅 預覽月份：" + name;
         return encodeURIComponent(name);
@@ -85,13 +77,15 @@
     fetch(url)
         .then(res => res.text())
         .then(data => {
-            // 處理 Google JSON 安全前綴
-            const jsonData = JSON.parse(data.substring(47).slice(0, -2));
+            // 嘗試擷取 JSON 資料
+            const startIdx = data.indexOf('{');
+            const endIdx = data.lastIndexOf('}');
+            const jsonStr = data.substring(startIdx, endIdx + 1);
+            const jsonData = JSON.parse(jsonStr);
             const rows = jsonData.table.rows;
             const grid = document.getElementById('eventGrid');
             document.getElementById('loading').style.display = 'none';
 
-            // 若表格為空或只有標題列
             if (!rows || rows.length <= 1) {
                 document.getElementById('no-data').style.display = 'block';
                 return;
@@ -99,27 +93,33 @@
 
             let hasVisibleEvent = false;
 
-            // 遍歷每一行資料 (從 index 1 開始跳過標題)
             rows.forEach((row, index) => {
-                if (index === 0) return; 
+                if (index === 0) return; // 跳過標題列
                 const cols = row.c;
-                if (!cols || !cols[3]) return;
+                if (!cols) return;
 
-                // 檢查是否為作廢資料 (第 11 欄 K 欄)
-                const note = (cols[10] && cols[10].v) ? cols[10].v.toString() : "";
+                // 安全讀取欄位內容的函式
+                const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
+
+                const note = getVal(10);
                 if (note.includes("作廢")) return; 
 
-                hasVisibleEvent = true;
-                const station = cols[3].v;
-                const dateRaw = cols[4].v.toString();
-                const time = cols[5].v;
-                const type = cols[6].v;
-                const title = cols[7].v;
-                const lecturer = (cols[8] && cols[8].v) ? cols[8].v : "無";
-                const content = (cols[9] && cols[9].v) ? cols[9].v : "";
+                const title = getVal(7);
+                if (!title) return; // 如果沒有標題則跳過
 
-                // 格式化日期 (20260415 -> 04/15)
-                const displayDate = dateRaw.substring(4,6) + "/" + dateRaw.substring(6,8);
+                hasVisibleEvent = true;
+                const station = getVal(3);
+                const dateRaw = getVal(4); // 取得日期字串
+                const time = getVal(5);
+                const type = getVal(6);
+                const lecturer = getVal(8) || "無";
+                const content = getVal(9);
+
+                // 強健的日期格式化 (支援 20260410 或其他格式)
+                let displayDate = dateRaw;
+                if (dateRaw.length >= 8) {
+                    displayDate = dateRaw.substring(4,6) + "/" + dateRaw.substring(6,8);
+                }
 
                 const card = document.createElement('div');
                 card.className = 'event-card';
@@ -144,8 +144,8 @@
             }
         })
         .catch(err => {
-            console.error(err);
-            document.getElementById('loading').innerText = '讀取失敗。請確認試算表已開啟「知道連結的任何人皆可檢視」權限，且對應月份的工作表已建立。';
+            console.error("Fetch Error:", err);
+            document.getElementById('loading').innerText = '讀取失敗。請確保試算表名稱為「26年4月」，且已開啟「知道連結的任何人皆可檢視」。';
         });
 </script>
 
