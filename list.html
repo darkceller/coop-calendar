@@ -19,7 +19,7 @@
             --color-producer: #0984e3;  /* 生產者面對面 */
             --color-health: #d63031;    /* 養生保健 */
             --color-outdoor: #27ae60;   /* 戶外參訪 */
-            --color-meeting: #6c5ce7;   /* 會議/講習 */
+            --color-meeting: #6c5ce7;   /* 會議/講習/社務 */
             --color-default: #636e72;
         }
         
@@ -31,15 +31,15 @@
             overflow: hidden;
         }
 
-        /* 頂部 LOGO 區 - 放大 LOGO */
+        /* 頂部 LOGO 區 - 調整比例 */
         .poster-logo-bar {
             background-color: var(--hcgn-green);
-            padding: 40px 20px; /* 增加上下間距 */
+            padding: 25px 20px; /* 縮減間距讓視覺更集中 */
             text-align: center;
         }
         .poster-logo-bar img {
-            width: 80%; /* 寬度佔比放大至 80% */
-            max-width: 800px; /* 最大限制 */
+            width: 55%; /* 調整為 55%，比下方標題區稍寬，達到視覺平衡 */
+            max-width: 550px; 
             height: auto;
             display: block;
             margin: 0 auto;
@@ -97,7 +97,7 @@
 
 <div id="poster-area">
     <div class="poster-logo-bar">
-        <img src="logo.png" alt="主婦聯盟生活消費合作社 LOGO">
+        <img src="logo-dark.png" alt="主婦聯盟生活消費合作社 LOGO">
     </div>
 
     <div class="poster-header">
@@ -185,9 +185,10 @@
                 if (!cols) return;
 
                 const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
+                const titleVal = getVal(7);
+                const statusVal = getVal(10);
                 
-                // 跳過作廢或空白標題
-                if (getVal(10).includes("作廢") || !getVal(7)) return; 
+                if (statusVal.includes("作廢") || !titleVal) return; 
 
                 validCount++;
                 const station = getVal(3);
@@ -213,7 +214,7 @@
                             <span class="type-badge" style="background:${color}">${type}</span>
                             <span class="station-badge">📍 ${station}站</span>
                         </div>
-                        <div class="event-title">${title = getVal(7)}</div>
+                        <div class="event-title">${titleVal}</div>
                         <div class="info-item"><b>時間</b><span>${time}</span></div>
                         <div class="info-item"><b>講師</b><span>${lecturer}</span></div>
                         ${content ? `<div class="event-desc">${content}</div>` : ''}
@@ -222,7 +223,6 @@
                 grid.appendChild(card);
             });
 
-            // 只有當真的沒有任何有效活動時才顯示提示
             if (validCount === 0) {
                 noDataBox.style.display = 'block';
             }
@@ -251,4 +251,3 @@
 </script>
 </body>
 </html>
-
