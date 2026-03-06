@@ -28,10 +28,7 @@
         #poster-area { 
             background: white; border-radius: 20px; 
             max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            overflow: hidden;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: #ffffff;
+            overflow: hidden; width: 100%; box-sizing: border-box; background-color: #ffffff;
         }
 
         .poster-logo-bar { background-color: var(--hcgn-green); padding: 25px 15px; text-align: center; }
@@ -41,7 +38,6 @@
         .poster-title-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0; }
         .main-title { font-size: 24px; font-weight: bold; color: var(--text-main); margin: 0; line-height: 1.4; }
         
-        /* 3. 圖例樣式 (Legend) */
         .legend-container { 
             display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; 
             margin-top: 15px; font-size: 13px; color: var(--text-sub);
@@ -50,18 +46,13 @@
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
         .event-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; 
-            padding: 20px;
-            justify-content: center;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; padding: 20px; justify-content: center;
         }
 
-        /* 下載模式強制三欄 */
         #poster-area.download-mode .event-grid {
             grid-template-columns: repeat(3, 1fr) !important;
-            padding: 40px !important;
-            gap: 25px !important;
+            padding: 40px !important; gap: 25px !important;
         }
 
         .event-card {
@@ -70,7 +61,6 @@
             width: 100%; box-sizing: border-box; position: relative;
         }
 
-        /* 2. 過期樣式 */
         .card-expired { opacity: 0.5; filter: grayscale(0.6); }
         .expired-badge {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
@@ -93,7 +83,6 @@
         
         .event-desc { font-size: 13.5px; color: #4b4b4b; background: #f9f9f9; padding: 10px; border-radius: 10px; margin-top: 12px; line-height: 1.6; border: 1px solid #f1f1f1; }
 
-        /* 4. 站所聯絡清單 */
         .station-footer-grid {
             background: #fdfdfd; padding: 30px 40px; border-top: 1px solid #eee;
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
@@ -112,19 +101,14 @@
             background-color: var(--hcgn-green); color: white; border: none;
             padding: 14px 30px; border-radius: 50px; cursor: pointer;
             font-size: 16px; font-weight: bold; width: 100%; max-width: 300px;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
         }
 
-        @media (max-width: 767px) {
-            .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; }
-        }
-
+        @media (max-width: 767px) { .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; } }
         @media (min-width: 768px) {
             .event-grid { grid-template-columns: repeat(3, 1fr); padding: 40px; gap: 25px; }
             .poster-footer { flex-direction: row; justify-content: space-between; text-align: left; align-items: flex-end; padding: 20px 40px; }
         }
-
         #loading, #no-data { text-align: center; padding: 60px; font-size: 16px; color: #a4b0be; }
     </style>
 </head>
@@ -141,10 +125,10 @@
             <div class="legend-container">
                 <div class="legend-item"><span class="dot" style="background:var(--color-cooking)"></span>料理教作</div>
                 <div class="legend-item"><span class="dot" style="background:var(--color-producer)"></span>生產者面對面</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-outdoor)"></span>參訪戶外</div>
+                <div class="legend-item"><span class="dot" style="background:var(--color-outdoor)"></span>戶外參訪</div>
                 <div class="legend-item"><span class="dot" style="background:var(--color-meeting)"></span>議題講座</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-club)"></span>社團開班</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-health)"></span>養生保健</div>
+                <div class="legend-item"><span class="dot" style="background:var(--color-club)"></span>開心社團</div>
+                <div class="legend-item"><span class="dot" style="background:var(--color-health)"></span>樂活養生</div>
             </div>
         </div>
     </div>
@@ -182,16 +166,16 @@
 <script>
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
     const today = new Date();
-    today.setHours(0,0,0,0); // 正規化今日時間
+    today.setHours(0,0,0,0);
 
     function getTypeStyles(type) {
         if (!type) return 'var(--color-default)';
         const t = type.toString();
         if (t.includes("料理") || t.includes("教作")) return 'var(--color-cooking)';
-        if (t.includes("社團") || t.includes("開心")) return 'var(--color-club)';
+        if (t.includes("社團") || t.includes("開心")) return 'var(--color-club)'; // 修正：開心社團
         if (t.includes("生產者") || t.includes("面對面")) return 'var(--color-producer)';
-        if (t.includes("養生") || t.includes("保健")) return 'var(--color-health)';
-        if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)';
+        if (t.includes("養生") || t.includes("樂活")) return 'var(--color-health)'; // 修正：樂活養生
+        if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)'; // 修正：戶外參訪
         if (t.includes("會議") || t.includes("講習") || t.includes("社務") || t.includes("講座")) return 'var(--color-meeting)';
         return 'var(--color-default)';
     }
@@ -222,12 +206,7 @@
                 return;
             }
 
-            // 1. 功能優化：過濾無效列並自動排序 (依日期欄位 index 4)
-            rows = rows.filter(row => {
-                const c = row.c;
-                return c && c[7] && c[7].v && c[7].v !== "活動名稱";
-            });
-
+            rows = rows.filter(row => row.c && row.c[7] && row.c[7].v && row.c[7].v !== "活動名稱");
             rows.sort((a, b) => {
                 const valA = (a.c[4] ? a.c[4].v : 0).toString();
                 const valB = (b.c[4] ? b.c[4].v : 0).toString();
@@ -238,13 +217,11 @@
             rows.forEach((row) => {
                 const cols = row.c;
                 const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? (cols[idx].f || cols[idx].v.toString()).trim() : "";
-                
                 const titleVal = getVal(7);
                 const statusVal = getVal(10);
                 if (statusVal.includes("作廢")) return;
 
-                // 2. 功能優化：判斷是否過期
-                const dateRaw = getVal(4); // 格式如 20260401
+                const dateRaw = getVal(4);
                 let isExpired = false;
                 if(dateRaw.length === 8) {
                     const eventDate = new Date(dateRaw.substring(0,4), dateRaw.substring(4,6)-1, dateRaw.substring(6,8));
@@ -275,7 +252,6 @@
                 `;
                 grid.appendChild(card);
             });
-
             if (validCount === 0) document.getElementById('no-data').style.display = 'block';
         })
         .catch(err => {
@@ -289,7 +265,6 @@
         btn.innerText = "⏳ 正在製作高畫質海報...";
         btn.disabled = true;
         poster.classList.add('download-mode');
-        
         html2canvas(poster, { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 1000 }).then(canvas => {
             const link = document.createElement('a');
             link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
