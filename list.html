@@ -3,45 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCGN-COOP 活動月曆牆</title>
+    <title>HCGN-COOP 活動海報牆</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        :root { --fb-blue: #1877F2; --bg-gray: #F0F2F5; --hcgn-green: #28a745; }
-        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { color: #1c1e21; font-size: 24px; margin-bottom: 5px; }
-        .current-month-tag { display: inline-block; background: #fff; padding: 5px 15px; border-radius: 20px; font-weight: bold; color: var(--hcgn-green); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        :root { 
+            --hcgn-green: #28a745; 
+            --bg-gray: #f4f7f6;
+            --type-health: #e84393; /* 養生保健 - 粉紅 */
+            --type-outdoor: #0984e3; /* 戶外參訪 - 藍 */
+            --type-handmake: #e67e22; /* 手作體驗 - 橘 */
+            --type-meeting: #6c5ce7; /* 會議/講習 - 紫 */
+            --type-default: #2d3436; /* 其他 - 深灰 */
+        }
         
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; }
+        
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: #1c1e21; margin-bottom: 10px; }
+        
+        .controls { text-align: center; margin-bottom: 30px; }
+        .btn-download {
+            background-color: var(--hcgn-green); color: white; border: none;
+            padding: 10px 25px; border-radius: 50px; cursor: pointer;
+            font-size: 16px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .btn-download:hover { background-color: #218838; transform: scale(1.05); }
+
+        /* 海報範圍容器 */
+        #poster-area { 
+            background: white; padding: 30px; border-radius: 15px; 
+            max-width: 1100px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .poster-title { text-align: center; color: var(--hcgn-green); border-bottom: 2px double var(--hcgn-green); padding-bottom: 15px; margin-bottom: 25px; }
+
         .event-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 20px; max-width: 1200px; margin: 20px auto; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 20px; 
         }
 
         .event-card {
-            background: white; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1); transition: transform 0.2s;
-            border-top: 4px solid var(--hcgn-green);
-        }
-        .event-card:hover { transform: translateY(-5px); }
-        
-        .card-date-banner {
-            background-color: #f8f9fa; color: #444;
-            padding: 10px 15px; font-weight: bold; font-size: 0.9em;
-            display: flex; justify-content: space-between; border-bottom: 1px solid #eee;
+            background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden;
+            display: flex; flex-direction: column;
         }
 
-        .card-content { padding: 15px; }
-        .station-tag { 
-            display: inline-block; background: #e7f3ff; color: var(--fb-blue);
-            padding: 2px 10px; border-radius: 5px; font-size: 12px; font-weight: bold;
-        }
-        .event-title { font-size: 18px; font-weight: bold; margin: 10px 0; color: #050505; line-height: 1.3; }
-        .event-info { font-size: 14px; color: #65676b; margin-bottom: 5px; }
+        /* 動態顏色邊條 */
+        .card-top-bar { height: 6px; width: 100%; }
+
+        .card-content { padding: 18px; flex-grow: 1; }
+        .date-tag { font-size: 13px; font-weight: bold; color: #666; margin-bottom: 8px; display: block; }
+        .station-label { font-size: 12px; background: #f0f2f5; padding: 2px 8px; border-radius: 4px; color: #555; margin-bottom: 10px; display: inline-block; }
         
-        .event-desc { 
-            margin-top: 10px; padding-top: 10px; border-top: 1px solid #ebedf0;
-            font-size: 14px; color: #444; line-height: 1.4; background: #fdfdfd; padding: 8px; border-radius: 4px;
+        .event-title { font-size: 19px; font-weight: bold; color: #333; margin: 5px 0 12px 0; line-height: 1.4; }
+        
+        /* 動態類型標籤 */
+        .type-badge {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            color: white; font-size: 12px; font-weight: bold; margin-bottom: 10px;
         }
+
+        .event-detail { font-size: 14px; color: #555; margin: 4px 0; }
+        .event-detail b { color: #333; }
+        .event-desc { font-size: 13px; color: #777; background: #fafafa; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 3px solid #ddd; }
 
         #loading { text-align: center; padding: 50px; font-size: 18px; color: #666; }
         #no-data { text-align: center; padding: 50px; display: none; color: #999; }
@@ -50,16 +75,34 @@
 <body>
 
 <div class="header">
-    <h1>📅 HCGN-COOP 活動月曆牆</h1>
-    <div class="current-month-tag" id="monthDisplay">讀取中...</div>
+    <h1>主婦聯盟新竹分社</h1>
 </div>
 
-<div id="loading">正在擷取最新活動資訊...</div>
-<div id="no-data">該月份目前尚無活動資料。</div>
-<div class="event-grid" id="eventGrid"></div>
+<div class="controls">
+    <button class="btn-download" onclick="downloadPoster()">📥 下載活動月曆海報 (PNG)</button>
+</div>
 
+<div id="poster-area">
+    <div class="poster-title">
+        <h2 id="monthDisplay">活動月曆載入中...</h2>
+        <p>歡迎社員踴躍報名參加！詳情請洽各站所。</p>
+    </div>
+
+    <div id="loading">讀取最新活動資訊...</div>
+    <div id="no-data">目前尚無活動資料。</div>
+    <div class="event-grid" id="eventGrid"></div>
+</div>
 <script>
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
+
+    // 定義活動配色的邏輯
+    function getTypeStyles(type) {
+        if (type.includes("養生")) return { bg: 'var(--type-health)', bar: 'var(--type-health)' };
+        if (type.includes("參訪") || type.includes("戶外")) return { bg: 'var(--type-outdoor)', bar: 'var(--type-outdoor)' };
+        if (type.includes("手作") || type.includes("體驗")) return { bg: 'var(--type-handmake)', bar: 'var(--type-handmake)' };
+        if (type.includes("會議") || type.includes("講習")) return { bg: 'var(--type-meeting)', bar: 'var(--type-meeting)' };
+        return { bg: 'var(--type-default)', bar: 'var(--hcgn-green)' };
+    }
 
     function getTargetSheetName() {
         const now = new Date();
@@ -67,12 +110,11 @@
         let year = now.getFullYear() - 2000;
         let month = now.getMonth() + 1;
         const name = year + "年" + month + "月";
-        document.getElementById('monthDisplay').innerText = "📅 預覽月份：" + name;
+        document.getElementById('monthDisplay').innerText = "📅 " + name + " 活動月曆";
         return encodeURIComponent(name);
     }
 
     const sheetName = getTargetSheetName();
-    // 使用 tq? 查詢語法，確保即使前面的欄位是空的也能抓到資料
     const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&tq=select%20*`;
 
     fetch(url)
@@ -98,60 +140,67 @@
                 const cols = row.c;
                 if (!cols) return;
 
-                // 強化型取值函式：處理 API 回傳的格式對象 {v: "value", f: "formatted"}
-                const getVal = (idx) => {
-                    if (!cols[idx] || cols[idx].v === null) return "";
-                    return cols[idx].v.toString();
-                };
+                const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
 
-                // 檢查是否作廢 (K欄 = Index 10)
                 const note = getVal(10);
                 if (note.includes("作廢")) return; 
 
-                // 取得標題 (H欄 = Index 7)
                 const title = getVal(7);
                 if (!title) return; 
 
                 hasVisibleEvent = true;
-                const station = getVal(3);  // D欄
-                const dateRaw = getVal(4);  // E欄
-                const time = getVal(5);     // F欄
-                const type = getVal(6);     // G欄
-                const lecturer = getVal(8) || "無"; // I欄
-                const content = getVal(9);   // J欄
+                const station = getVal(3);
+                const dateRaw = getVal(4);
+                const time = getVal(5);
+                const type = getVal(6);
+                const lecturer = getVal(8) || "無";
+                const content = getVal(9);
 
-                // 日期美化邏輯
+                const styles = getTypeStyles(type);
+
                 let displayDate = dateRaw;
                 if (dateRaw.length >= 8) {
-                    displayDate = dateRaw.substring(4,6) + "/" + dateRaw.substring(6,8);
+                    displayDate = dateRaw.substring(0,4) + "/" + dateRaw.substring(4,6) + "/" + dateRaw.substring(6,8);
                 }
 
                 const card = document.createElement('div');
                 card.className = 'event-card';
                 card.innerHTML = `
-                    <div class="card-date-banner">
-                        <span>🗓️ ${displayDate}</span>
-                        <span style="color:var(--hcgn-green)">${type}</span>
-                    </div>
+                    <div class="card-top-bar" style="background:${styles.bar}"></div>
                     <div class="card-content">
-                        <span class="station-tag">📍 ${station}站</span>
+                        <span class="date-tag">🗓️ ${displayDate}</span>
+                        <div class="type-badge" style="background:${styles.bg}">${type}</div>
+                        <div class="station-label">📍 ${station}站</div>
                         <div class="event-title">${title}</div>
-                        <div class="event-info">🕒 <b>時間：</b>${time}</div>
-                        <div class="event-info">👤 <b>講師：</b>${lecturer}</div>
-                        ${content ? `<div class="event-desc">📝 ${content}</div>` : ''}
+                        <div class="event-detail">🕒 <b>時間：</b>${time}</div>
+                        <div class="event-detail">👤 <b>講師：</b>${lecturer}</div>
+                        ${content ? `<div class="event-desc">${content}</div>` : ''}
                     </div>
                 `;
                 grid.appendChild(card);
             });
 
-            if (!hasVisibleEvent) {
-                document.getElementById('no-data').style.display = 'block';
-            }
-        })
-        .catch(err => {
-            console.error("Fetch Error:", err);
-            document.getElementById('loading').innerText = '讀取失敗。請確認試算表名稱與權限。';
+            if (!hasVisibleEvent) document.getElementById('no-data').style.display = 'block';
         });
+
+    // 海報下載功能
+    function downloadPoster() {
+        const poster = document.getElementById('poster-area');
+        const btn = document.querySelector('.btn-download');
+        btn.innerText = "⏳ 製作中...";
+        
+        html2canvas(poster, {
+            scale: 2, // 提升清晰度
+            useCORS: true,
+            backgroundColor: "#ffffff"
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `HCGN-活動月曆-${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            btn.innerText = "📥 下載活動月曆海報 (PNG)";
+        });
+    }
 </script>
 </body>
 </html>
