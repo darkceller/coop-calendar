@@ -13,91 +13,105 @@
             --text-sub: #636e72;
             --bg-gray: #f8f9fa;
             
-            /* 各類別顏色 */
-            --color-cooking: #e67e22;   /* 料理教作 */
-            --color-club: #e84393;      /* 開心社團 */
-            --color-producer: #0984e3;  /* 生產者面對面 */
-            --color-health: #d63031;    /* 養生保健 */
-            --color-outdoor: #27ae60;   /* 戶外參訪 */
-            --color-meeting: #6c5ce7;   /* 會議/講習/社務 */
+            --color-cooking: #e67e22;   
+            --color-club: #e84393;      
+            --color-producer: #0984e3;  
+            --color-health: #d63031;    
+            --color-outdoor: #27ae60;   
+            --color-meeting: #6c5ce7;   
             --color-default: #636e72;
         }
         
-        body { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; color: var(--text-main); }
+        body { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; color: var(--text-main); }
         
         #poster-area { 
             background: white; border-radius: 20px; 
             max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* 頂部 LOGO 區 - 調整比例 */
         .poster-logo-bar {
             background-color: var(--hcgn-green);
-            padding: 25px 20px; /* 縮減間距讓視覺更集中 */
+            padding: 25px 15px;
             text-align: center;
         }
         .poster-logo-bar img {
-            width: 55%; /* 調整為 55%，比下方標題區稍寬，達到視覺平衡 */
-            max-width: 550px; 
+            width: 65%; /* 手機版略微放大比例 */
+            max-width: 450px; 
             height: auto;
             display: block;
             margin: 0 auto;
         }
 
-        .poster-header { text-align: center; padding: 30px 40px 10px 40px; }
+        .poster-header { text-align: center; padding: 25px 20px 10px 20px; }
         .poster-title-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0; }
-        .main-title { font-size: 24px; font-weight: bold; color: var(--text-main); margin: 0; }
-        .sub-slogan { font-size: 15px; color: var(--text-sub); margin-top: 8px; }
+        .main-title { font-size: 22px; font-weight: bold; color: var(--text-main); margin: 0; line-height: 1.4; }
+        .sub-slogan { font-size: 14px; color: var(--text-sub); margin-top: 8px; }
 
+        /* 修正卡片置中問題 */
         .event-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 25px; padding: 20px 40px 40px 40px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            padding: 20px;
+            justify-content: center; /* 確保內容置中 */
         }
 
         .event-card {
             background: #fff; border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;
             display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            width: 100%; /* 強制填滿 grid 容器 */
+            box-sizing: border-box;
         }
 
         .card-top-bar { height: 8px; width: 100%; }
-        .card-content { padding: 20px; flex-grow: 1; }
-        .date-tag { font-size: 14px; font-weight: 600; color: var(--hcgn-green); margin-bottom: 10px; display: block; }
+        .card-content { padding: 18px; flex-grow: 1; }
+        .date-tag { font-size: 13px; font-weight: 600; color: var(--hcgn-green); margin-bottom: 8px; display: block; }
         
-        .tag-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
-        .type-badge { padding: 4px 12px; border-radius: 6px; color: white; font-size: 13px; font-weight: bold; }
-        .station-badge { background: #f1f2f6; color: #57606f; padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; }
+        .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; align-items: center; }
+        .type-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; white-space: nowrap; }
+        .station-badge { background: #f1f2f6; color: #57606f; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
         
-        .event-title { font-size: 20px; font-weight: 800; color: #000; margin: 10px 0 15px 0; line-height: 1.4; }
-        .info-item { font-size: 15px; color: #2d3436; margin: 6px 0; display: flex; align-items: center; }
-        .info-item b { width: 55px; color: #636e72; font-weight: 600; }
+        .event-title { font-size: 18px; font-weight: 800; color: #000; margin: 8px 0 12px 0; line-height: 1.4; }
+        .info-item { font-size: 14px; color: #2d3436; margin: 5px 0; display: flex; }
+        .info-item b { min-width: 45px; color: #636e72; font-weight: 600; }
         
-        .event-desc { font-size: 14px; color: #4b4b4b; background: #f9f9f9; padding: 12px; border-radius: 10px; margin-top: 15px; line-height: 1.6; border: 1px solid #f1f1f1; }
+        .event-desc { font-size: 13.5px; color: #4b4b4b; background: #f9f9f9; padding: 10px; border-radius: 10px; margin-top: 12px; line-height: 1.6; border: 1px solid #f1f1f1; }
 
         .poster-footer {
-            margin-top: 20px; padding: 20px 40px; border-top: 1px dashed #ddd;
-            color: #95a5a6; font-size: 13px; line-height: 1.8;
-            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-top: 20px; padding: 20px; border-top: 1px dashed #ddd;
+            color: #95a5a6; font-size: 12px; line-height: 1.6;
+            display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;
         }
 
-        .controls { text-align: center; margin: 40px 0 60px 0; }
+        .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; }
         .btn-download {
             background-color: var(--hcgn-green); color: white; border: none;
-            padding: 15px 40px; border-radius: 50px; cursor: pointer;
-            font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            padding: 14px 30px; border-radius: 50px; cursor: pointer;
+            font-size: 16px; font-weight: bold; width: 100%; max-width: 300px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
             transition: 0.3s;
         }
-        .btn-download:hover { background-color: var(--dark-green); transform: translateY(-2px); }
 
-        #loading, #no-data { text-align: center; padding: 100px; font-size: 18px; color: #a4b0be; }
+        /* 針對桌機版稍微調回邊距 */
+        @media (min-width: 768px) {
+            body { padding: 20px; }
+            .poster-logo-bar img { width: 50%; }
+            .event-grid { padding: 40px; gap: 25px; }
+            .poster-footer { flex-direction: row; justify-content: space-between; text-align: left; align-items: flex-end; padding: 20px 40px; }
+            .main-title { font-size: 24px; }
+        }
+
+        #loading, #no-data { text-align: center; padding: 60px; font-size: 16px; color: #a4b0be; }
     </style>
 </head>
 <body>
 
 <div id="poster-area">
     <div class="poster-logo-bar">
-        <img src="logo-dark.png" alt="主婦聯盟生活消費合作社 LOGO">
+        <img src="logo.png" alt="主婦聯盟生活消費合作社 LOGO">
     </div>
 
     <div class="poster-header">
@@ -107,8 +121,8 @@
         </div>
     </div>
 
-    <div id="loading">✨ 正在為您準備精美的活動資訊...</div>
-    <div id="no-data" style="display:none;">📭 本月份目前尚無已確認的活動資料。</div>
+    <div id="loading">✨ 正在載入活動資訊...</div>
+    <div id="no-data" style="display:none;">📭 本月份目前尚無活動資料。</div>
     
     <div class="event-grid" id="eventGrid"></div>
 
@@ -117,9 +131,7 @@
             <div>版權所有 新竹分社活動月曆小組</div>
             <div id="updateDateDisplay">更新日期：</div>
         </div>
-        <div style="text-align: right;">
-            📧 系統維護：dark.celler@gmail.com
-        </div>
+        <div>📧 系統維護：dark.celler@gmail.com</div>
     </div>
 </div>
 
@@ -223,22 +235,21 @@
                 grid.appendChild(card);
             });
 
-            if (validCount === 0) {
-                noDataBox.style.display = 'block';
-            }
+            if (validCount === 0) noDataBox.style.display = 'block';
         });
 
     function downloadPoster() {
         const poster = document.getElementById('poster-area');
         const btn = document.querySelector('.btn-download');
-        btn.innerText = "⏳ 正在生成高清海報...";
+        btn.innerText = "⏳ 正在製作海報...";
         btn.disabled = true;
         
         html2canvas(poster, {
             scale: 2, 
             useCORS: true,
             backgroundColor: "#ffffff",
-            windowWidth: 1000
+            width: poster.offsetWidth,
+            windowWidth: poster.offsetWidth
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
