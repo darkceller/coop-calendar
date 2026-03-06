@@ -138,12 +138,13 @@
 
     function getTypeStyles(type) {
         if (!type) return 'var(--color-default)';
-        if (type.includes("料理") || type.includes("教作")) return 'var(--color-cooking)';
-        if (type.includes("社團") || type.includes("開心")) return 'var(--color-club)';
-        if (type.includes("生產者") || type.includes("面對面")) return 'var(--color-producer)';
-        if (type.includes("養生") || type.includes("保健")) return 'var(--color-health)';
-        if (type.includes("參訪") || type.includes("戶外")) return 'var(--color-outdoor)';
-        if (type.includes("會議") || type.includes("講習") || type.includes("社務") || type.includes("講座")) return 'var(--color-meeting)';
+        const t = type.toString();
+        if (t.includes("料理") || t.includes("教作")) return 'var(--color-cooking)';
+        if (t.includes("社團") || t.includes("開心")) return 'var(--color-club)';
+        if (t.includes("生產者") || t.includes("面對面")) return 'var(--color-producer)';
+        if (t.includes("養生") || t.includes("保健")) return 'var(--color-health)';
+        if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)';
+        if (t.includes("會議") || t.includes("講習") || t.includes("社務") || t.includes("講座")) return 'var(--color-meeting)';
         return 'var(--color-default)';
     }
 
@@ -161,13 +162,15 @@
     }
 
     const sheetName = initDates();
-    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+    // 修正核心：加入 headers=1 參數
+    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&headers=1`;
 
     fetch(url)
         .then(res => res.text())
         .then(data => {
             const jsonStr = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
-            const rows = JSON.parse(jsonStr).table.rows;
+            const jsonData = JSON.parse(jsonStr);
+            const rows = jsonData.table.rows;
             const grid = document.getElementById('eventGrid');
             document.getElementById('loading').style.display = 'none';
 
@@ -177,7 +180,7 @@
             }
 
             let validCount = 0;
-            rows.forEach((row, index) => {
+            rows.forEach((row) => {
                 const cols = row.c;
                 if (!cols) return;
 
@@ -186,15 +189,13 @@
                 const titleVal = getVal(7);
                 const statusVal = getVal(10);
 
-                // 除錯日誌
-                console.log(`第 ${index + 1} 列偵測：`, titleVal);
-
-                // 改進判斷：第一列若是標題則跳過，或是名稱為空也跳過
-                if (index === 0 || titleVal === "活動名稱" || !titleVal) return;
+                // 移除 index === 0 判斷，改用內容判斷過濾真正的標題
+                if (!titleVal || titleVal === "活動名稱" || titleVal === "活動標題") return;
                 if (statusVal.includes("作廢")) return;
 
                 validCount++;
-                const color = getTypeStyles(getVal(6));
+                const type = getVal(6);
+                const color = getTypeStyles(type);
                 const dateRaw = getVal(4);
                 const displayDate = (dateRaw.length >= 8) ? `${dateRaw.substring(0,4)} / ${dateRaw.substring(4,6)} / ${dateRaw.substring(6,8)}` : dateRaw;
 
@@ -205,7 +206,7 @@
                     <div class="card-content">
                         <span class="date-tag">🗓️ ${displayDate}</span>
                         <div class="tag-row">
-                            <span class="type-badge" style="background:${color}">${getVal(6)}</span>
+                            <span class="type-badge" style="background:${color}">${type}</span>
                             <span class="station-badge">📍 ${getVal(3)}站</span>
                         </div>
                         <div class="event-title">${titleVal}</div>
@@ -219,7 +220,10 @@
 
             if (validCount === 0) document.getElementById('no-data').style.display = 'block';
         })
-        .catch(err => console.error("Error:", err));
+        .catch(err => {
+            console.error("Error:", err);
+            document.getElementById('loading').innerText = "❌ 載入失敗，請確認試算表權限。";
+        });
 
     function downloadPoster() {
         const poster = document.getElementById('poster-area');
