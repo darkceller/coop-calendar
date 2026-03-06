@@ -19,14 +19,13 @@
             color: #333; 
         }
 
-        /* 1. 調整綠色區塊寬度，使其與下方系統相同 */
         .poster-logo-bar {
             background-color: var(--hcgn-green);
             padding: 25px 20px;
             text-align: center;
-            max-width: 650px; /* 與 container 相同寬度 */
+            max-width: 650px; 
             margin: 0 auto;
-            border-radius: 15px 15px 0 0; /* 僅上方圓角 */
+            border-radius: 15px 15px 0 0; 
             box-sizing: border-box;
         }
         .poster-logo-bar img {
@@ -42,7 +41,7 @@
             margin: 0 auto 40px auto; 
             background: #fff; 
             padding: 30px; 
-            border-radius: 0 0 15px 15px; /* 僅下方圓角，與綠色區塊銜接 */
+            border-radius: 0 0 15px 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
             box-sizing: border-box;
         }
@@ -55,8 +54,6 @@
             line-height: 1.4;
         }
         
-        /* 2. 已刪除 .signature 區塊 */
-
         .notice-box {
             background-color: #fffcf0; 
             padding: 18px; 
@@ -86,7 +83,6 @@
         button:hover { background-color: var(--dark-green); }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* 3. Footer 樣式 */
         .poster-footer {
             margin-top: 40px; 
             padding: 20px; 
@@ -96,6 +92,7 @@
             text-align: center;
         }
 
+        /* Modal 彈窗樣式 */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center;
@@ -104,7 +101,10 @@
             background: #fff; padding: 30px; border-radius: 20px; max-width: 400px; width: 85%;
             text-align: center;
         }
-        .modal-btn { background-color: var(--hcgn-green); color: white; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+        .modal-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .modal-btn { border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        .btn-primary { background-color: var(--hcgn-green); color: white; }
+        .btn-secondary { background-color: #636e72; color: white; }
     </style>
 </head>
 <body>
@@ -120,9 +120,8 @@
         <strong style="color: #b08800; font-size: 1.1em;">⚠️ 填報須知</strong>
         <ul style="margin: 10px 0 0 20px; padding: 0;">
             <li><strong>開放時間：</strong> 每月 1 日 08:00 至 25 日 17:00。</li>
-            <li><strong>如何修正：</strong> 時限內對「同日期/站所/時間」重新填報即可覆蓋。</li>
+            <li><strong>如何修正：</strong> 時限內對「同日期/站所/時間/活動名稱」重新填報即可覆蓋。</li>
             <li><strong>自動格式：</strong> 系統會自動轉為半形字並依日期歸檔月份。</li>
-            <li><strong>勞務費：</strong> 以填寫之「姓名/編號」為撥付依據。</li>
         </ul>
     </div>
 
@@ -171,8 +170,9 @@
                 <option value="料理教作">料理教作</option>
                 <option value="生產者面對面">生產者面對面</option>
                 <option value="戶外參訪">戶外參訪</option>
-                <option value="社務會議">社務會議</option>
+                <option value="樂活養生">樂活養生</option>
                 <option value="開心社團">開心社團</option>
+                <option value="社務會議">社務會議</option>
                 <option value="其他">其他</option>
             </select>
         </div>
@@ -193,20 +193,26 @@
         </div>
 
         <button type="submit" id="submitBtn">提交活動資料</button>
+        
+        <button type="button" onclick="window.location.href='index.html'" style="background:none; color:#95a5a6; font-size:14px; text-decoration:underline; border:none; margin-top:15px; cursor:pointer;">
+            不做填報，直接查看目前成果
+        </button>
     </form>
 </div>
 
 <div class="poster-footer">
     <div>版權所有 新竹分社活動月曆小組</div>
-    <div>更新日期：2026-03-06</div>
     <div>📧 系統維護：dark.celler@gmail.com</div>
 </div>
 
 <div class="modal-overlay" id="successModal">
     <div class="modal-content">
         <h3 style="color: var(--hcgn-green);">🎉 提交成功！</h3>
-        <p>您的活動資訊已正確送出。<br><small>若需修正或填寫下一筆，請點擊下方按鈕。</small></p>
-        <button class="modal-btn" onclick="closeModal()">確認並填寫下一筆</button>
+        <p>您的活動資訊已送出。<br><small>您可以選擇繼續填寫下一筆，或是查看成品。</small></p>
+        <div class="modal-btn-group">
+            <button class="modal-btn btn-primary" onclick="closeModal()">➕ 繼續填報下一筆</button>
+            <button class="modal-btn btn-secondary" onclick="window.location.href='index.html'">🔍 查看海報結果</button>
+        </div>
     </div>
 </div>
 
@@ -235,6 +241,7 @@
                     <h2 style="color: #e74c3c;">目前非開放填寫時間</h2>
                     <p>開放時段：每月 1 日 08:00 至 25 日 17:00</p>
                     <p style="color: #666;">現在時間：${now.toLocaleString()}</p>
+                    <button onclick="window.location.href='index.html'" style="width:auto; padding:10px 20px; font-size:16px;">🔍 前往查看本月海報</button>
                 </div>`;
             return false;
         }
