@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主婦聯盟消費合作社新竹分社 - 活動月曆海報</title>
+    <title>主婦聯盟生活消費合作社 - 新竹分社活動月曆</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { 
             --hcgn-green: #28a745; 
+            --dark-green: #1e7e34; /* 深綠色用於背景 */
             --text-main: #2d3436;
             --text-sub: #636e72;
             --bg-gray: #f8f9fa;
@@ -22,13 +23,30 @@
         
         /* 海報主體範圍 */
         #poster-area { 
-            background: white; padding: 40px; border-radius: 20px; 
+            background: white; border-radius: 20px; 
             max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden; /* 確保圓角包含綠色頂部 */
         }
 
-        .poster-header { text-align: center; margin-bottom: 30px; }
-        .org-name { font-size: 28px; font-weight: 800; color: var(--hcgn-green); margin-bottom: 10px; letter-spacing: 2px; }
-        .poster-title-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0; margin-top: 10px; }
+        /* 綠色頂部 LOGO 區 */
+        .poster-logo-bar {
+            background-color: var(--hcgn-green);
+            padding: 25px 40px;
+            text-align: center;
+        }
+        .poster-logo-bar img {
+            max-height: 50px; /* 限制 LOGO 高度 */
+            width: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 文字標題區 */
+        .poster-header { 
+            text-align: center; 
+            padding: 30px 40px 10px 40px;
+        }
+        .poster-title-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0; margin-top: 0px; }
         .main-title { font-size: 24px; font-weight: bold; color: var(--text-main); margin: 0; }
         .sub-slogan { font-size: 15px; color: var(--text-sub); margin-top: 8px; }
 
@@ -37,6 +55,7 @@
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             gap: 25px; 
             margin-bottom: 30px;
+            padding: 0 40px; /* 移到網格內，避免影響標題 */
         }
 
         .event-card {
@@ -60,7 +79,7 @@
 
         /* 海報底部資訊欄 */
         .poster-footer {
-            margin-top: 40px; padding-top: 20px; border-top: 1px dashed #ddd;
+            margin-top: 40px; padding: 20px 40px; border-top: 1px dashed #ddd;
             color: #95a5a6; font-size: 13px; line-height: 1.8; text-align: left;
             display: flex; justify-content: space-between; align-items: flex-end;
         }
@@ -73,7 +92,7 @@
             font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
             transition: all 0.3s ease;
         }
-        .btn-download:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
+        .btn-download:hover { background-color: var(--dark-green); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
 
         #loading { text-align: center; padding: 100px; font-size: 18px; color: #a4b0be; }
         #no-data { text-align: center; padding: 100px; display: none; color: #a4b0be; font-size: 18px; }
@@ -82,8 +101,11 @@
 <body>
 
 <div id="poster-area">
+    <div class="poster-logo-bar">
+        <img src="logo.png" alt="主婦聯盟生活消費合作社 LOGO">
+    </div>
+
     <div class="poster-header">
-        <div class="org-name">主婦聯盟消費合作社新竹分社</div>
         <div class="poster-title-box">
             <h2 class="main-title" id="monthDisplay">載入月份中...</h2>
             <p class="sub-slogan">✦ 歡迎社員踴躍報名參加 · 活動詳情請洽各站所 ✦</p>
@@ -113,7 +135,6 @@
 <script>
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
 
-    // 設定配色邏輯
     function getTypeStyles(type) {
         if (type.includes("養生")) return 'var(--type-health)';
         if (type.includes("參訪") || type.includes("戶外")) return 'var(--type-outdoor)';
@@ -122,24 +143,21 @@
         return 'var(--type-default)';
     }
 
-    // 自動更新日期與月份
     function initDates() {
         const now = new Date();
-        
-        // 1. 顯示海報內的更新日期 (yyyy-mm-dd)
         const yyyy = now.getFullYear();
         const mm = String(now.getMonth() + 1).padStart(2, '0');
         const dd = String(now.getDate()).padStart(2, '0');
         document.getElementById('updateDateDisplay').innerText = `更新日期：${yyyy}-${mm}-${dd}`;
 
-        // 2. 計算目標月份
         const targetDate = new Date();
         targetDate.setMonth(now.getMonth() + 1); 
         const targetYear = targetDate.getFullYear();
         const targetShortYear = targetYear - 2000;
         const targetMonth = targetDate.getMonth() + 1;
         
-        document.getElementById('monthDisplay').innerText = `🗓️ ${targetYear}年 ${targetMonth}月 活動月曆`;
+        // 修正文字改為：新竹分社 2026年 4月 活動月曆
+        document.getElementById('monthDisplay').innerText = `🗓️ 新竹分社 ${targetYear}年 ${targetMonth}月 活動月曆`;
         return encodeURIComponent(targetShortYear + "年" + targetMonth + "月");
     }
 
@@ -223,7 +241,7 @@
             windowWidth: 1000
         }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `主婦聯盟新竹活動月曆-${new Date().toLocaleDateString()}.png`;
+            link.download = `主婦聯盟新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             btn.innerText = originalText;
