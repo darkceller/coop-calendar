@@ -71,7 +71,7 @@
 
         .card-top-bar { height: 8px; width: 100%; }
         .card-content { padding: 18px; flex-grow: 1; }
-        .date-tag { font-size: 14px; font-weight: 800; color: var(--hcgn-green); margin-bottom: 8px; display: block; }
+        .date-tag { font-size: 15px; font-weight: 800; color: var(--hcgn-green); margin-bottom: 8px; display: block; }
         
         .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; align-items: center; }
         .type-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; white-space: nowrap; }
@@ -172,10 +172,10 @@
         if (!type) return 'var(--color-default)';
         const t = type.toString();
         if (t.includes("料理") || t.includes("教作")) return 'var(--color-cooking)';
-        if (t.includes("社團") || t.includes("開心")) return 'var(--color-club)'; // 修正：開心社團
+        if (t.includes("社團") || t.includes("開心")) return 'var(--color-club)';
         if (t.includes("生產者") || t.includes("面對面")) return 'var(--color-producer)';
-        if (t.includes("養生") || t.includes("樂活")) return 'var(--color-health)'; // 修正：樂活養生
-        if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)'; // 修正：戶外參訪
+        if (t.includes("養生") || t.includes("樂活")) return 'var(--color-health)';
+        if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)';
         if (t.includes("會議") || t.includes("講習") || t.includes("社務") || t.includes("講座")) return 'var(--color-meeting)';
         return 'var(--color-default)';
     }
@@ -221,17 +221,29 @@
                 const statusVal = getVal(10);
                 if (statusVal.includes("作廢")) return;
 
-                const dateRaw = getVal(4);
+                // --- 日期與星期計算邏輯 ---
+                const dateRaw = getVal(4); // 期待格式 20260401
+                let displayDate = dateRaw;
                 let isExpired = false;
+
                 if(dateRaw.length === 8) {
-                    const eventDate = new Date(dateRaw.substring(0,4), dateRaw.substring(4,6)-1, dateRaw.substring(6,8));
+                    const y = dateRaw.substring(0,4);
+                    const m = dateRaw.substring(4,6);
+                    const d = dateRaw.substring(6,8);
+                    const eventDate = new Date(y, m-1, d);
+                    
+                    // 取得星期幾
+                    const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+                    const dayOfWeek = weekDays[eventDate.getDay()];
+                    
+                    displayDate = `${y} / ${m} / ${d} (${dayOfWeek})`;
+                    
                     if(eventDate < today) isExpired = true;
                 }
 
                 validCount++;
                 const type = getVal(6);
                 const color = getTypeStyles(type);
-                const displayDate = (dateRaw.length >= 8) ? `${dateRaw.substring(0,4)} / ${dateRaw.substring(4,6)} / ${dateRaw.substring(6,8)}` : dateRaw;
 
                 const card = document.createElement('div');
                 card.className = `event-card ${isExpired ? 'card-expired' : ''}`;
