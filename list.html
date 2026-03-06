@@ -72,12 +72,12 @@
     }
 
     const sheetName = getTargetSheetName();
-    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+    // 使用 tq? 查詢語法，確保即使前面的欄位是空的也能抓到資料
+    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&tq=select%20*`;
 
     fetch(url)
         .then(res => res.text())
         .then(data => {
-            // 嘗試擷取 JSON 資料
             const startIdx = data.indexOf('{');
             const endIdx = data.lastIndexOf('}');
             const jsonStr = data.substring(startIdx, endIdx + 1);
@@ -94,28 +94,33 @@
             let hasVisibleEvent = false;
 
             rows.forEach((row, index) => {
-                if (index === 0) return; // 跳過標題列
+                if (index === 0) return; 
                 const cols = row.c;
                 if (!cols) return;
 
-                // 安全讀取欄位內容的函式
-                const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
+                // 強化型取值函式：處理 API 回傳的格式對象 {v: "value", f: "formatted"}
+                const getVal = (idx) => {
+                    if (!cols[idx] || cols[idx].v === null) return "";
+                    return cols[idx].v.toString();
+                };
 
+                // 檢查是否作廢 (K欄 = Index 10)
                 const note = getVal(10);
                 if (note.includes("作廢")) return; 
 
+                // 取得標題 (H欄 = Index 7)
                 const title = getVal(7);
-                if (!title) return; // 如果沒有標題則跳過
+                if (!title) return; 
 
                 hasVisibleEvent = true;
-                const station = getVal(3);
-                const dateRaw = getVal(4); // 取得日期字串
-                const time = getVal(5);
-                const type = getVal(6);
-                const lecturer = getVal(8) || "無";
-                const content = getVal(9);
+                const station = getVal(3);  // D欄
+                const dateRaw = getVal(4);  // E欄
+                const time = getVal(5);     // F欄
+                const type = getVal(6);     // G欄
+                const lecturer = getVal(8) || "無"; // I欄
+                const content = getVal(9);   // J欄
 
-                // 強健的日期格式化 (支援 20260410 或其他格式)
+                // 日期美化邏輯
                 let displayDate = dateRaw;
                 if (dateRaw.length >= 8) {
                     displayDate = dateRaw.substring(4,6) + "/" + dateRaw.substring(6,8);
@@ -145,9 +150,8 @@
         })
         .catch(err => {
             console.error("Fetch Error:", err);
-            document.getElementById('loading').innerText = '讀取失敗。請確保試算表名稱為「26年4月」，且已開啟「知道連結的任何人皆可檢視」。';
+            document.getElementById('loading').innerText = '讀取失敗。請確認試算表名稱與權限。';
         });
 </script>
-
 </body>
 </html>
