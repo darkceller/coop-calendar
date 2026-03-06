@@ -11,31 +11,19 @@
             --text-main: #2d3436;
             --text-sub: #636e72;
             --bg-gray: #f8f9fa;
-            
-            /* 分類配色 - 調高飽和度讓文字更清晰 */
-            --type-health: #d63031;   /* 養生保健 - 紅 */
-            --type-outdoor: #0984e3;  /* 戶外參訪 - 藍 */
-            --type-handmake: #e67e22; /* 手作體驗 - 橘 */
-            --type-meeting: #6c5ce7;  /* 會議/講習 - 紫 */
-            --type-default: #2d3436;  /* 其他 - 深灰 */
+            --type-health: #d63031;
+            --type-outdoor: #0984e3;
+            --type-handmake: #e67e22;
+            --type-meeting: #6c5ce7;
+            --type-default: #2d3436;
         }
         
         body { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 20px; color: var(--text-main); }
         
-        /* 頁面頂部控制列 */
-        .controls { text-align: center; margin-bottom: 30px; }
-        .btn-download {
-            background-color: var(--hcgn-green); color: white; border: none;
-            padding: 12px 30px; border-radius: 50px; cursor: pointer;
-            font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-download:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
-
         /* 海報主體範圍 */
         #poster-area { 
             background: white; padding: 40px; border-radius: 20px; 
-            max-width: 1000px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
         }
 
         .poster-header { text-align: center; margin-bottom: 30px; }
@@ -48,39 +36,44 @@
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             gap: 25px; 
+            margin-bottom: 30px;
         }
 
         .event-card {
             background: #fff; border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;
-            display: flex; flex-direction: column; transition: border 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .card-top-bar { height: 8px; width: 100%; }
-
         .card-content { padding: 20px; flex-grow: 1; }
         .date-tag { font-size: 14px; font-weight: 600; color: var(--hcgn-green); margin-bottom: 10px; display: block; }
         
         .tag-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
-        .type-badge {
-            padding: 4px 12px; border-radius: 6px; color: white;
-            font-size: 13px; font-weight: bold;
-        }
-        .station-badge { 
-            background: #f1f2f6; color: #57606f; padding: 4px 12px; 
-            border-radius: 6px; font-size: 13px; font-weight: 600;
-        }
+        .type-badge { padding: 4px 12px; border-radius: 6px; color: white; font-size: 13px; font-weight: bold; }
+        .station-badge { background: #f1f2f6; color: #57606f; padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; }
         
         .event-title { font-size: 20px; font-weight: 800; color: #000; margin: 10px 0 15px 0; line-height: 1.4; }
-        
         .info-item { font-size: 15px; color: #2d3436; margin: 6px 0; display: flex; align-items: center; }
         .info-item b { width: 55px; color: #636e72; font-weight: 600; }
         
-        .event-desc { 
-            font-size: 14px; color: #4b4b4b; background: #f9f9f9; 
-            padding: 12px; border-radius: 10px; margin-top: 15px; 
-            line-height: 1.6; border: 1px solid #f1f1f1;
+        .event-desc { font-size: 14px; color: #4b4b4b; background: #f9f9f9; padding: 12px; border-radius: 10px; margin-top: 15px; line-height: 1.6; border: 1px solid #f1f1f1; }
+
+        /* 海報底部資訊欄 */
+        .poster-footer {
+            margin-top: 40px; padding-top: 20px; border-top: 1px dashed #ddd;
+            color: #95a5a6; font-size: 13px; line-height: 1.8; text-align: left;
+            display: flex; justify-content: space-between; align-items: flex-end;
         }
+
+        /* 下載控制區 (置底) */
+        .controls { text-align: center; margin: 40px 0 60px 0; }
+        .btn-download {
+            background-color: var(--hcgn-green); color: white; border: none;
+            padding: 15px 40px; border-radius: 50px; cursor: pointer;
+            font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-download:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); }
 
         #loading { text-align: center; padding: 100px; font-size: 18px; color: #a4b0be; }
         #no-data { text-align: center; padding: 100px; display: none; color: #a4b0be; font-size: 18px; }
@@ -88,27 +81,39 @@
 </head>
 <body>
 
-<div class="controls">
-    <button class="btn-download" onclick="downloadPoster()">📥 下載本月活動海報 (PNG)</button>
-</div>
-
 <div id="poster-area">
     <div class="poster-header">
         <div class="org-name">主婦聯盟消費合作社新竹分社</div>
         <div class="poster-title-box">
-            <h2 class="main-title" id="monthDisplay">讀取活動月份中...</h2>
+            <h2 class="main-title" id="monthDisplay">載入月份中...</h2>
             <p class="sub-slogan">✦ 歡迎社員踴躍報名參加 · 活動詳情請洽各站所 ✦</p>
         </div>
     </div>
 
     <div id="loading">✨ 正在為您準備精美的活動資訊...</div>
     <div id="no-data">📭 本月份目前尚無已確認的活動資料。</div>
+    
     <div class="event-grid" id="eventGrid"></div>
+
+    <div class="poster-footer">
+        <div>
+            <div>版權所有 新竹分社活動月曆小組</div>
+            <div id="updateDateDisplay">更新日期：</div>
+        </div>
+        <div style="text-align: right;">
+            📧 系統維護：dark.celler@gmail.com
+        </div>
+    </div>
+</div>
+
+<div class="controls">
+    <button class="btn-download" onclick="downloadPoster()">📥 下載本月活動海報 (PNG)</button>
 </div>
 
 <script>
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
 
+    // 設定配色邏輯
     function getTypeStyles(type) {
         if (type.includes("養生")) return 'var(--type-health)';
         if (type.includes("參訪") || type.includes("戶外")) return 'var(--type-outdoor)';
@@ -117,18 +122,28 @@
         return 'var(--type-default)';
     }
 
-    function getTargetSheetName() {
+    // 自動更新日期與月份
+    function initDates() {
         const now = new Date();
-        now.setMonth(now.getMonth() + 1); 
-        let fullYear = now.getFullYear(); // 取得 2026
-        let shortYear = fullYear - 2000;  // 取得 26 (用於對應工作表名稱)
-        let month = now.getMonth() + 1;
         
-        document.getElementById('monthDisplay').innerText = `🗓️ ${fullYear}年 ${month}月 活動月曆`;
-        return encodeURIComponent(shortYear + "年" + month + "月");
+        // 1. 顯示海報內的更新日期 (yyyy-mm-dd)
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        document.getElementById('updateDateDisplay').innerText = `更新日期：${yyyy}-${mm}-${dd}`;
+
+        // 2. 計算目標月份
+        const targetDate = new Date();
+        targetDate.setMonth(now.getMonth() + 1); 
+        const targetYear = targetDate.getFullYear();
+        const targetShortYear = targetYear - 2000;
+        const targetMonth = targetDate.getMonth() + 1;
+        
+        document.getElementById('monthDisplay').innerText = `🗓️ ${targetYear}年 ${targetMonth}月 活動月曆`;
+        return encodeURIComponent(targetShortYear + "年" + targetMonth + "月");
     }
 
-    const sheetName = getTargetSheetName();
+    const sheetName = initDates();
     const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&tq=select%20*`;
 
     fetch(url)
@@ -155,7 +170,6 @@
                 if (!cols) return;
 
                 const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? cols[idx].v.toString() : "";
-                
                 if (getVal(10).includes("作廢")) return; 
                 const title = getVal(7);
                 if (!title) return; 
@@ -169,7 +183,6 @@
                 const content = getVal(9);
                 const color = getTypeStyles(type);
 
-                // 日期顯示修正 (20260425 -> 2026/04/25)
                 let displayDate = dateRaw;
                 if (dateRaw.length >= 8) {
                     displayDate = `${dateRaw.substring(0,4)} / ${dateRaw.substring(4,6)} / ${dateRaw.substring(6,8)}`;
@@ -193,7 +206,6 @@
                 `;
                 grid.appendChild(card);
             });
-
             if (!hasVisibleEvent) document.getElementById('no-data').style.display = 'block';
         });
 
@@ -201,17 +213,17 @@
         const poster = document.getElementById('poster-area');
         const btn = document.querySelector('.btn-download');
         const originalText = btn.innerText;
-        btn.innerText = "⏳ 海報製作中，請稍候...";
+        btn.innerText = "⏳ 正在為您生成高清海報...";
         btn.disabled = true;
         
         html2canvas(poster, {
             scale: 2, 
             useCORS: true,
             backgroundColor: "#ffffff",
-            windowWidth: 1000 // 確保手機端截圖寬度一致
+            windowWidth: 1000
         }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `主婦聯盟新竹活動海報-${new Date().toLocaleDateString()}.png`;
+            link.download = `主婦聯盟新竹活動月曆-${new Date().toLocaleDateString()}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             btn.innerText = originalText;
