@@ -8,13 +8,12 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { 
-            --bg-color: #f1f1f1; /* 整個網頁的淺灰底色 */
+            --bg-color: #f1f1f1; 
             --hcgn-green: #28a745; 
             --dark-green: #1e7e34;
             --text-main: #2d3436;
             --text-sub: #636e72;
             
-            /* 新的卡片色彩配置 */
             --color-cooking: #e67e22;   
             --color-club: #e84393;      
             --color-producer: #0984e3;  
@@ -32,7 +31,6 @@
             color: var(--text-main); 
         }
 
-        /* 大框架 */
         #poster-area { 
             background: white; border-radius: 20px; 
             max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
@@ -40,7 +38,6 @@
             position: relative;
         }
 
-        /* --- 頂部排版 (Logo + 標題 + 月份) --- */
         .poster-header { 
             display: flex;
             justify-content: space-between;
@@ -53,15 +50,17 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 15px;
+            flex-grow: 1; /* 讓左側區塊填滿剩餘空間 */
         }
         
-        /* 左上角 Logo */
+        /* 調整重點：放大 Logo */
         .header-left img {
-            height: 45px; /* 控制 Logo 大小 */
-            width: auto;
+            height: auto; 
+            width: 85%; /* 將寬度設為父容器的 85% */
+            max-width: 500px; /* 增加最大寬度限制 */
+            display: block;
         }
 
-        /* 標題 (新竹分社活動月曆) */
         .main-title { 
             font-size: 28px; 
             font-weight: 900; 
@@ -70,7 +69,6 @@
             line-height: 1.2; 
         }
 
-        /* 右上角大圓形月份 */
         .month-circle {
             width: 85px;
             height: 85px;
@@ -82,6 +80,7 @@
             align-items: center;
             box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
             flex-shrink: 0;
+            margin-left: 20px; /* 與左側保持一點距離 */
         }
         .month-circle-inner {
             text-align: center;
@@ -100,7 +99,6 @@
             font-weight: bold;
         }
 
-        /* 圖例 (Legend) 靠左對齊 */
         .legend-container { 
             display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; 
             margin-top: 5px; padding: 0 40px; font-size: 13px; color: var(--text-sub);
@@ -108,7 +106,6 @@
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-        /* --- 卡片網格區 --- */
         .event-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
             gap: 25px; padding: 30px 40px; justify-content: center;
@@ -136,7 +133,6 @@
         .card-top-bar { height: 6px; width: 100%; }
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px;}
         
-        /* 日期顯示變大 */
         .date-tag { font-size: 16px; font-weight: 900; color: var(--hcgn-green); display: block; }
         
         .tag-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 5px; }
@@ -150,7 +146,6 @@
 
         .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
 
-        /* --- 站所清單與頁尾 --- */
         .station-footer-grid {
             background: #fdfdfd; padding: 30px 40px; border-top: 1px solid #eee;
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
@@ -172,9 +167,10 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
         }
 
-        /* RWD 適應手機版 */
+        /* 調整重點：手機版 Logo 也跟著放大 */
         @media (max-width: 767px) { 
             .poster-header { padding: 30px 20px 10px 20px; flex-direction: column; gap: 20px; align-items: flex-start; position: relative;}
+            .header-left img { width: 90%; max-width: 300px; } /* 手機版調整 */
             .month-circle { position: absolute; top: 30px; right: 20px; width: 70px; height: 70px;}
             .month-circle-inner .month { font-size: 28px; }
             .legend-container { padding: 0 20px; }
@@ -388,4 +384,3 @@
 </script>
 </body>
 </html>
-
