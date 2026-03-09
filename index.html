@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCGN-COOP 活動月曆</title>
-    <meta property="og:title" content="HCGN-COOP 活動月曆">
+    <title>HCGN-COOP 新竹分社活動月曆</title>
+    <meta property="og:title" content="HCGN-COOP 新竹分社活動月曆">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { 
+            --bg-color: #f1f1f1; /* 整個網頁的淺灰底色 */
             --hcgn-green: #28a745; 
             --dark-green: #1e7e34;
             --text-main: #2d3436;
             --text-sub: #636e72;
-            --bg-gray: #f8f9fa;
             
+            /* 新的卡片色彩配置 */
             --color-cooking: #e67e22;   
             --color-club: #e84393;      
             --color-producer: #0984e3;  
@@ -23,31 +24,94 @@
             --color-default: #636e72;
         }
         
-        body { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; color: var(--text-main); }
-        
+        body { 
+            font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; 
+            background-color: var(--bg-color); 
+            margin: 0; 
+            padding: 20px 10px; 
+            color: var(--text-main); 
+        }
+
+        /* 大框架 */
         #poster-area { 
             background: white; border-radius: 20px; 
             max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             overflow: hidden; width: 100%; box-sizing: border-box; background-color: #ffffff;
+            position: relative;
         }
 
-        .poster-logo-bar { background-color: var(--hcgn-green); padding: 25px 15px; text-align: center; }
-        .poster-logo-bar img { width: 65%; max-width: 450px; height: auto; display: block; margin: 0 auto; }
+        /* --- 頂部排版 (Logo + 標題 + 月份) --- */
+        .poster-header { 
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 40px 40px 20px 40px;
+        }
 
-        .poster-header { text-align: center; padding: 25px 20px 10px 20px; }
-        .poster-title-box { border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 15px 0; }
-        .main-title { font-size: 24px; font-weight: bold; color: var(--text-main); margin: 0; line-height: 1.4; }
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
         
+        /* 左上角 Logo */
+        .header-left img {
+            height: 45px; /* 控制 Logo 大小 */
+            width: auto;
+        }
+
+        /* 標題 (新竹分社活動月曆) */
+        .main-title { 
+            font-size: 28px; 
+            font-weight: 900; 
+            color: var(--text-main); 
+            margin: 0; 
+            line-height: 1.2; 
+        }
+
+        /* 右上角大圓形月份 */
+        .month-circle {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background-color: var(--dark-green);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
+            flex-shrink: 0;
+        }
+        .month-circle-inner {
+            text-align: center;
+            line-height: 1.1;
+        }
+        .month-circle-inner .year {
+            font-size: 14px;
+            font-weight: normal;
+        }
+        .month-circle-inner .month {
+            font-size: 36px;
+            font-weight: 900;
+        }
+        .month-circle-inner .unit {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 圖例 (Legend) 靠左對齊 */
         .legend-container { 
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; 
-            margin-top: 15px; font-size: 13px; color: var(--text-sub);
+            display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; 
+            margin-top: 5px; padding: 0 40px; font-size: 13px; color: var(--text-sub);
         }
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
+        /* --- 卡片網格區 --- */
         .event-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; padding: 20px; justify-content: center;
+            gap: 25px; padding: 30px 40px; justify-content: center;
         }
 
         #poster-area.download-mode .event-grid {
@@ -56,8 +120,8 @@
         }
 
         .event-card {
-            background: #fff; border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;
-            display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            background: #fff; border: 1px solid #edf2f7; border-radius: 12px; overflow: hidden;
+            display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             width: 100%; box-sizing: border-box; position: relative;
         }
 
@@ -69,20 +133,24 @@
             background: rgba(255,255,255,0.8); pointer-events: none;
         }
 
-        .card-top-bar { height: 8px; width: 100%; }
-        .card-content { padding: 18px; flex-grow: 1; }
-        .date-tag { font-size: 15px; font-weight: 800; color: var(--hcgn-green); margin-bottom: 8px; display: block; }
+        .card-top-bar { height: 6px; width: 100%; }
+        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px;}
         
-        .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; align-items: center; }
-        .type-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; white-space: nowrap; }
-        .station-badge { background: #f1f2f6; color: #57606f; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        /* 日期顯示變大 */
+        .date-tag { font-size: 16px; font-weight: 900; color: var(--hcgn-green); display: block; }
         
-        .event-title { font-size: 18px; font-weight: 800; color: #000; margin: 8px 0 12px 0; line-height: 1.4; min-height: 2.8em; }
-        .info-item { font-size: 14px; color: #2d3436; margin: 5px 0; display: flex; }
-        .info-item b { min-width: 45px; color: #636e72; font-weight: 600; }
+        .tag-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 5px; }
+        .type-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; white-space: nowrap; }
+        .station-badge { background: #f1f2f6; color: #57606f; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; }
         
-        .event-desc { font-size: 13.5px; color: #4b4b4b; background: #f9f9f9; padding: 10px; border-radius: 10px; margin-top: 12px; line-height: 1.6; border: 1px solid #f1f1f1; }
+        .event-title { font-size: 18px; font-weight: 800; color: #000; line-height: 1.4; margin: 4px 0; min-height: 2.8em;}
+        
+        .info-row { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #444; }
+        .info-icon { width: 16px; text-align: center; color: var(--hcgn-green); }
 
+        .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
+
+        /* --- 站所清單與頁尾 --- */
         .station-footer-grid {
             background: #fdfdfd; padding: 30px 40px; border-top: 1px solid #eee;
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
@@ -91,9 +159,9 @@
         .station-item b { color: var(--hcgn-green); font-size: 14px; display: block; margin-bottom: 2px; }
 
         .poster-footer {
-            margin-top: 0; padding: 20px; border-top: 1px dashed #ddd; background: #fafafa;
+            padding: 20px 40px; border-top: 1px dashed #ddd; background: #fafafa;
             color: #95a5a6; font-size: 12px; line-height: 1.6;
-            display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; }
@@ -104,33 +172,45 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
         }
 
-        @media (max-width: 767px) { .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; } }
-        @media (min-width: 768px) {
-            .event-grid { grid-template-columns: repeat(3, 1fr); padding: 40px; gap: 25px; }
-            .poster-footer { flex-direction: row; justify-content: space-between; text-align: left; align-items: flex-end; padding: 20px 40px; }
+        /* RWD 適應手機版 */
+        @media (max-width: 767px) { 
+            .poster-header { padding: 30px 20px 10px 20px; flex-direction: column; gap: 20px; align-items: flex-start; position: relative;}
+            .month-circle { position: absolute; top: 30px; right: 20px; width: 70px; height: 70px;}
+            .month-circle-inner .month { font-size: 28px; }
+            .legend-container { padding: 0 20px; }
+            .event-grid { padding: 20px; }
+            .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; } 
+            .poster-footer { flex-direction: column; text-align: center; gap: 10px; padding: 20px; }
         }
+        
         #loading, #no-data { text-align: center; padding: 60px; font-size: 16px; color: #a4b0be; }
     </style>
 </head>
 <body>
 
 <div id="poster-area">
-    <div class="poster-logo-bar">
-        <img src="logo_v2.png" alt="主婦聯盟 LOGO">
-    </div>
-
     <div class="poster-header">
-        <div class="poster-title-box">
-            <h2 class="main-title" id="monthDisplay">載入月份中...</h2>
-            <div class="legend-container">
-                <div class="legend-item"><span class="dot" style="background:var(--color-cooking)"></span>料理教作</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-producer)"></span>生產者面對面</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-outdoor)"></span>戶外參訪</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-meeting)"></span>議題講座</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-club)"></span>開心社團</div>
-                <div class="legend-item"><span class="dot" style="background:var(--color-health)"></span>樂活養生</div>
+        <div class="header-left">
+            <img src="logo.png" alt="主婦聯盟 LOGO">
+            <h2 class="main-title">新竹分社活動月曆</h2>
+        </div>
+        
+        <div class="month-circle" id="monthCircleBox">
+            <div class="month-circle-inner">
+                <div class="year" id="circleYear">--</div>
+                <div class="month" id="circleMonth">--</div>
+                <div class="unit">MONTH</div>
             </div>
         </div>
+    </div>
+
+    <div class="legend-container">
+        <div class="legend-item"><span class="dot" style="background:var(--color-cooking)"></span>料理教作</div>
+        <div class="legend-item"><span class="dot" style="background:var(--color-producer)"></span>生產者面對面</div>
+        <div class="legend-item"><span class="dot" style="background:var(--color-outdoor)"></span>戶外參訪</div>
+        <div class="legend-item"><span class="dot" style="background:var(--color-meeting)"></span>議題講座</div>
+        <div class="legend-item"><span class="dot" style="background:var(--color-club)"></span>開心社團</div>
+        <div class="legend-item"><span class="dot" style="background:var(--color-health)"></span>樂活養生</div>
     </div>
 
     <div id="loading">✨ 正在整理活動資訊...</div>
@@ -151,17 +231,17 @@
     </div>
 
     <div class="poster-footer">
-      <div class="poster-footer">
-    <div>
-        <div>版權所有 主婦聯盟生活消費合作社 新竹分社</div>
-        <div id="updateDateDisplay">更新日期：</div>
-    </div>
-    
-    <div>
-        <button onclick="window.location.href='form.html'" style="background: #636e72; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 5px;">
-            ✎ 進入活動填報系統
-        </button>
-        <div>📧 系統維護：林奕衡 dark.celler@gmail.com</div>
+        <div>
+            <div>版權所有 主婦聯盟生活消費合作社 新竹分社</div>
+            <div id="updateDateDisplay">更新日期：</div>
+        </div>
+        
+        <div style="text-align: right;">
+            <button onclick="window.location.href='form.html'" style="background: #e2e8f0; color: #475569; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 5px; font-weight: bold;">
+                ✎ 進入活動填報系統
+            </button>
+            <div style="margin-top: 4px;">📧 系統維護：dark.celler@gmail.com</div>
+        </div>
     </div>
 </div>
 
@@ -192,7 +272,11 @@
         targetDate.setMonth(today.getMonth() + 1); 
         const targetYear = targetDate.getFullYear();
         const targetMonth = targetDate.getMonth() + 1;
-        document.getElementById('monthDisplay').innerText = `🗓️ ${targetYear}年 ${targetMonth}月 活動月曆`;
+        
+        // 將月份填入右上的大圓形中
+        document.getElementById('circleYear').innerText = targetYear;
+        document.getElementById('circleMonth').innerText = targetMonth;
+        
         return encodeURIComponent((targetYear - 2000) + "年" + targetMonth + "月");
     }
 
@@ -228,7 +312,7 @@
                 if (statusVal.includes("作廢")) return;
 
                 // --- 日期與星期計算邏輯 ---
-                const dateRaw = getVal(4); // 期待格式 20260401
+                const dateRaw = getVal(4); 
                 let displayDate = dateRaw;
                 let isExpired = false;
 
@@ -238,7 +322,6 @@
                     const d = dateRaw.substring(6,8);
                     const eventDate = new Date(y, m-1, d);
                     
-                    // 取得星期幾
                     const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
                     const dayOfWeek = weekDays[eventDate.getDay()];
                     
@@ -251,20 +334,29 @@
                 const type = getVal(6);
                 const color = getTypeStyles(type);
 
+                // 卡片內部結構優化，採用小圖示取代純文字 b 標籤
                 const card = document.createElement('div');
                 card.className = `event-card ${isExpired ? 'card-expired' : ''}`;
                 card.innerHTML = `
                     ${isExpired ? '<div class="expired-badge">已結束</div>' : ''}
                     <div class="card-top-bar" style="background:${color}"></div>
                     <div class="card-content">
-                        <span class="date-tag">🗓️ ${displayDate}</span>
+                        <span class="date-tag">${displayDate}</span>
                         <div class="tag-row">
                             <span class="type-badge" style="background:${color}">${type}</span>
                             <span class="station-badge">📍 ${getVal(3)}站</span>
                         </div>
                         <div class="event-title">${titleVal}</div>
-                        <div class="info-item"><b>時間</b><span>${getVal(5)}</span></div>
-                        <div class="info-item"><b>講師</b><span>${getVal(8) || "無"}</span></div>
+                        
+                        <div class="info-row">
+                            <span class="info-icon">⏱</span>
+                            <span>${getVal(5)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-icon">👤</span>
+                            <span>${getVal(8) || "無"}</span>
+                        </div>
+                        
                         ${getVal(9) ? `<div class="event-desc">${getVal(9)}</div>` : ''}
                     </div>
                 `;
@@ -296,5 +388,3 @@
 </script>
 </body>
 </html>
-
-
