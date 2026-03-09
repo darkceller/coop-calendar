@@ -38,7 +38,7 @@
             position: relative;
         }
 
-        /* 🚀 修正截圖時上下比例不對與底部灰底問題 */
+        /* 下載時的修正 */
         #poster-area.download-mode {
             margin: 0 !important;
             border-radius: 0 !important;
@@ -47,37 +47,44 @@
             width: 1000px !important;
         }
 
+        /* --- 🚀 頂部排版修正：完全置中 --- */
         .poster-header { 
+            position: relative; /* 為了讓右上角的月份圓圈可以絕對定位 */
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 40px 40px 20px 40px;
+            flex-direction: column;
+            align-items: center; /* 水平置中 */
+            padding: 40px 40px 15px 40px;
         }
 
         .header-left {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center; /* 水平置中 */
             gap: 15px;
-            flex-grow: 1;
+            width: 100%;
         }
         
         .header-left img {
             height: auto; 
             width: 85%; 
-            max-width: 500px; 
+            max-width: 600px; /* 放寬最大寬度，讓上方更飽滿 */
             display: block;
         }
 
         .main-title { 
-            font-size: 28px; 
+            font-size: 30px; /* 標題稍微放大 */
             font-weight: 900; 
             color: var(--text-main); 
             margin: 0; 
             line-height: 1.2; 
+            text-align: center;
         }
 
+        /* 🚀 月份圓圈改為絕對定位，固定在右上角 */
         .month-circle {
+            position: absolute;
+            top: 40px;
+            right: 40px;
             width: 85px;
             height: 85px;
             border-radius: 50%;
@@ -87,8 +94,7 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
-            flex-shrink: 0;
-            margin-left: 20px;
+            z-index: 2;
         }
         .month-circle-inner {
             text-align: center;
@@ -107,13 +113,15 @@
             font-weight: bold;
         }
 
+        /* 圖例 (Legend) 改為置中對齊 */
         .legend-container { 
-            display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; 
             margin-top: 5px; padding: 0 40px; font-size: 13px; color: var(--text-sub);
         }
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
+        /* --- 卡片網格區 --- */
         .event-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
             gap: 25px; padding: 30px 40px; justify-content: center;
@@ -154,6 +162,7 @@
 
         .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
 
+        /* --- 站所清單與頁尾 --- */
         .station-footer-grid {
             background: #fdfdfd; padding: 30px 40px; border-top: 1px solid #eee;
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
@@ -161,7 +170,6 @@
         .station-item { font-size: 12px; line-height: 1.6; color: #444; }
         .station-item b { color: var(--hcgn-green); font-size: 14px; display: block; margin-bottom: 2px; }
 
-        /* --- 🚀 Footer 與 QR Code 樣式 --- */
         .poster-footer {
             padding: 30px 40px; border-top: 1px dashed #ddd; background: #fafafa;
             color: #7f8c8d; font-size: 13px; line-height: 1.6;
@@ -185,11 +193,10 @@
         
         .maintainer-text { font-size: 12px; }
 
-        /* QR Code 預設網頁版隱藏，下載時顯示 */
         .download-qr { display: none; width: 75px; height: 75px; border-radius: 4px; }
         
         #poster-area.download-mode .download-qr { display: block; }
-        #poster-area.download-mode .admin-btn { display: none; } /* 下載時隱藏填報按鈕 */
+        #poster-area.download-mode .admin-btn { display: none; }
         #poster-area.download-mode .footer-admin-block { margin-bottom: 0; }
 
         .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; }
@@ -200,11 +207,11 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
         }
 
-        /* 手機版排版 */
+        /* 手機版排版修正 */
         @media (max-width: 767px) { 
-            .poster-header { padding: 30px 20px 10px 20px; flex-direction: column; gap: 20px; align-items: flex-start; position: relative;}
-            .header-left img { width: 90%; max-width: 300px; }
-            .month-circle { position: absolute; top: 30px; right: 20px; width: 70px; height: 70px;}
+            .poster-header { padding: 30px 20px 10px 20px; }
+            .header-left img { width: 95%; max-width: 350px; }
+            .month-circle { position: relative; top: auto; right: auto; width: 70px; height: 70px; margin-top: 10px;}
             .month-circle-inner .month { font-size: 28px; }
             .legend-container { padding: 0 20px; }
             .event-grid { padding: 20px; }
@@ -406,10 +413,8 @@
         btn.innerText = "⏳ 正在製作高畫質海報...";
         btn.disabled = true;
         
-        // 加入下載模式的 class
         poster.classList.add('download-mode');
         
-        // 延遲 100 毫秒，確保 QR Code 圖片已經從 display:none 變成 block 且渲染完畢
         setTimeout(() => {
             html2canvas(poster, { 
                 scale: 2, 
@@ -422,7 +427,6 @@
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                // 恢復網頁原狀
                 poster.classList.remove('download-mode');
                 btn.innerText = "📥 下載本月活動海報 (PNG)";
                 btn.disabled = false;
