@@ -38,6 +38,15 @@
             position: relative;
         }
 
+        /* 🚀 修正截圖時上下比例不對與底部灰底問題 */
+        #poster-area.download-mode {
+            margin: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            max-width: 1000px !important;
+            width: 1000px !important;
+        }
+
         .poster-header { 
             display: flex;
             justify-content: space-between;
@@ -50,14 +59,13 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 15px;
-            flex-grow: 1; /* 讓左側區塊填滿剩餘空間 */
+            flex-grow: 1;
         }
         
-        /* 調整重點：放大 Logo */
         .header-left img {
             height: auto; 
-            width: 85%; /* 將寬度設為父容器的 85% */
-            max-width: 500px; /* 增加最大寬度限制 */
+            width: 85%; 
+            max-width: 500px; 
             display: block;
         }
 
@@ -80,7 +88,7 @@
             align-items: center;
             box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
             flex-shrink: 0;
-            margin-left: 20px; /* 與左側保持一點距離 */
+            margin-left: 20px;
         }
         .month-circle-inner {
             text-align: center;
@@ -153,11 +161,36 @@
         .station-item { font-size: 12px; line-height: 1.6; color: #444; }
         .station-item b { color: var(--hcgn-green); font-size: 14px; display: block; margin-bottom: 2px; }
 
+        /* --- 🚀 Footer 與 QR Code 樣式 --- */
         .poster-footer {
-            padding: 20px 40px; border-top: 1px dashed #ddd; background: #fafafa;
-            color: #95a5a6; font-size: 12px; line-height: 1.6;
+            padding: 30px 40px; border-top: 1px dashed #ddd; background: #fafafa;
+            color: #7f8c8d; font-size: 13px; line-height: 1.6;
             display: flex; justify-content: space-between; align-items: center;
         }
+
+        .footer-left { display: flex; flex-direction: column; gap: 4px; }
+        
+        .footer-right { 
+            display: flex; align-items: center; gap: 15px; text-align: right; 
+        }
+        
+        .footer-admin-block {
+            display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+        }
+
+        .admin-btn {
+            background: #e2e8f0; color: #475569; border: none; padding: 6px 12px; 
+            border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 5px; font-weight: bold;
+        }
+        
+        .maintainer-text { font-size: 12px; }
+
+        /* QR Code 預設網頁版隱藏，下載時顯示 */
+        .download-qr { display: none; width: 75px; height: 75px; border-radius: 4px; }
+        
+        #poster-area.download-mode .download-qr { display: block; }
+        #poster-area.download-mode .admin-btn { display: none; } /* 下載時隱藏填報按鈕 */
+        #poster-area.download-mode .footer-admin-block { margin-bottom: 0; }
 
         .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; }
         .btn-download {
@@ -167,16 +200,18 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
         }
 
-        /* 調整重點：手機版 Logo 也跟著放大 */
+        /* 手機版排版 */
         @media (max-width: 767px) { 
             .poster-header { padding: 30px 20px 10px 20px; flex-direction: column; gap: 20px; align-items: flex-start; position: relative;}
-            .header-left img { width: 90%; max-width: 300px; } /* 手機版調整 */
+            .header-left img { width: 90%; max-width: 300px; }
             .month-circle { position: absolute; top: 30px; right: 20px; width: 70px; height: 70px;}
             .month-circle-inner .month { font-size: 28px; }
             .legend-container { padding: 0 20px; }
             .event-grid { padding: 20px; }
             .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; } 
-            .poster-footer { flex-direction: column; text-align: center; gap: 10px; padding: 20px; }
+            .poster-footer { flex-direction: column; text-align: center; gap: 15px; padding: 20px; }
+            .footer-right { flex-direction: column; align-items: center; text-align: center; }
+            .footer-admin-block { align-items: center; }
         }
         
         #loading, #no-data { text-align: center; padding: 60px; font-size: 16px; color: #a4b0be; }
@@ -227,16 +262,19 @@
     </div>
 
     <div class="poster-footer">
-        <div>
-            <div>版權所有 主婦聯盟生活消費合作社 新竹分社</div>
+        <div class="footer-left">
+            <div style="font-weight: bold; font-size: 14px;">版權所有 主婦聯盟生活消費合作社 新竹分社</div>
             <div id="updateDateDisplay">更新日期：</div>
         </div>
         
-        <div style="text-align: right;">
-            <button onclick="window.location.href='form.html'" style="background: #e2e8f0; color: #475569; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 5px; font-weight: bold;">
-                ✎ 進入活動填報系統
-            </button>
-            <div style="margin-top: 4px;">📧 系統維護：dark.celler@gmail.com</div>
+        <div class="footer-right">
+            <div class="footer-admin-block">
+                <button class="admin-btn" onclick="window.location.href='form.html'">
+                    ✎ 進入活動填報系統
+                </button>
+                <div class="maintainer-text">📧 系統維護：dark.celler@gmail.com</div>
+            </div>
+            <img src="qr_placeholder.png" alt="網頁QR Code" class="download-qr">
         </div>
     </div>
 </div>
@@ -269,7 +307,6 @@
         const targetYear = targetDate.getFullYear();
         const targetMonth = targetDate.getMonth() + 1;
         
-        // 將月份填入右上的大圓形中
         document.getElementById('circleYear').innerText = targetYear;
         document.getElementById('circleMonth').innerText = targetMonth;
         
@@ -307,7 +344,6 @@
                 const statusVal = getVal(10);
                 if (statusVal.includes("作廢")) return;
 
-                // --- 日期與星期計算邏輯 ---
                 const dateRaw = getVal(4); 
                 let displayDate = dateRaw;
                 let isExpired = false;
@@ -330,7 +366,6 @@
                 const type = getVal(6);
                 const color = getTypeStyles(type);
 
-                // 卡片內部結構優化，採用小圖示取代純文字 b 標籤
                 const card = document.createElement('div');
                 card.className = `event-card ${isExpired ? 'card-expired' : ''}`;
                 card.innerHTML = `
@@ -370,16 +405,29 @@
         const btn = document.querySelector('.btn-download');
         btn.innerText = "⏳ 正在製作高畫質海報...";
         btn.disabled = true;
+        
+        // 加入下載模式的 class
         poster.classList.add('download-mode');
-        html2canvas(poster, { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 1000 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-            poster.classList.remove('download-mode');
-            btn.innerText = "📥 下載本月活動海報 (PNG)";
-            btn.disabled = false;
-        });
+        
+        // 延遲 100 毫秒，確保 QR Code 圖片已經從 display:none 變成 block 且渲染完畢
+        setTimeout(() => {
+            html2canvas(poster, { 
+                scale: 2, 
+                useCORS: true, 
+                backgroundColor: "#ffffff", 
+                windowWidth: 1000 
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                // 恢復網頁原狀
+                poster.classList.remove('download-mode');
+                btn.innerText = "📥 下載本月活動海報 (PNG)";
+                btn.disabled = false;
+            });
+        }, 100);
     }
 </script>
 </body>
