@@ -361,14 +361,14 @@
                 return valA.localeCompare(valB);
             });
 
-            let validCount = 0;
+let validCount = 0;
             rows.forEach((row) => {
                 const cols = row.c;
                 const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? (cols[idx].f || cols[idx].v.toString()).trim() : "";
                 const titleVal = getVal(7);
                 
-                // 🌟 1. 備註欄變成第 12 欄 (索引 11)
-                const statusVal = getVal(11); 
+                // 🌟 修正 1：備註欄在 K 欄，所以索引值改回 10
+                const statusVal = getVal(10); 
                 if (statusVal.includes("作廢")) return;
 
                 const dateRaw = getVal(4); 
@@ -392,8 +392,8 @@
                 const type = getVal(6);
                 const color = getTypeStyles(type);
                 
-                // 🌟 2. 報名連結變成第 11 欄 (索引 10)
-                const linkUrl = getVal(10); 
+                // 🌟 修正 2：報名連結在 L 欄，所以索引值改回 11
+                const linkUrl = getVal(11); 
 
                 const card = document.createElement('div');
                 card.className = `event-card ${isExpired ? 'card-expired' : ''} ${linkUrl && !isExpired ? 'clickable-card' : ''}`;
@@ -402,6 +402,8 @@
                     card.onclick = () => window.open(linkUrl, '_blank');
                     card.title = "點擊前往報名頁面";
                 }
+
+                // ... 下方的 card.innerHTML 不變 ...
 
                 card.innerHTML = `
                     ${isExpired ? '<div class="expired-badge">已結束</div>' : ''}
