@@ -191,38 +191,61 @@
 
         .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
 
-        /* --- 站所清單與頁尾 --- */
+/* --- 站所清單與頁尾 --- */
         .station-footer-grid {
-            background: #fdfdfd; padding: 30px 40px; border-top: 1px solid #eee;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+            background: #fdfdfd; 
+            padding: 30px 40px; 
+            border-top: 2px solid #f1f2f6; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 25px; /* 🌟 關鍵：改成 25px 完全對齊上方卡片間距 */
+            width: 100%; 
+            box-sizing: border-box;
         }
-        .station-item { font-size: 12px; line-height: 1.6; color: #444; }
-        .station-item b { color: var(--hcgn-green); font-size: 14px; display: block; margin-bottom: 2px; }
+        .station-item { font-size: 13px; line-height: 1.6; color: #555; }
+        .station-item b { color: var(--hcgn-green); font-size: 15px; display: block; margin-bottom: 3px; }
 
         .poster-footer {
-            padding: 30px 40px; border-top: 1px dashed #ddd; background: #fafafa;
+            padding: 30px 40px; 
+            background: #fafafa;
             color: #7f8c8d; font-size: 13px; line-height: 1.6;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            width: 100%; box-sizing: border-box;
         }
 
-        .footer-left { display: flex; flex-direction: column; gap: 4px; }
+        .footer-left { display: flex; flex-direction: column; gap: 4px; padding-bottom: 5px; }
         
         .footer-right { 
-            display: flex; align-items: center; gap: 15px; text-align: right; 
-        }
-        
-        .footer-admin-block {
-            display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+            display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px;
         }
 
-        .admin-btn {
-            background: #e2e8f0; color: #475569; border: none; padding: 6px 12px; 
-            border-radius: 4px; cursor: pointer; font-size: 12px; margin-bottom: 5px; font-weight: bold;
+        /* 🌟 V6.0: 常駐版 QR Code 區塊設計 */
+        .qr-section {
+            display: flex; flex-direction: column; align-items: center; 
+            background: white; padding: 10px 15px; border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
         }
+        .qr-title {
+            font-size: 15px; font-weight: 900; color: var(--hcgn-green); margin-bottom: 6px; letter-spacing: 1px;
+        }
+        .permanent-qr {
+            width: 90px; height: 90px; display: block;
+        }
+
+        .footer-admin-block { width: 100%; display: flex; flex-direction: column; align-items: flex-end; }
+
+        .admin-btn {
+            background: #e2e8f0; color: #475569; border: none; padding: 8px 15px; 
+            border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; 
+            width: 100%; box-sizing: border-box; margin-bottom: 4px; transition: 0.2s;
+        }
+        .admin-btn:hover { background: #cbd5e1; }
         
         .maintainer-text { font-size: 12px; }
 
-        .download-qr { display: none; width: 75px; height: 75px; border-radius: 4px; }
+        /* 下載海報時，隱藏管理員按鈕與維護文字，只留下 QR Code 區塊 */
+        #poster-area.download-mode .admin-btn { display: none; }
+        #poster-area.download-mode .maintainer-text { display: none; }
         
         #poster-area.download-mode .download-qr { display: block; }
         #poster-area.download-mode .admin-btn { display: none; }
@@ -243,10 +266,10 @@
             .month-circle { position: relative; top: auto; right: auto; width: 70px; height: 70px; margin-top: 10px;}
             .month-circle-inner .month { font-size: 28px; }
             .legend-container { padding: 0 20px; }
-            .event-grid { grid-template-columns: 1fr; padding: 20px; } /* 🌟 確保這裡有加這行 */
-            .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; }
-            .poster-footer { flex-direction: column; text-align: center; gap: 15px; padding: 20px; }
-            .footer-right { flex-direction: column; align-items: center; text-align: center; }
+            .event-grid { grid-template-columns: 1fr; padding: 20px; } 
+            .station-footer-grid { grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; } 
+            .poster-footer { flex-direction: column; align-items: center; text-align: center; gap: 20px; padding: 20px; }
+            .footer-right { align-items: center; width: 100%; }
             .footer-admin-block { align-items: center; }
         }
         
@@ -302,21 +325,24 @@
 
     <div class="poster-footer">
         <div class="footer-left">
-            <div style="font-weight: bold; font-size: 14px;">版權所有 主婦聯盟生活消費合作社 新竹分社</div>
+            <div style="font-weight: bold; font-size: 14px; color: #555;">版權所有 主婦聯盟生活消費合作社 新竹分社</div>
             <div id="updateDateDisplay">更新日期：</div>
         </div>
         
         <div class="footer-right">
+            <div class="qr-section">
+                <div class="qr-title">▼ 請掃我報名 ▼</div>
+                <img src="qrcode.png" alt="報名QR Code" class="permanent-qr">
+            </div>
+            
             <div class="footer-admin-block">
                 <button class="admin-btn" onclick="window.location.href='form.html'">
                     ✎ 進入活動填報系統
                 </button>
                 <div class="maintainer-text">📧 系統維護：dark.celler@gmail.com</div>
             </div>
-            <img src="qr_placeholder.png" alt="網頁QR Code" class="download-qr">
         </div>
     </div>
-</div>
 
 <div class="controls">
     <button class="btn-download" onclick="downloadPoster()">📥 下載本月活動海報 (PNG)</button>
