@@ -83,6 +83,20 @@
             text-align: center;
         }
 
+        /* 🌟 V6.0: 新增副標題 (歡迎非社員參加) 的標籤樣式 */
+        .sub-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--hcgn-green);
+            background-color: #e8f5e9;
+            padding: 6px 18px;
+            border-radius: 20px;
+            margin-top: -10px; /* 讓它稍微靠近主標題一點 */
+            letter-spacing: 1px;
+            border: 1px solid #c8e6c9;
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.1);
+        }
+
         .month-circle {
             position: absolute;
             top: 40px;
@@ -241,9 +255,11 @@
 
 <div id="poster-area">
     <div class="poster-header">
+       <div class="poster-header">
         <div class="header-left">
             <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
             <h2 class="main-title">新竹分社活動月曆</h2>
+            <div class="sub-title">✨ 歡迎非社員參加 ✨</div> 
         </div>
         
         <div class="month-circle" id="monthCircleBox">
