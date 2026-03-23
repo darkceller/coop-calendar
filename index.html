@@ -143,8 +143,10 @@
 
         /* --- 卡片網格區 --- */
         .event-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 25px; padding: 30px 40px; justify-content: center;
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* 🌟 關鍵修改：強制分為 3 等分 */
+            gap: 25px; 
+            padding: 30px 40px; 
         }
 
         #poster-area.download-mode .event-grid {
@@ -241,8 +243,8 @@
             .month-circle { position: relative; top: auto; right: auto; width: 70px; height: 70px; margin-top: 10px;}
             .month-circle-inner .month { font-size: 28px; }
             .legend-container { padding: 0 20px; }
-            .event-grid { padding: 20px; }
-            .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; } 
+            .event-grid { grid-template-columns: 1fr; padding: 20px; } /* 🌟 確保這裡有加這行 */
+            .station-footer-grid { grid-template-columns: 1fr 1fr; padding: 20px; }
             .poster-footer { flex-direction: column; text-align: center; gap: 15px; padding: 20px; }
             .footer-right { flex-direction: column; align-items: center; text-align: center; }
             .footer-admin-block { align-items: center; }
