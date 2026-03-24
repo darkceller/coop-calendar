@@ -41,14 +41,28 @@
             position: relative;
         }
 
-        /* 下載時的修正 */
+/* 🌟 針對 A3 紙本列印格式的強制設定 (寬高比 1:1.414) */
         #poster-area.download-mode {
             margin: 0 !important;
             border-radius: 0 !important;
             box-shadow: none !important;
-            max-width: 1000px !important;
-            width: 1000px !important;
+            max-width: 1190px !important;  /* A3 基準寬度 */
+            width: 1190px !important;
+            min-height: 1683px !important; /* A3 基準高度 (1190 * 1.414) */
+            display: flex !important;
+            flex-direction: column !important;
         }
+
+        /* 🌟 讓活動卡片區塊自動撐開，把頁尾完美推到 A3 紙張的最底端 */
+        #poster-area.download-mode .event-grid {
+            flex-grow: 1;
+            align-content: start;
+        }
+        
+        /* 下載海報時，隱藏管理員按鈕與維護文字 */
+        #poster-area.download-mode .admin-btn { display: none; }
+        #poster-area.download-mode .maintainer-text { display: none; }
+        #poster-area.download-mode .download-qr { display: block; }
 
         /* --- 頂部排版：加寬並置中 --- */
         .poster-header { 
@@ -482,7 +496,7 @@ let validCount = 0;
             document.getElementById('loading').innerText = "❌ 載入失敗，請確認試算表名稱與權限。";
         });
 
-    function downloadPoster() {
+  function downloadPoster() {
         const poster = document.getElementById('poster-area');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "⏳ 正在製作高畫質海報...";
@@ -492,10 +506,10 @@ let validCount = 0;
         
         setTimeout(() => {
             html2canvas(poster, { 
-                scale: 2, 
+                scale: 3, // 🌟 關鍵升級：將 scale 提升至 3，產出約 300dpi 印刷級畫質
                 useCORS: true, 
                 backgroundColor: "#ffffff", 
-                windowWidth: 1000 
+                windowWidth: 1190 // 🌟 配合上方的 A3 寬度
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
