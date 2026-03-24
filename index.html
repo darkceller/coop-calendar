@@ -293,7 +293,6 @@
 <body>
 
 <div id="poster-area">
-    <div class="poster-header">
        <div class="poster-header">
         <div class="header-left">
             <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
@@ -502,12 +501,12 @@ let validCount = 0;
         
         poster.classList.add('download-mode');
         
-        setTimeout(() => {
+       setTimeout(() => {
             html2canvas(poster, { 
-                scale: 3, // 🌟 關鍵升級：將 scale 提升至 3，產出約 300dpi 印刷級畫質
+                scale: 3, 
                 useCORS: true, 
                 backgroundColor: "#ffffff", 
-                windowWidth: 1190 // 🌟 配合上方的 A3 寬度
+                windowWidth: 1190 
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
@@ -515,7 +514,8 @@ let validCount = 0;
                 link.click();
                 
                 poster.classList.remove('download-mode');
-                btn.innerText = "📥 下載本月活動海報 (PNG)";
+                // 🌟 把下面這行的文字改成您要的簡短版：
+                btn.innerText = "📥 下載海報 (PNG)"; 
                 btn.disabled = false;
             });
         }, 100);
