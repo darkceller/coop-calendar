@@ -41,7 +41,7 @@
             position: relative;
         }
 
-/* 🌟 針對 A3 紙本列印格式的強制設定 (寬高比 1:1.414) */
+        /* 🌟 針對 A3 紙本列印格式的強制設定 (寬高比 1:1.414) */
         #poster-area.download-mode {
             margin: 0 !important;
             border-radius: 0 !important;
@@ -59,16 +59,16 @@
             align-content: start;
         }
         
-        /* 下載海報時，隱藏管理員按鈕與維護文字 */
+        /* 下載海報時，隱藏不必要的元素 */
         #poster-area.download-mode .admin-btn { display: none; }
         #poster-area.download-mode .maintainer-text { display: none; }
         #poster-area.download-mode .download-qr { display: block; }
+        /* 🌟 隱藏月份導航列 */
+        #poster-area.download-mode .month-nav { display: none !important; }
 
         /* ==================================================== */
         /* 🌟 V8.0: 印刷專用精簡模式 (僅下載海報時生效) */
         /* ==================================================== */
-        
-        /* 1. 改為四欄排版，並縮小卡片間距以節省空間 */
         #poster-area.download-mode .event-grid {
             grid-template-columns: repeat(4, 1fr) !important;
             gap: 15px !important; 
@@ -76,50 +76,16 @@
             flex-grow: 1;
             align-content: start;
         }
-
-        /* 2. 隱藏活動簡介，讓卡片大幅變矮 */
-        #poster-area.download-mode .event-desc {
-            display: none !important;
-        }
-
-        /* 3. 縮小卡片內部留白與字體，適應四欄較窄的寬度 */
-        #poster-area.download-mode .card-content {
-            padding: 12px !important;
-            gap: 5px !important;
-        }
-        #poster-area.download-mode .event-title {
-            font-size: 15.5px !important;
-            min-height: 2.6em !important;
-            line-height: 1.3 !important;
-        }
-
-        /* 4. 縮小頂部 Banner 與標題區塊 (高度縮減約 40%) */
-        #poster-area.download-mode .poster-header {
-            padding: 25px 40px 5px 40px !important;
-        }
-        #poster-area.download-mode .header-left {
-            gap: 10px !important;
-        }
-        #poster-area.download-mode .header-left img {
-            max-width: 550px !important; /* 原本是 900px */
-        }
-        #poster-area.download-mode .main-title {
-            font-size: 26px !important;
-        }
-        #poster-area.download-mode .month-circle {
-            transform: scale(0.7); /* 縮小右上角月份徽章 */
-            transform-origin: top right;
-            top: 25px !important;
-        }
-
-        /* 5. 壓縮底部站所與頁尾的空間 */
-        #poster-area.download-mode .station-footer-grid {
-            padding: 15px 40px !important;
-            gap: 15px !important;
-        }
-        #poster-area.download-mode .poster-footer {
-            padding: 15px 40px !important;
-        }
+        #poster-area.download-mode .event-desc { display: none !important; }
+        #poster-area.download-mode .card-content { padding: 12px !important; gap: 5px !important; }
+        #poster-area.download-mode .event-title { font-size: 15.5px !important; min-height: 2.6em !important; line-height: 1.3 !important; }
+        #poster-area.download-mode .poster-header { padding: 25px 40px 5px 40px !important; }
+        #poster-area.download-mode .header-left { gap: 10px !important; }
+        #poster-area.download-mode .header-left img { max-width: 550px !important; }
+        #poster-area.download-mode .main-title { font-size: 26px !important; }
+        #poster-area.download-mode .month-circle { transform: scale(0.7); transform-origin: top right; top: 25px !important; }
+        #poster-area.download-mode .station-footer-grid { padding: 15px 40px !important; gap: 15px !important; }
+        #poster-area.download-mode .poster-footer { padding: 15px 40px !important; }
         /* ==================================================== */
 
         /* --- 頂部排版：加寬並置中 --- */
@@ -155,7 +121,6 @@
             text-align: center;
         }
 
-        /* 🌟 V6.0: 新增副標題 (歡迎非社員參加) 的標籤樣式 */
         .sub-title {
             font-size: 16px;
             font-weight: 900;
@@ -163,11 +128,30 @@
             background-color: #e8f5e9;
             padding: 6px 18px;
             border-radius: 20px;
-            margin-top: -10px; /* 讓它稍微靠近主標題一點 */
+            margin-top: -10px; 
             letter-spacing: 1px;
             border: 1px solid #c8e6c9;
             box-shadow: 0 2px 5px rgba(40, 167, 69, 0.1);
         }
+
+        /* 🌟 V9.0: 月份導航按鈕樣式 */
+        .month-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            background: #fdfdfd;
+            padding: 8px 25px;
+            border-radius: 50px;
+            border: 1px dashed #d1d8e0;
+        }
+        .nav-btn {
+            background: none; border: none; font-size: 15px; font-weight: bold; color: var(--hcgn-green);
+            cursor: pointer; padding: 5px 10px; transition: 0.2s; border-radius: 8px;
+        }
+        .nav-btn:hover { background: #e8f5e9; }
+        .nav-current { font-size: 16px; font-weight: 900; color: #2d3436; }
 
         .month-circle {
             position: absolute;
@@ -184,22 +168,10 @@
             box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
             z-index: 2;
         }
-        .month-circle-inner {
-            text-align: center;
-            line-height: 1.1;
-        }
-        .month-circle-inner .year {
-            font-size: 14px;
-            font-weight: normal;
-        }
-        .month-circle-inner .month {
-            font-size: 36px;
-            font-weight: 900;
-        }
-        .month-circle-inner .unit {
-            font-size: 14px;
-            font-weight: bold;
-        }
+        .month-circle-inner { text-align: center; line-height: 1.1; }
+        .month-circle-inner .year { font-size: 14px; font-weight: normal; }
+        .month-circle-inner .month { font-size: 36px; font-weight: 900; }
+        .month-circle-inner .unit { font-size: 14px; font-weight: bold; }
 
         /* 圖例 (Legend) 置中對齊 */
         .legend-container { 
@@ -209,14 +181,13 @@
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-        /* 🌟 V5.0: 新增社務會議黑色樣式定義 */
         .dot-社務會議 { background-color: var(--color-community-meeting); }
         .tag-社務會議 { background-color: var(--color-community-meeting); color: white; }
 
         /* --- 卡片網格區 --- */
         .event-grid { 
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* 🌟 關鍵修改：強制分為 3 等分 */
+            grid-template-columns: repeat(3, 1fr); 
             gap: 25px; 
             padding: 30px 40px; 
         }
@@ -227,7 +198,6 @@
             width: 100%; box-sizing: border-box; position: relative; transition: all 0.3s ease; 
         }
         
-        /* 🌟 如果卡片有連結，設定 hover 效果 */
         .clickable-card { cursor: pointer; }
         .clickable-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(40, 167, 69, 0.15); border-color: var(--hcgn-green); }
 
@@ -241,92 +211,55 @@
 
         .card-top-bar { height: 6px; width: 100%; }
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px;}
-        
         .date-tag { font-size: 16px; font-weight: 900; color: var(--hcgn-green); display: block; }
-        
         .tag-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 5px; }
         .type-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; white-space: nowrap; }
         .station-badge { background: #f1f2f6; color: #57606f; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-        
-        /* 🌟 報名標籤的樣式 */
         .link-badge { background: #e3f2fd; color: #1565c0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 800; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
-        
         .event-title { font-size: 18px; font-weight: 800; color: #000; line-height: 1.4; margin: 4px 0; min-height: 2.8em;}
-        
         .info-row { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #444; }
         .info-icon { width: 16px; text-align: center; color: var(--hcgn-green); }
-
         .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
 
-/* --- 站所清單與頁尾 --- */
+        /* --- 站所清單與頁尾 --- */
         .station-footer-grid {
-            background: #fdfdfd; 
-            padding: 30px 40px; 
-            border-top: 2px solid #f1f2f6; 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 25px; /* 🌟 關鍵：改成 25px 完全對齊上方卡片間距 */
-            width: 100%; 
-            box-sizing: border-box;
+            background: #fdfdfd; padding: 30px 40px; border-top: 2px solid #f1f2f6; 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; 
+            width: 100%; box-sizing: border-box;
         }
         .station-item { font-size: 13px; line-height: 1.6; color: #555; }
         .station-item b { color: var(--hcgn-green); font-size: 15px; display: block; margin-bottom: 3px; }
 
         .poster-footer {
-            padding: 30px 40px; 
-            background: #fafafa;
-            color: #7f8c8d; font-size: 13px; line-height: 1.6;
-            display: flex; justify-content: space-between; align-items: flex-end;
-            width: 100%; box-sizing: border-box;
+            padding: 30px 40px; background: #fafafa; color: #7f8c8d; font-size: 13px; line-height: 1.6;
+            display: flex; justify-content: space-between; align-items: flex-end; width: 100%; box-sizing: border-box;
         }
 
         .footer-left { display: flex; flex-direction: column; gap: 4px; padding-bottom: 5px; }
-        
-        .footer-right { 
-            display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px;
-        }
+        .footer-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px; }
 
-        /* 🌟 V6.0: 常駐版 QR Code 區塊設計 */
         .qr-section {
-            display: flex; flex-direction: column; align-items: center; 
-            background: white; padding: 10px 15px; border-radius: 12px; 
+            display: flex; flex-direction: column; align-items: center; background: white; padding: 10px 15px; border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
         }
-        .qr-title {
-            font-size: 15px; font-weight: 900; color: var(--hcgn-green); margin-bottom: 6px; letter-spacing: 1px;
-        }
-        .permanent-qr {
-            width: 90px; height: 90px; display: block;
-        }
+        .qr-title { font-size: 15px; font-weight: 900; color: var(--hcgn-green); margin-bottom: 6px; letter-spacing: 1px; }
+        .permanent-qr { width: 90px; height: 90px; display: block; }
 
         .footer-admin-block { width: 100%; display: flex; flex-direction: column; align-items: flex-end; }
-
         .admin-btn {
             background: #e2e8f0; color: #475569; border: none; padding: 8px 15px; 
             border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; 
             width: 100%; box-sizing: border-box; margin-bottom: 4px; transition: 0.2s;
         }
         .admin-btn:hover { background: #cbd5e1; }
-        
         .maintainer-text { font-size: 12px; }
-
-        /* 下載海報時，隱藏管理員按鈕與維護文字，只留下 QR Code 區塊 */
-        #poster-area.download-mode .admin-btn { display: none; }
-        #poster-area.download-mode .maintainer-text { display: none; }
-        
-        #poster-area.download-mode .download-qr { display: block; }
-        #poster-area.download-mode .admin-btn { display: none; }
-        #poster-area.download-mode .footer-admin-block { margin-bottom: 0; }
 
         .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; }
         .btn-download {
-            background-color: var(--hcgn-green); color: white; border: none;
-            padding: 14px 30px; border-radius: 50px; cursor: pointer;
-            font-size: 16px; font-weight: bold; width: 100%; max-width: 300px;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
+            background-color: var(--hcgn-green); color: white; border: none; padding: 14px 30px; border-radius: 50px; cursor: pointer;
+            font-size: 16px; font-weight: bold; width: 100%; max-width: 300px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
         }
 
-        /* 手機版排版修正 */
         @media (max-width: 767px) { 
             .poster-header { padding: 30px 20px 10px 20px; }
             .header-left img { width: 100%; max-width: none; }
@@ -346,11 +279,17 @@
 <body>
 
 <div id="poster-area">
-       <div class="poster-header">
+    <div class="poster-header">
         <div class="header-left">
             <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
             <h2 class="main-title">新竹分社活動月曆</h2>
             <div class="sub-title">✨ 歡迎非社員參加 ✨</div> 
+            
+            <div class="month-nav">
+                <button class="nav-btn" onclick="changeMonth(-1)">◀ 上個月</button>
+                <span class="nav-current" id="navDisplay">載入中...</span>
+                <button class="nav-btn" onclick="changeMonth(1)">下個月 ▶</button>
+            </div>
         </div>
         
         <div class="month-circle" id="monthCircleBox">
@@ -408,7 +347,10 @@
                 <div class="maintainer-text">📧 系統維護：dark.celler@gmail.com</div>
             </div>
         </div>
-    </div></div><div class="controls">
+    </div>
+</div>
+
+<div class="controls">
     <button class="btn-download" onclick="downloadPoster()">📥 下載海報 (PNG)</button>
 </div>
 
@@ -416,6 +358,10 @@
     const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
     const today = new Date();
     today.setHours(0,0,0,0);
+    
+    // 全域變數追蹤目前觀看的年月
+    let currentViewYear;
+    let currentViewMonth;
 
     function getTypeStyles(type) {
         if (!type) return 'var(--color-default)';
@@ -426,127 +372,169 @@
         if (t.includes("養生") || t.includes("樂活")) return 'var(--color-health)';
         if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)';
         if (t.includes("議題講座")) return 'var(--color-meeting)';
-        
-        /* 🌟 V5.0: 社務會議獨立定義灰色 */
         if (t.includes("社務會議")) return 'var(--color-community-meeting)';
-        
         return 'var(--color-default)';
     }
 
-    function initDates() {
+    // 🌟 啟動初始化邏輯
+    function initApp() {
+        // 設定底部的更新日期
         document.getElementById('updateDateDisplay').innerText = `更新日期：${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        const targetDate = new Date();
-        targetDate.setMonth(today.getMonth() + 1); 
-        const targetYear = targetDate.getFullYear();
-        const targetMonth = targetDate.getMonth() + 1;
         
-        document.getElementById('circleYear').innerText = targetYear;
-        document.getElementById('circleMonth').innerText = targetMonth;
+        // 智慧判斷預設月份 (25號為分界點)
+        let targetDate = new Date();
+        if (new Date().getDate() >= 25) {
+            targetDate.setMonth(targetDate.getMonth() + 1);
+        }
         
-        return encodeURIComponent((targetYear - 2000) + "年" + targetMonth + "月");
+        currentViewYear = targetDate.getFullYear();
+        currentViewMonth = targetDate.getMonth() + 1;
+        
+        // 載入該月資料
+        loadEvents(currentViewYear, currentViewMonth);
     }
 
-    const sheetName = initDates();
-    const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&headers=1`;
+    // 🌟 按鈕切換月份觸發
+    function changeMonth(offset) {
+        // 使用 Date 物件自動處理跨年份的增減
+        let d = new Date(currentViewYear, currentViewMonth - 1 + offset, 1);
+        currentViewYear = d.getFullYear();
+        currentViewMonth = d.getMonth() + 1;
+        loadEvents(currentViewYear, currentViewMonth);
+    }
 
-    fetch(url)
-        .then(res => res.text())
-        .then(data => {
-            const jsonStr = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
-            let rows = JSON.parse(jsonStr).table.rows;
-            const grid = document.getElementById('eventGrid');
-            document.getElementById('loading').style.display = 'none';
+    // 🌟 載入與渲染資料的核心函式
+    function loadEvents(year, month) {
+        // 更新 UI 介面顯示
+        document.getElementById('circleYear').innerText = year;
+        document.getElementById('circleMonth').innerText = month;
+        document.getElementById('navDisplay').innerText = `${year}年 ${month}月`;
 
-            if (!rows || rows.length === 0) {
-                document.getElementById('no-data').style.display = 'block';
-                return;
-            }
+        // 組建分頁名稱 (嚴格對齊自動產生的格式，例如 "26年4月")
+        const sheetName = (year - 2000) + "年" + month + "月";
+        const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
 
-            rows = rows.filter(row => row.c && row.c[7] && row.c[7].v && row.c[7].v !== "活動名稱");
-            rows.sort((a, b) => {
-                const valA = (a.c[4] ? a.c[4].v : 0).toString();
-                const valB = (b.c[4] ? b.c[4].v : 0).toString();
-                return valA.localeCompare(valB);
-            });
+        const grid = document.getElementById('eventGrid');
+        const loading = document.getElementById('loading');
+        const noData = document.getElementById('no-data');
 
-let validCount = 0;
-            rows.forEach((row) => {
-                const cols = row.c;
-                const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? (cols[idx].f || cols[idx].v.toString()).trim() : "";
-                const titleVal = getVal(7);
-                
-                // 🌟 修正 1：備註欄在 K 欄，所以索引值改回 10
-                const statusVal = getVal(10); 
-                if (statusVal.includes("作廢")) return;
+        // 清空舊資料並顯示 Loading
+        grid.innerHTML = "";
+        noData.style.display = "none";
+        loading.style.display = "block";
+        loading.innerText = "✨ 正在整理活動資訊...";
 
-                const dateRaw = getVal(4); 
-                let displayDate = dateRaw;
-                let isExpired = false;
-
-                if(dateRaw.length === 8) {
-                    const y = dateRaw.substring(0,4);
-                    const m = dateRaw.substring(4,6);
-                    const d = dateRaw.substring(6,8);
-                    const eventDate = new Date(y, m-1, d);
-                    
-                    const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
-                    const dayOfWeek = weekDays[eventDate.getDay()];
-                    
-                    displayDate = `${y} / ${m} / ${d} (${dayOfWeek})`;
-                    if(eventDate < today) isExpired = true;
+        fetch(url)
+            .then(res => res.text())
+            .then(data => {
+                // 如果回傳包含 INVALID_QUERY，代表該試算表分頁還不存在
+                if (data.includes("error") && data.includes("INVALID_QUERY")) {
+                    throw new Error("Sheet not found");
                 }
 
-                validCount++;
-                const type = getVal(6);
-                const color = getTypeStyles(type);
+                const jsonStr = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
+                const parsedData = JSON.parse(jsonStr);
                 
-                // 🌟 修正 2：報名連結在 L 欄，所以索引值改回 11
-                const linkUrl = getVal(11); 
-
-                const card = document.createElement('div');
-                card.className = `event-card ${isExpired ? 'card-expired' : ''} ${linkUrl && !isExpired ? 'clickable-card' : ''}`;
-                
-                if (linkUrl && !isExpired) {
-                    card.onclick = () => window.open(linkUrl, '_blank');
-                    card.title = "點擊前往報名頁面";
+                if(parsedData.status === "error") {
+                     throw new Error("Sheet not found");
                 }
 
-                // ... 下方的 card.innerHTML 不變 ...
+                let rows = parsedData.table.rows;
+                loading.style.display = 'none';
 
-                card.innerHTML = `
-                    ${isExpired ? '<div class="expired-badge">已結束</div>' : ''}
-                    <div class="card-top-bar" style="background:${color}"></div>
-                    <div class="card-content">
-                        <span class="date-tag">${displayDate}</span>
-                        <div class="tag-row">
-                            <span class="type-badge" style="background:${color}">${type}</span>
-                            <span class="station-badge">📍 ${getVal(3)}站</span>
-                            ${linkUrl && !isExpired ? '<span class="link-badge">🔗 點擊報名</span>' : ''}
-                        </div>
-                        <div class="event-title">${titleVal}</div>
+                if (!rows || rows.length === 0) {
+                    noData.innerText = "📭 本月份目前尚無活動資料。";
+                    noData.style.display = 'block';
+                    return;
+                }
+
+                rows = rows.filter(row => row.c && row.c[7] && row.c[7].v && row.c[7].v !== "活動名稱");
+                rows.sort((a, b) => {
+                    const valA = (a.c[4] ? a.c[4].v : 0).toString();
+                    const valB = (b.c[4] ? b.c[4].v : 0).toString();
+                    return valA.localeCompare(valB);
+                });
+
+                let validCount = 0;
+                rows.forEach((row) => {
+                    const cols = row.c;
+                    const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? (cols[idx].f || cols[idx].v.toString()).trim() : "";
+                    const titleVal = getVal(7);
+                    
+                    const statusVal = getVal(10); 
+                    if (statusVal.includes("作廢")) return;
+
+                    const dateRaw = getVal(4); 
+                    let displayDate = dateRaw;
+                    let isExpired = false;
+
+                    if(dateRaw.length === 8) {
+                        const y = dateRaw.substring(0,4);
+                        const m = dateRaw.substring(4,6);
+                        const d = dateRaw.substring(6,8);
+                        const eventDate = new Date(y, m-1, d);
                         
-                        <div class="info-row">
-                            <span class="info-icon">⏱</span>
-                            <span>${getVal(5)}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-icon">👤</span>
-                            <span>${getVal(8) || "無"}</span>
-                        </div>
+                        const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+                        const dayOfWeek = weekDays[eventDate.getDay()];
                         
-                        ${getVal(9) ? `<div class="event-desc">${getVal(9)}</div>` : ''}
-                    </div>
-                `;
-                grid.appendChild(card);
+                        displayDate = `${y} / ${m} / ${d} (${dayOfWeek})`;
+                        if(eventDate < today) isExpired = true;
+                    }
+
+                    validCount++;
+                    const type = getVal(6);
+                    const color = getTypeStyles(type);
+                    const linkUrl = getVal(11); 
+
+                    const card = document.createElement('div');
+                    card.className = `event-card ${isExpired ? 'card-expired' : ''} ${linkUrl && !isExpired ? 'clickable-card' : ''}`;
+                    
+                    if (linkUrl && !isExpired) {
+                        card.onclick = () => window.open(linkUrl, '_blank');
+                        card.title = "點擊前往報名頁面";
+                    }
+
+                    card.innerHTML = `
+                        ${isExpired ? '<div class="expired-badge">已結束</div>' : ''}
+                        <div class="card-top-bar" style="background:${color}"></div>
+                        <div class="card-content">
+                            <span class="date-tag">${displayDate}</span>
+                            <div class="tag-row">
+                                <span class="type-badge" style="background:${color}">${type}</span>
+                                <span class="station-badge">📍 ${getVal(3)}站</span>
+                                ${linkUrl && !isExpired ? '<span class="link-badge">🔗 點擊報名</span>' : ''}
+                            </div>
+                            <div class="event-title">${titleVal}</div>
+                            
+                            <div class="info-row">
+                                <span class="info-icon">⏱</span>
+                                <span>${getVal(5)}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-icon">👤</span>
+                                <span>${getVal(8) || "無"}</span>
+                            </div>
+                            
+                            ${getVal(9) ? `<div class="event-desc">${getVal(9)}</div>` : ''}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                if (validCount === 0) {
+                    noData.innerText = "📭 本月份目前尚無活動資料。";
+                    noData.style.display = 'block';
+                }
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                loading.style.display = 'none';
+                // 🌟 防呆：分頁還沒被建立時，溫馨提示
+                noData.innerText = `📭 資料籌備中，請稍候再試。（查無 ${sheetName} 紀錄）`;
+                noData.style.display = 'block';
             });
-            if (validCount === 0) document.getElementById('no-data').style.display = 'block';
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            document.getElementById('loading').innerText = "❌ 載入失敗，請確認試算表名稱與權限。";
-        });
+    }
 
-  function downloadPoster() {
+    function downloadPoster() {
         const poster = document.getElementById('poster-area');
         const btn = document.querySelector('.btn-download');
         btn.innerText = "⏳ 正在製作高畫質海報...";
@@ -554,7 +542,7 @@ let validCount = 0;
         
         poster.classList.add('download-mode');
         
-       setTimeout(() => {
+        setTimeout(() => {
             html2canvas(poster, { 
                 scale: 3, 
                 useCORS: true, 
@@ -562,17 +550,20 @@ let validCount = 0;
                 windowWidth: 1190 
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `新竹分社活動月曆-${new Date().toLocaleDateString()}.png`;
+                // 下載的檔名會動態抓取畫面上選擇的年月
+                link.download = `新竹分社活動月曆-${currentViewYear}年${currentViewMonth}月.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
                 poster.classList.remove('download-mode');
-                // 🌟 把下面這行的文字改成您要的簡短版：
                 btn.innerText = "📥 下載海報 (PNG)"; 
                 btn.disabled = false;
             });
         }, 100);
     }
+
+    // 啟動程式碼
+    initApp();
 </script>
 </body>
 </html>
