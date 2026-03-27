@@ -468,10 +468,17 @@
                     let displayDate = dateRaw;
                     let isExpired = false;
 
-                    if(dateRaw.length === 8) {
+                if(dateRaw.length === 8) {
                         const y = dateRaw.substring(0,4);
                         const m = dateRaw.substring(4,6);
                         const d = dateRaw.substring(6,8);
+                        
+                        // 🌟 核心防呆攔截：檢查這筆資料的實際年月，是否等於我們正在看的年月
+                        // 如果 Google 亂塞其他月份的資料，就在這裡直接丟棄！
+                        if (parseInt(y, 10) !== year || parseInt(m, 10) !== month) {
+                            return; 
+                        }
+
                         const eventDate = new Date(y, m-1, d);
                         
                         const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
