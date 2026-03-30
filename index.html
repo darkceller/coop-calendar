@@ -21,13 +21,12 @@
             --color-outdoor: #27ae60;   
             --color-meeting: #6c5ce7;   
             --color-default: #636e72;
-            
-            /* 🌟 V5.0: 新增社務會議黑色 */
             --color-community-meeting: #000000;
         }
         
         body { 
-            font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif; 
+            /* 🌟 優化字型：加入更圓潤易讀的字體優先順序 */
+            font-family: "Noto Sans TC", "PingFang TC", "LiHei Pro", "Microsoft JhengHei", sans-serif; 
             background-color: var(--bg-color); 
             margin: 0; 
             padding: 20px 10px; 
@@ -41,173 +40,79 @@
             position: relative;
         }
 
-        /* 🌟 針對 A3 紙本列印格式的強制設定 (寬高比 1:1.414) */
         #poster-area.download-mode {
-            margin: 0 !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            max-width: 1190px !important;  /* A3 基準寬度 */
-            width: 1190px !important;
-            min-height: 1683px !important; /* A3 基準高度 (1190 * 1.414) */
-            display: flex !important;
-            flex-direction: column !important;
+            margin: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+            max-width: 1190px !important; width: 1190px !important; min-height: 1683px !important; 
+            display: flex !important; flex-direction: column !important;
         }
 
-        /* 🌟 讓活動卡片區塊自動撐開，把頁尾完美推到 A3 紙張的最底端 */
-        #poster-area.download-mode .event-grid {
-            flex-grow: 1;
-            align-content: start;
-        }
-        
-        /* 下載海報時，隱藏不必要的元素 */
+        #poster-area.download-mode .event-grid { flex-grow: 1; align-content: start; }
         #poster-area.download-mode .admin-btn { display: none; }
         #poster-area.download-mode .maintainer-text { display: none; }
         #poster-area.download-mode .download-qr { display: block; }
-        /* 🌟 隱藏月份導航列 */
         #poster-area.download-mode .month-nav { display: none !important; }
 
         /* ==================================================== */
-        /* 🌟 V8.0: 印刷專用精簡模式 (僅下載海報時生效) */
+        /* 🌟 V10.0: 分區列印模式 (卡片減半，退回3欄以獲得超大字體) */
         /* ==================================================== */
         #poster-area.download-mode .event-grid {
-            grid-template-columns: repeat(4, 1fr) !important;
-            gap: 15px !important; 
-            padding: 15px 40px !important;
-            flex-grow: 1;
-            align-content: start;
+            grid-template-columns: repeat(3, 1fr) !important; /* 分區後空間足夠，使用3欄超大卡片 */
+            gap: 25px !important; 
+            padding: 20px 40px !important;
+            flex-grow: 1; align-content: start;
         }
         #poster-area.download-mode .event-desc { display: none !important; }
-        #poster-area.download-mode .card-content { padding: 12px !important; gap: 5px !important; }
-        #poster-area.download-mode .event-title { font-size: 15.5px !important; min-height: 2.6em !important; line-height: 1.3 !important; }
-        #poster-area.download-mode .poster-header { padding: 25px 40px 5px 40px !important; }
-        #poster-area.download-mode .header-left { gap: 10px !important; }
-        #poster-area.download-mode .header-left img { max-width: 550px !important; }
-        #poster-area.download-mode .main-title { font-size: 26px !important; }
-        #poster-area.download-mode .month-circle { transform: scale(0.7); transform-origin: top right; top: 25px !important; }
-        #poster-area.download-mode .station-footer-grid { padding: 15px 40px !important; gap: 15px !important; }
-        #poster-area.download-mode .poster-footer { padding: 15px 40px !important; }
+        #poster-area.download-mode .card-content { padding: 18px !important; gap: 8px !important; }
+        #poster-area.download-mode .event-title { font-size: 20px !important; min-height: 2.6em !important; line-height: 1.3 !important; }
+        #poster-area.download-mode .info-row { font-size: 16px !important; }
+        #poster-area.download-mode .poster-header { padding: 30px 40px 10px 40px !important; }
+        #poster-area.download-mode .header-left { gap: 15px !important; }
+        #poster-area.download-mode .header-left img { max-width: 600px !important; }
+        #poster-area.download-mode .main-title { font-size: 32px !important; }
+        
+        #poster-area.download-mode .station-footer-grid { padding: 20px 40px !important; gap: 20px !important; }
+        #poster-area.download-mode .poster-footer { padding: 20px 40px !important; }
+
+        /* 🌟 分區隱藏邏輯：動態過濾不屬於該區的資料 */
+        #poster-area.download-taoyuan .event-card[data-region="hsinchu"] { display: none !important; }
+        #poster-area.download-taoyuan .region-hsinchu { display: none !important; }
+        #poster-area.download-hsinchu .event-card[data-region="taoyuan"] { display: none !important; }
+        #poster-area.download-hsinchu .region-taoyuan { display: none !important; }
         /* ==================================================== */
 
-        /* --- 頂部排版：加寬並置中 --- */
-        .poster-header { 
-            position: relative; 
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-            padding: 40px 40px 15px 40px;
-        }
-
-        .header-left {
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-            gap: 20px; 
-            width: 100%;
-        }
-        
-        .header-left img {
-            height: auto; 
-            width: 100%; 
-            max-width: 900px; 
-            display: block;
-        }
-
-        .main-title { 
-            font-size: 32px; 
-            font-weight: 900; 
-            color: var(--text-main); 
-            margin: 0; 
-            line-height: 1.2; 
-            text-align: center;
-        }
-
+        .poster-header { position: relative; display: flex; flex-direction: column; align-items: center; padding: 40px 40px 15px 40px; }
+        .header-left { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+        .header-left img { height: auto; width: 100%; max-width: 900px; display: block; }
+        .main-title { font-size: 32px; font-weight: 900; color: var(--text-main); margin: 0; line-height: 1.2; text-align: center; }
         .sub-title {
-            font-size: 16px;
-            font-weight: 900;
-            color: var(--hcgn-green);
-            background-color: #e8f5e9;
-            padding: 6px 18px;
-            border-radius: 20px;
-            margin-top: -10px; 
-            letter-spacing: 1px;
-            border: 1px solid #c8e6c9;
-            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.1);
+            font-size: 16px; font-weight: 900; color: var(--hcgn-green); background-color: #e8f5e9;
+            padding: 6px 18px; border-radius: 20px; margin-top: -10px; letter-spacing: 1px;
+            border: 1px solid #c8e6c9; box-shadow: 0 2px 5px rgba(40, 167, 69, 0.1);
         }
 
-        /* 🌟 V9.0: 月份導航按鈕樣式 */
-        .month-nav {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-            background: #fdfdfd;
-            padding: 8px 25px;
-            border-radius: 50px;
-            border: 1px dashed #d1d8e0;
-        }
-        .nav-btn {
-            background: none; border: none; font-size: 15px; font-weight: bold; color: var(--hcgn-green);
-            cursor: pointer; padding: 5px 10px; transition: 0.2s; border-radius: 8px;
-        }
+        .month-nav { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 10px; background: #fdfdfd; padding: 8px 25px; border-radius: 50px; border: 1px dashed #d1d8e0; }
+        .nav-btn { background: none; border: none; font-size: 15px; font-weight: bold; color: var(--hcgn-green); cursor: pointer; padding: 5px 10px; transition: 0.2s; border-radius: 8px; }
         .nav-btn:hover { background: #e8f5e9; }
         .nav-current { font-size: 16px; font-weight: 900; color: #2d3436; }
 
-        .month-circle {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            background-color: var(--dark-green);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
-            z-index: 2;
-        }
+        .month-circle { position: absolute; top: 40px; right: 40px; width: 85px; height: 85px; border-radius: 50%; background-color: var(--dark-green); color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3); z-index: 2; }
         .month-circle-inner { text-align: center; line-height: 1.1; }
         .month-circle-inner .year { font-size: 14px; font-weight: normal; }
         .month-circle-inner .month { font-size: 36px; font-weight: 900; }
         .month-circle-inner .unit { font-size: 14px; font-weight: bold; }
 
-        /* 圖例 (Legend) 置中對齊 */
-        .legend-container { 
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; 
-            margin-top: 5px; padding: 0 40px; font-size: 13px; color: var(--text-sub);
-        }
+        .legend-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 5px; padding: 0 40px; font-size: 13px; color: var(--text-sub); }
         .legend-item { display: flex; align-items: center; gap: 4px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-
         .dot-社務會議 { background-color: var(--color-community-meeting); }
         .tag-社務會議 { background-color: var(--color-community-meeting); color: white; }
 
-        /* --- 卡片網格區 --- */
-        .event-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 25px; 
-            padding: 30px 40px; 
-        }
-
-        .event-card {
-            background: #fff; border: 1px solid #edf2f7; border-radius: 12px; overflow: hidden;
-            display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            width: 100%; box-sizing: border-box; position: relative; transition: all 0.3s ease; 
-        }
-        
+        .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 30px 40px; }
+        .event-card { background: #fff; border: 1px solid #edf2f7; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; position: relative; transition: all 0.3s ease; }
         .clickable-card { cursor: pointer; }
         .clickable-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(40, 167, 69, 0.15); border-color: var(--hcgn-green); }
-
         .card-expired { opacity: 0.5; filter: grayscale(0.6); pointer-events: none; }
-        .expired-badge {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
-            border: 3px solid #d63031; color: #d63031; padding: 5px 15px;
-            font-size: 24px; font-weight: 900; border-radius: 8px; z-index: 10;
-            background: rgba(255,255,255,0.8); pointer-events: none;
-        }
+        .expired-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); border: 3px solid #d63031; color: #d63031; padding: 5px 15px; font-size: 24px; font-weight: 900; border-radius: 8px; z-index: 10; background: rgba(255,255,255,0.8); pointer-events: none; }
 
         .card-top-bar { height: 6px; width: 100%; }
         .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px;}
@@ -221,44 +126,26 @@
         .info-icon { width: 16px; text-align: center; color: var(--hcgn-green); }
         .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
 
-        /* --- 站所清單與頁尾 --- */
-        .station-footer-grid {
-            background: #fdfdfd; padding: 30px 40px; border-top: 2px solid #f1f2f6; 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; 
-            width: 100%; box-sizing: border-box;
-        }
+        .station-footer-grid { background: #fdfdfd; padding: 30px 40px; border-top: 2px solid #f1f2f6; display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; width: 100%; box-sizing: border-box; }
         .station-item { font-size: 13px; line-height: 1.6; color: #555; }
         .station-item b { color: var(--hcgn-green); font-size: 15px; display: block; margin-bottom: 3px; }
 
-        .poster-footer {
-            padding: 30px 40px; background: #fafafa; color: #7f8c8d; font-size: 13px; line-height: 1.6;
-            display: flex; justify-content: space-between; align-items: flex-end; width: 100%; box-sizing: border-box;
-        }
-
+        .poster-footer { padding: 30px 40px; background: #fafafa; color: #7f8c8d; font-size: 13px; line-height: 1.6; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; box-sizing: border-box; }
         .footer-left { display: flex; flex-direction: column; gap: 4px; padding-bottom: 5px; }
         .footer-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px; }
-
-        .qr-section {
-            display: flex; flex-direction: column; align-items: center; background: white; padding: 10px 15px; border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
-        }
+        .qr-section { display: flex; flex-direction: column; align-items: center; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
         .qr-title { font-size: 15px; font-weight: 900; color: var(--hcgn-green); margin-bottom: 6px; letter-spacing: 1px; }
         .permanent-qr { width: 90px; height: 90px; display: block; }
 
         .footer-admin-block { width: 100%; display: flex; flex-direction: column; align-items: flex-end; }
-        .admin-btn {
-            background: #e2e8f0; color: #475569; border: none; padding: 8px 15px; 
-            border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; 
-            width: 100%; box-sizing: border-box; margin-bottom: 4px; transition: 0.2s;
-        }
+        .admin-btn { background: #e2e8f0; color: #475569; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; box-sizing: border-box; margin-bottom: 4px; transition: 0.2s; }
         .admin-btn:hover { background: #cbd5e1; }
         .maintainer-text { font-size: 12px; }
 
-        .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; }
-        .btn-download {
-            background-color: var(--hcgn-green); color: white; border: none; padding: 14px 30px; border-radius: 50px; cursor: pointer;
-            font-size: 16px; font-weight: bold; width: 100%; max-width: 300px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s;
-        }
+        /* 🌟 雙按鈕排版 */
+        .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;}
+        .btn-download { background-color: var(--hcgn-green); color: white; border: none; padding: 14px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; max-width: 250px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s; }
+        .btn-download.hsinchu-btn { background-color: var(--color-producer); box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3); }
 
         @media (max-width: 767px) { 
             .poster-header { padding: 30px 20px 10px 20px; }
@@ -282,7 +169,7 @@
     <div class="poster-header">
         <div class="header-left">
             <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
-            <h2 class="main-title">新竹分社活動月曆</h2>
+            <h2 class="main-title" id="mainTitle">新竹分社活動月曆</h2>
             <div class="sub-title">✨ 歡迎非社員參加 ✨</div> 
             
             <div class="month-nav">
@@ -317,15 +204,15 @@
     <div class="event-grid" id="eventGrid"></div>
 
     <div class="station-footer-grid">
-        <div class="station-item"><b>桃園站</b>桃園市三民路三段28-1號<br>03-333-6089</div>
-        <div class="station-item"><b>中壢站</b>桃園市中壢區廣州路220號<br>03-465-8105</div>
-        <div class="station-item"><b>國際站</b>桃園市國際路一段1126號<br>03-2206884</div>
-        <div class="station-item"><b>龍潭站</b>桃園市龍潭區龍華路245號<br>03-4792665</div>
-        <div class="station-item"><b>新竹站</b>新竹市東區南大路175號<br>03-561 6258</div>
-        <div class="station-item"><b>三葉站</b>新竹市東區三民路6號<br>03-533 3314</div>
-        <div class="station-item"><b>竹北站</b>竹北市六家五路一段318號<br>03-550 4190</div>
-        <div class="station-item"><b>縣府站</b>竹北市文信路221 號<br>03-558-4239</div>
-        <div class="station-item"><b>關新站</b>新竹市長春街81號<br>03-668-7065</div>
+        <div class="station-item region-taoyuan"><b>桃園站</b>桃園市三民路三段28-1號<br>03-333-6089</div>
+        <div class="station-item region-taoyuan"><b>中壢站</b>桃園市中壢區廣州路220號<br>03-465-8105</div>
+        <div class="station-item region-taoyuan"><b>國際站</b>桃園市國際路一段1126號<br>03-2206884</div>
+        <div class="station-item region-taoyuan"><b>龍潭站</b>桃園市龍潭區龍華路245號<br>03-4792665</div>
+        <div class="station-item region-hsinchu"><b>新竹站</b>新竹市東區南大路175號<br>03-561 6258</div>
+        <div class="station-item region-hsinchu"><b>三葉站</b>新竹市東區三民路6號<br>03-533 3314</div>
+        <div class="station-item region-hsinchu"><b>竹北站</b>竹北市六家五路一段318號<br>03-550 4190</div>
+        <div class="station-item region-hsinchu"><b>縣府站</b>竹北市文信路221 號<br>03-558-4239</div>
+        <div class="station-item region-hsinchu"><b>關新站</b>新竹市長春街81號<br>03-668-7065</div>
     </div>
 
     <div class="poster-footer">
@@ -351,7 +238,8 @@
 </div>
 
 <div class="controls">
-    <button class="btn-download" onclick="downloadPoster()">📥 下載海報 (PNG)</button>
+    <button class="btn-download" id="btn-taoyuan" onclick="downloadPoster('taoyuan')">📥 下載 桃園區海報</button>
+    <button class="btn-download hsinchu-btn" id="btn-hsinchu" onclick="downloadPoster('hsinchu')">📥 下載 新竹區海報</button>
 </div>
 
 <script>
@@ -359,7 +247,6 @@
     const today = new Date();
     today.setHours(0,0,0,0);
     
-    // 全域變數追蹤目前觀看的年月
     let currentViewYear;
     let currentViewMonth;
 
@@ -376,41 +263,27 @@
         return 'var(--color-default)';
     }
 
-    // 🌟 啟動初始化邏輯
     function initApp() {
-        // 設定底部的更新日期
         document.getElementById('updateDateDisplay').innerText = `更新日期：${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        
-        // 智慧判斷預設月份 (25號為分界點)
         let targetDate = new Date();
-        if (new Date().getDate() >= 25) {
-            targetDate.setMonth(targetDate.getMonth() + 1);
-        }
-        
+        if (new Date().getDate() >= 25) { targetDate.setMonth(targetDate.getMonth() + 1); }
         currentViewYear = targetDate.getFullYear();
         currentViewMonth = targetDate.getMonth() + 1;
-        
-        // 載入該月資料
         loadEvents(currentViewYear, currentViewMonth);
     }
 
-    // 🌟 按鈕切換月份觸發
     function changeMonth(offset) {
-        // 使用 Date 物件自動處理跨年份的增減
         let d = new Date(currentViewYear, currentViewMonth - 1 + offset, 1);
         currentViewYear = d.getFullYear();
         currentViewMonth = d.getMonth() + 1;
         loadEvents(currentViewYear, currentViewMonth);
     }
 
-    // 🌟 載入與渲染資料的核心函式
     function loadEvents(year, month) {
-        // 更新 UI 介面顯示
         document.getElementById('circleYear').innerText = year;
         document.getElementById('circleMonth').innerText = month;
         document.getElementById('navDisplay').innerText = `${year}年 ${month}月`;
 
-        // 組建分頁名稱 (嚴格對齊自動產生的格式，例如 "26年4月")
         const sheetName = (year - 2000) + "年" + month + "月";
         const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
 
@@ -418,34 +291,23 @@
         const loading = document.getElementById('loading');
         const noData = document.getElementById('no-data');
 
-        // 清空舊資料並顯示 Loading
-        grid.innerHTML = "";
-        noData.style.display = "none";
-        loading.style.display = "block";
+        grid.innerHTML = ""; noData.style.display = "none"; loading.style.display = "block";
         loading.innerText = "✨ 正在整理活動資訊...";
 
         fetch(url)
             .then(res => res.text())
             .then(data => {
-                // 如果回傳包含 INVALID_QUERY，代表該試算表分頁還不存在
-                if (data.includes("error") && data.includes("INVALID_QUERY")) {
-                    throw new Error("Sheet not found");
-                }
+                if (data.includes("error") && data.includes("INVALID_QUERY")) throw new Error("Sheet not found");
 
                 const jsonStr = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
                 const parsedData = JSON.parse(jsonStr);
-                
-                if(parsedData.status === "error") {
-                     throw new Error("Sheet not found");
-                }
+                if(parsedData.status === "error") throw new Error("Sheet not found");
 
                 let rows = parsedData.table.rows;
                 loading.style.display = 'none';
 
                 if (!rows || rows.length === 0) {
-                    noData.innerText = "📭 本月份目前尚無活動資料。";
-                    noData.style.display = 'block';
-                    return;
+                    noData.innerText = "📭 本月份目前尚無活動資料。"; noData.style.display = 'block'; return;
                 }
 
                 rows = rows.filter(row => row.c && row.c[7] && row.c[7].v && row.c[7].v !== "活動名稱");
@@ -468,19 +330,11 @@
                     let displayDate = dateRaw;
                     let isExpired = false;
 
-                if(dateRaw.length === 8) {
-                        const y = dateRaw.substring(0,4);
-                        const m = dateRaw.substring(4,6);
-                        const d = dateRaw.substring(6,8);
-                        
-                        // 🌟 核心防呆攔截：檢查這筆資料的實際年月，是否等於我們正在看的年月
-                        // 如果 Google 亂塞其他月份的資料，就在這裡直接丟棄！
-                        if (parseInt(y, 10) !== year || parseInt(m, 10) !== month) {
-                            return; 
-                        }
+                    if(dateRaw.length === 8) {
+                        const y = dateRaw.substring(0,4); const m = dateRaw.substring(4,6); const d = dateRaw.substring(6,8);
+                        if (parseInt(y, 10) !== year || parseInt(m, 10) !== month) return; 
 
                         const eventDate = new Date(y, m-1, d);
-                        
                         const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
                         const dayOfWeek = weekDays[eventDate.getDay()];
                         
@@ -492,14 +346,18 @@
                     const type = getVal(6);
                     const color = getTypeStyles(type);
                     const linkUrl = getVal(11); 
+                    const stationName = getVal(3);
+
+                    // 🌟 判定此活動屬於哪一區
+                    const taoyuanStations = ["桃園", "中壢", "國際", "龍潭"];
+                    const regionClass = taoyuanStations.includes(stationName) ? "taoyuan" : "hsinchu";
 
                     const card = document.createElement('div');
+                    // 🌟 寫入 data-region 屬性供 CSS 過濾使用
                     card.className = `event-card ${isExpired ? 'card-expired' : ''} ${linkUrl && !isExpired ? 'clickable-card' : ''}`;
+                    card.setAttribute('data-region', regionClass);
                     
-                    if (linkUrl && !isExpired) {
-                        card.onclick = () => window.open(linkUrl, '_blank');
-                        card.title = "點擊前往報名頁面";
-                    }
+                    if (linkUrl && !isExpired) { card.onclick = () => window.open(linkUrl, '_blank'); card.title = "點擊前往報名頁面"; }
 
                     card.innerHTML = `
                         ${isExpired ? '<div class="expired-badge">已結束</div>' : ''}
@@ -508,18 +366,16 @@
                             <span class="date-tag">${displayDate}</span>
                             <div class="tag-row">
                                 <span class="type-badge" style="background:${color}">${type}</span>
-                                <span class="station-badge">📍 ${getVal(3)}站</span>
+                                <span class="station-badge">📍 ${stationName}站</span>
                                 ${linkUrl && !isExpired ? '<span class="link-badge">🔗 點擊報名</span>' : ''}
                             </div>
                             <div class="event-title">${titleVal}</div>
                             
                             <div class="info-row">
-                                <span class="info-icon">⏱</span>
-                                <span>${getVal(5)}</span>
+                                <span class="info-icon">⏱</span><span>${getVal(5)}</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-icon">👤</span>
-                                <span>${getVal(8) || "無"}</span>
+                                <span class="info-icon">👤</span><span>${getVal(8) || "無"}</span>
                             </div>
                             
                             ${getVal(9) ? `<div class="event-desc">${getVal(9)}</div>` : ''}
@@ -527,27 +383,32 @@
                     `;
                     grid.appendChild(card);
                 });
-                if (validCount === 0) {
-                    noData.innerText = "📭 本月份目前尚無活動資料。";
-                    noData.style.display = 'block';
-                }
+                if (validCount === 0) { noData.innerText = "📭 本月份目前尚無活動資料。"; noData.style.display = 'block'; }
             })
             .catch(err => {
-                console.error("Error:", err);
-                loading.style.display = 'none';
-                // 🌟 防呆：分頁還沒被建立時，溫馨提示
-                noData.innerText = `📭 資料籌備中，請稍候再試。（查無 ${sheetName} 紀錄）`;
-                noData.style.display = 'block';
+                console.error("Error:", err); loading.style.display = 'none';
+                noData.innerText = `📭 資料籌備中，請稍候再試。（查無 ${sheetName} 紀錄）`; noData.style.display = 'block';
             });
     }
 
-    function downloadPoster() {
+    // 🌟 升級版下載函式，接收地區參數
+    function downloadPoster(region) {
         const poster = document.getElementById('poster-area');
-        const btn = document.querySelector('.btn-download');
-        btn.innerText = "⏳ 正在製作高畫質海報...";
-        btn.disabled = true;
+        const btnTaoyuan = document.getElementById('btn-taoyuan');
+        const btnHsinchu = document.getElementById('btn-hsinchu');
+        const mainTitle = document.getElementById('mainTitle');
         
+        // 鎖定按鈕防止重複點擊
+        const targetBtn = region === 'taoyuan' ? btnTaoyuan : btnHsinchu;
+        const originalText = targetBtn.innerText;
+        targetBtn.innerText = "⏳ 製作專屬海報中...";
+        btnTaoyuan.disabled = true; btnHsinchu.disabled = true;
+        
+        // 變更標題與套用過濾器 Class
+        const originalTitleText = mainTitle.innerText;
+        mainTitle.innerText = originalTitleText + (region === 'taoyuan' ? " - 桃園地區" : " - 新竹地區");
         poster.classList.add('download-mode');
+        poster.classList.add('download-' + region);
         
         setTimeout(() => {
             html2canvas(poster, { 
@@ -557,19 +418,21 @@
                 windowWidth: 1190 
             }).then(canvas => {
                 const link = document.createElement('a');
-                // 下載的檔名會動態抓取畫面上選擇的年月
-                link.download = `新竹分社活動月曆-${currentViewYear}年${currentViewMonth}月.png`;
+                const regionName = region === 'taoyuan' ? "桃園區" : "新竹區";
+                link.download = `活動月曆-${currentViewYear}年${currentViewMonth}月-${regionName}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
+                // 復原畫面狀態
                 poster.classList.remove('download-mode');
-                btn.innerText = "📥 下載海報 (PNG)"; 
-                btn.disabled = false;
+                poster.classList.remove('download-' + region);
+                mainTitle.innerText = originalTitleText;
+                targetBtn.innerText = originalText; 
+                btnTaoyuan.disabled = false; btnHsinchu.disabled = false;
             });
-        }, 100);
+        }, 150);
     }
 
-    // 啟動程式碼
     initApp();
 </script>
 </body>
