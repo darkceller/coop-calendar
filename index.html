@@ -52,7 +52,7 @@
         #poster-area.download-mode .download-qr { display: block; }
         #poster-area.download-mode .month-nav { display: none !important; }
 
-/* ==================================================== */
+        /* ==================================================== */
         /* 🌟 V11.0: 長輩友善超大字體模式 (維持3欄，字體與卡片撐滿極大化) */
         /* ==================================================== */
         #poster-area.download-mode .event-grid {
@@ -291,10 +291,11 @@
 
     function initApp() {
         document.getElementById('updateDateDisplay').innerText = `更新日期：${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        let targetDate = new Date();
-        if (new Date().getDate() >= 25) { targetDate.setMonth(targetDate.getMonth() + 1); }
-        currentViewYear = targetDate.getFullYear();
-        currentViewMonth = targetDate.getMonth() + 1;
+        
+        // 🌟 修正：依照使用者需求，不再提早跳轉，現在是幾月就預設顯示幾月
+        currentViewYear = today.getFullYear();
+        currentViewMonth = today.getMonth() + 1;
+        
         loadEvents(currentViewYear, currentViewMonth);
     }
 
@@ -374,12 +375,10 @@
                     const linkUrl = getVal(11); 
                     const stationName = getVal(3);
 
-                    // 🌟 判定此活動屬於哪一區
                     const taoyuanStations = ["桃園", "中壢", "國際", "龍潭"];
                     const regionClass = taoyuanStations.includes(stationName) ? "taoyuan" : "hsinchu";
 
                     const card = document.createElement('div');
-                    // 🌟 寫入 data-region 屬性供 CSS 過濾使用
                     card.className = `event-card ${isExpired ? 'card-expired' : ''} ${linkUrl && !isExpired ? 'clickable-card' : ''}`;
                     card.setAttribute('data-region', regionClass);
                     
@@ -417,20 +416,17 @@
             });
     }
 
-    // 🌟 升級版下載函式，接收地區參數
     function downloadPoster(region) {
         const poster = document.getElementById('poster-area');
         const btnTaoyuan = document.getElementById('btn-taoyuan');
         const btnHsinchu = document.getElementById('btn-hsinchu');
         const mainTitle = document.getElementById('mainTitle');
         
-        // 鎖定按鈕防止重複點擊
         const targetBtn = region === 'taoyuan' ? btnTaoyuan : btnHsinchu;
         const originalText = targetBtn.innerText;
         targetBtn.innerText = "⏳ 製作專屬海報中...";
         btnTaoyuan.disabled = true; btnHsinchu.disabled = true;
         
-        // 變更標題與套用過濾器 Class
         const originalTitleText = mainTitle.innerText;
         mainTitle.innerText = originalTitleText + (region === 'taoyuan' ? " - 桃園地區" : " - 新竹地區");
         poster.classList.add('download-mode');
@@ -449,7 +445,6 @@
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                // 復原畫面狀態
                 poster.classList.remove('download-mode');
                 poster.classList.remove('download-' + region);
                 mainTitle.innerText = originalTitleText;
