@@ -46,15 +46,14 @@
             margin: 0 !important; border-radius: 0 !important; box-shadow: none !important;
             max-width: 1190px !important; width: 1190px !important; min-height: 1683px !important; 
             display: flex !important; flex-direction: column !important;
-            /* 🌟 套用自訂背景圖 */
             background-image: url('background.png') !important;
             background-size: cover !important;
             background-position: center !important;
-            background-color: #e8f5e9 !important; /* 圖片若失效的備用底色 */
+            background-color: #e8f5e9 !important; 
             font-family: "王漢宗顏楷體", "DFKai-SB", "標楷體", serif !important;
         }
 
-        /* 下載時隱藏不需要的元件 */
+        /* 🌟 下載時隱藏網頁版專用元件（包含舊版 Footer） */
         #poster-area.download-mode .event-grid, 
         #poster-area.download-mode .legend-container, 
         #poster-area.download-mode .station-footer-grid,
@@ -62,12 +61,12 @@
         #poster-area.download-mode .admin-btn,
         #poster-area.download-mode .maintainer-text,
         #poster-area.download-mode .sub-title,
-        #poster-area.download-mode .footer-left /* 🌟 隱藏左下角版權與更新日期 */ { 
+        #poster-area.download-mode .poster-footer { 
             display: none !important; 
         }
 
         /* 顯示表格區塊 */
-        #poster-table-container { display: none; width: 100%; padding: 0 50px 50px 50px; box-sizing: border-box; }
+        #poster-table-container { display: none; width: 100%; padding: 0 50px 30px 50px; box-sizing: border-box; }
         #poster-area.download-mode #poster-table-container { display: block; flex-grow: 1; }
 
         .canva-table {
@@ -76,8 +75,8 @@
             border: 2px solid #2e7d32;
         }
         .canva-table th {
-            background-color: #aed581; /* 柔和淺綠色表頭以搭配背景 */
-            color: #000000; /* 黑字 */
+            background-color: #aed581; 
+            color: #000000; 
             padding: 20px 10px;
             font-size: 32px; 
             border: 2px solid #2e7d32;
@@ -85,24 +84,69 @@
         }
         .canva-table td {
             padding: 22px 12px; border: 2px solid #2e7d32; text-align: center;
-            color: #000000 !important; /* 🌟 內容全黑字體 */
+            color: #000000 !important; 
             font-weight: bold;
-            font-size: 30px !important; /* 🌟 字體再放大，約等同大字體印刷 */
+            font-size: 30px !important; 
         }
         
-        /* 🌟 表格對比色：米色與深米色 */
-        .canva-table tr:nth-child(odd) { background-color: #FFFDF4; /* 淺米色 */ }
-        .canva-table tr:nth-child(even) { background-color: #EFE0C8; /* 深米色 */ }
+        .canva-table tr:nth-child(odd) { background-color: #FFFDF4; }
+        .canva-table tr:nth-child(even) { background-color: #EFE0C8; }
         
-        /* 表格內標題靠左 */
         .canva-table td.cell-title { text-align: left; padding-left: 20px; font-size: 32px; color: #000000; font-weight: 900; }
 
-        /* 下載模式的 Header 調整 */
         #poster-area.download-mode .poster-header { padding: 70px 40px 30px 40px !important; }
-        /* 🌟 因應新標題較長，字體微調至 50px 確保排版美觀 */
         #poster-area.download-mode .main-title { font-size: 50px !important; color: #1b5e20 !important; letter-spacing: 3px; font-weight: 900;}
         #poster-area.download-mode .month-circle { top: 70px !important; right: 60px !important; width: 110px !important; height: 110px !important; background-color: #2e7d32 !important; }
         #poster-area.download-mode .month-circle .month { font-size: 48px !important; }
+
+        /* 🌟 下載模式專屬的 Footer 排版 (中置 QR Code + 左右文字) */
+        #download-custom-footer {
+            display: none;
+            width: 100%;
+            padding: 0 60px 40px 60px;
+            box-sizing: border-box;
+            justify-content: space-between;
+            align-items: center; /* 垂直置中對齊 */
+        }
+        #poster-area.download-mode #download-custom-footer {
+            display: flex !important;
+        }
+
+        .dl-text {
+            font-size: 32px;
+            font-weight: 900;
+            color: #000000;
+            width: 35%;
+            line-height: 1.4;
+            /* 加上白色光暈避免與底圖草叢重疊時看不清楚 */
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.9), -2px -2px 4px rgba(255,255,255,0.9), 2px -2px 4px rgba(255,255,255,0.9), -2px 2px 4px rgba(255,255,255,0.9);
+        }
+        .dl-left { text-align: left; }
+        .dl-right { text-align: right; }
+
+        .dl-qr-box {
+            width: 25%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .dl-qr-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        .dl-qr-img {
+            width: 130px;
+            height: 130px;
+            display: block;
+        }
 
         /* ==================================================== */
 
@@ -229,7 +273,7 @@
                 <tr>
                     <th width="12%">站所</th>
                     <th width="18%">日期</th>
-                    <th width="15%">時間</th>
+                    <th width="16%">時間</th>
                     <th width="15%">活動類型</th>
                     <th>活動名稱</th>
                     <th width="12%">講師</th>
@@ -238,6 +282,15 @@
             <tbody id="canvaTableBody">
                 </tbody>
         </table>
+    </div>
+
+    <div id="download-custom-footer">
+        <div class="dl-text dl-left">歡迎社員/非社員參與每月活動</div>
+        <div class="dl-qr-box">
+            <div class="dl-qr-title">▼ 掃我報名 ▼</div>
+            <img src="qrcode.png" alt="報名QR Code" class="dl-qr-img">
+        </div>
+        <div class="dl-text dl-right">更多活動詳情請上本社官網</div>
     </div>
 
     <div class="station-footer-grid">
@@ -430,8 +483,7 @@
             tr.innerHTML = `
                 <td>${station}</td>
                 <td>${dateStr}</td>
-                <td>${getVal(5)}</td>
-                <td>${getVal(6)}</td>
+                <td style="white-space: nowrap;">${getVal(5)}</td> <td>${getVal(6)}</td>
                 <td class="cell-title">${getVal(7)}</td>
                 <td>${getVal(8) || "---"}</td>
             `;
@@ -450,7 +502,7 @@
 
         prepareTable(region);
 
-        // 🌟 修改下載時的長標題
+        // 🌟 更新海報上的長標題
         const originalTitleText = mainTitle.innerText;
         mainTitle.innerText = "主婦聯盟合作社新竹分社 活動月曆 (" + (region === 'taoyuan' ? "桃園區" : "新竹區") + ")";
         poster.classList.add('download-mode');
@@ -459,7 +511,7 @@
             html2canvas(poster, { 
                 scale: 3, 
                 useCORS: true, 
-                backgroundColor: "#e8f5e9", // 背景圖片載入前的預設底色
+                backgroundColor: "#e8f5e9",
                 windowWidth: 1190 
             }).then(canvas => {
                 const link = document.createElement('a');
@@ -472,7 +524,7 @@
                 targetBtn.innerText = originalBtnText; 
                 targetBtn.disabled = false;
             });
-        }, 500); // 稍微拉長等待時間，確保背景圖片完全載入
+        }, 500); 
     }
 
     initApp();
