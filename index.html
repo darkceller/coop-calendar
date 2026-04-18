@@ -46,8 +46,11 @@
             margin: 0 !important; border-radius: 0 !important; box-shadow: none !important;
             max-width: 1190px !important; width: 1190px !important; min-height: 1683px !important; 
             display: flex !important; flex-direction: column !important;
-            /* 模擬 Canva 漸層綠背景 */
-            background: linear-gradient(180deg, #f0f9f0 0%, #e8f5e9 100%) !important;
+            /* 🌟 套用自訂背景圖 */
+            background-image: url('background.png') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-color: #e8f5e9 !important; /* 圖片若失效的備用底色 */
             font-family: "王漢宗顏楷體", "DFKai-SB", "標楷體", serif !important;
         }
 
@@ -58,36 +61,47 @@
         #poster-area.download-mode .month-nav,
         #poster-area.download-mode .admin-btn,
         #poster-area.download-mode .maintainer-text,
-        #poster-area.download-mode .sub-title { 
+        #poster-area.download-mode .sub-title,
+        #poster-area.download-mode .footer-left /* 🌟 隱藏左下角版權與更新日期 */ { 
             display: none !important; 
         }
 
         /* 顯示表格區塊 */
-        #poster-table-container { display: none; width: 100%; padding: 0 40px 40px 40px; box-sizing: border-box; }
+        #poster-table-container { display: none; width: 100%; padding: 0 50px 50px 50px; box-sizing: border-box; }
         #poster-area.download-mode #poster-table-container { display: block; flex-grow: 1; }
 
         .canva-table {
             width: 100%; border-collapse: collapse; background: white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;
-            font-size: 24px; /* 表格內文字放大 */
+            border: 2px solid #2e7d32;
         }
         .canva-table th {
-            background-color: #43a047; color: white; padding: 20px 10px;
-            font-size: 28px; border: 1px solid #388e3c;
+            background-color: #aed581; /* 柔和淺綠色表頭以搭配背景 */
+            color: #000000; /* 黑字 */
+            padding: 20px 10px;
+            font-size: 32px; 
+            border: 2px solid #2e7d32;
+            font-weight: 900;
         }
         .canva-table td {
-            padding: 18px 12px; border: 1px solid #c8e6c9; text-align: center;
-            color: #2e7d32; font-weight: bold;
+            padding: 22px 12px; border: 2px solid #2e7d32; text-align: center;
+            color: #000000 !important; /* 🌟 內容全黑字體 */
+            font-weight: bold;
+            font-size: 30px !important; /* 🌟 字體再放大，約等同大字體印刷 */
         }
-        .canva-table tr:nth-child(even) { background-color: #f9fdf9; }
+        
+        /* 🌟 表格對比色：米色與深米色 */
+        .canva-table tr:nth-child(odd) { background-color: #FFFDF4; /* 淺米色 */ }
+        .canva-table tr:nth-child(even) { background-color: #EFE0C8; /* 深米色 */ }
         
         /* 表格內標題靠左 */
-        .canva-table td.cell-title { text-align: left; padding-left: 20px; font-size: 26px; color: #000; }
+        .canva-table td.cell-title { text-align: left; padding-left: 20px; font-size: 32px; color: #000000; font-weight: 900; }
 
         /* 下載模式的 Header 調整 */
-        #poster-area.download-mode .poster-header { padding: 60px 40px 20px 40px !important; }
-        #poster-area.download-mode .main-title { font-size: 56px !important; color: #1b5e20 !important; letter-spacing: 4px; }
-        #poster-area.download-mode .month-circle { top: 60px !important; right: 60px !important; width: 110px !important; height: 110px !important; background-color: #2e7d32 !important; }
+        #poster-area.download-mode .poster-header { padding: 70px 40px 30px 40px !important; }
+        /* 🌟 因應新標題較長，字體微調至 50px 確保排版美觀 */
+        #poster-area.download-mode .main-title { font-size: 50px !important; color: #1b5e20 !important; letter-spacing: 3px; font-weight: 900;}
+        #poster-area.download-mode .month-circle { top: 70px !important; right: 60px !important; width: 110px !important; height: 110px !important; background-color: #2e7d32 !important; }
         #poster-area.download-mode .month-circle .month { font-size: 48px !important; }
 
         /* ==================================================== */
@@ -140,12 +154,12 @@
         .station-item { font-size: 13px; line-height: 1.6; color: #555; }
         .station-item b { color: var(--hcgn-green); font-size: 15px; display: block; margin-bottom: 3px; }
 
-        .poster-footer { padding: 30px 40px; background: #fafafa; color: #7f8c8d; font-size: 13px; line-height: 1.6; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; box-sizing: border-box; }
+        .poster-footer { padding: 30px 40px; background: transparent; color: #7f8c8d; font-size: 13px; line-height: 1.6; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; box-sizing: border-box; }
         .footer-left { display: flex; flex-direction: column; gap: 4px; padding-bottom: 5px; }
         .footer-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px; }
-        .qr-section { display: flex; flex-direction: column; align-items: center; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .qr-title { font-size: 15px; font-weight: 900; color: var(--hcgn-green); margin-bottom: 6px; letter-spacing: 1px; }
-        .permanent-qr { width: 90px; height: 90px; display: block; }
+        .qr-section { display: flex; flex-direction: column; align-items: center; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid #2e7d32; }
+        .qr-title { font-size: 15px; font-weight: 900; color: #2e7d32; margin-bottom: 6px; letter-spacing: 1px; }
+        .permanent-qr { width: 100px; height: 100px; display: block; }
 
         .footer-admin-block { width: 100%; display: flex; flex-direction: column; align-items: flex-end; }
         .admin-btn { background: #e2e8f0; color: #475569; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; box-sizing: border-box; margin-bottom: 4px; transition: 0.2s; }
@@ -213,10 +227,10 @@
         <table class="canva-table" id="canvaTable">
             <thead>
                 <tr>
-                    <th width="10%">站所</th>
+                    <th width="12%">站所</th>
                     <th width="18%">日期</th>
-                    <th width="12%">時間</th>
-                    <th width="12%">類型</th>
+                    <th width="15%">時間</th>
+                    <th width="15%">活動類型</th>
                     <th>活動名稱</th>
                     <th width="12%">講師</th>
                 </tr>
@@ -246,7 +260,7 @@
         
         <div class="footer-right">
             <div class="qr-section">
-                <div class="qr-title">▼ 請掃我報名 ▼</div>
+                <div class="qr-title">▼ 掃我報名 ▼</div>
                 <img src="qrcode.png" alt="報名QR Code" class="permanent-qr">
             </div>
             
@@ -270,7 +284,7 @@
     
     let currentViewYear;
     let currentViewMonth;
-    let currentFullRows = []; // 儲存當月所有原始資料
+    let currentFullRows = []; 
 
     function getTypeStyles(type) {
         if (!type) return 'var(--color-default)';
@@ -325,17 +339,15 @@
                     noData.style.display = 'block'; return;
                 }
 
-                // 過濾標題列與空白
                 rows = rows.filter(row => row.c && row.c[7] && row.c[7].v && row.c[7].v !== "活動名稱");
                 
-                // 排序：依活動日期排序
                 rows.sort((a, b) => {
                     const valA = (a.c[4] ? a.c[4].v : 0).toString();
                     const valB = (b.c[4] ? b.c[4].v : 0).toString();
                     return valA.localeCompare(valB);
                 });
 
-                currentFullRows = rows; // 暫存起來供下載時使用
+                currentFullRows = rows; 
 
                 let validCount = 0;
                 rows.forEach((row) => {
@@ -394,7 +406,6 @@
             });
     }
 
-    // 🌟 核心功能：動態生成表格內容
     function prepareTable(region) {
         const tableBody = document.getElementById('canvaTableBody');
         tableBody.innerHTML = "";
@@ -406,7 +417,6 @@
             const station = getVal(3);
             const isTaoyuan = taoyuanStations.includes(station);
 
-            // 根據地區過濾
             if ((region === 'taoyuan' && !isTaoyuan) || (region === 'hsinchu' && isTaoyuan)) return;
             if (getVal(10).includes("作廢")) return;
 
@@ -414,7 +424,7 @@
             const y = dateRaw.substring(0,4); const m = dateRaw.substring(4,6); const d = dateRaw.substring(6,8);
             const eventDate = new Date(y, m-1, d);
             const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
-            const dateStr = `${m}/${d} (${weekDays[eventDate.getDay()]})`;
+            const dateStr = `${m}/${d}(${weekDays[eventDate.getDay()]})`;
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -438,19 +448,18 @@
         targetBtn.innerText = "⏳ 製作海報中...";
         targetBtn.disabled = true;
 
-        // 1. 準備表格資料
         prepareTable(region);
 
-        // 2. 修改標題並進入下載模式
+        // 🌟 修改下載時的長標題
         const originalTitleText = mainTitle.innerText;
-        mainTitle.innerText = (region === 'taoyuan' ? "桃園地區" : "新竹地區") + " 活動月曆";
+        mainTitle.innerText = "主婦聯盟合作社新竹分社 活動月曆 (" + (region === 'taoyuan' ? "桃園區" : "新竹區") + ")";
         poster.classList.add('download-mode');
 
         setTimeout(() => {
             html2canvas(poster, { 
                 scale: 3, 
                 useCORS: true, 
-                backgroundColor: "#f0f9f0", // 強制背景色
+                backgroundColor: "#e8f5e9", // 背景圖片載入前的預設底色
                 windowWidth: 1190 
             }).then(canvas => {
                 const link = document.createElement('a');
@@ -458,13 +467,12 @@
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                // 3. 復原
                 poster.classList.remove('download-mode');
                 mainTitle.innerText = originalTitleText;
                 targetBtn.innerText = originalBtnText; 
                 targetBtn.disabled = false;
             });
-        }, 300); // 延長一點時間讓表格渲染穩定
+        }, 500); // 稍微拉長等待時間，確保背景圖片完全載入
     }
 
     initApp();
