@@ -53,7 +53,7 @@
             font-family: "王漢宗顏楷體", "DFKai-SB", "標楷體", serif !important;
         }
 
-        /* 🌟 下載時隱藏網頁版專用元件（包含舊版 Footer） */
+        /* 🌟 下載時隱藏網頁版專用元件（包含舊版月份圓圈） */
         #poster-area.download-mode .event-grid, 
         #poster-area.download-mode .legend-container, 
         #poster-area.download-mode .station-footer-grid,
@@ -61,7 +61,8 @@
         #poster-area.download-mode .admin-btn,
         #poster-area.download-mode .maintainer-text,
         #poster-area.download-mode .sub-title,
-        #poster-area.download-mode .poster-footer { 
+        #poster-area.download-mode .poster-footer,
+        #poster-area.download-mode .month-circle /* 隱藏原本右上角的圓圈 */ { 
             display: none !important; 
         }
 
@@ -94,10 +95,20 @@
         
         .canva-table td.cell-title { text-align: left; padding-left: 20px; font-size: 32px; color: #000000; font-weight: 900; }
 
-        #poster-area.download-mode .poster-header { padding: 70px 40px 30px 40px !important; }
+        #poster-area.download-mode .poster-header { padding: 60px 40px 30px 40px !important; }
+        
+        /* 🌟 新增：下載模式專屬的 YYYY MM 標題 (位於主標題上方) */
+        .dl-ym {
+            display: none;
+            font-size: 30pt !important;
+            font-weight: 900;
+            color: #1b5e20;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+        #poster-area.download-mode .dl-ym { display: block !important; }
+
         #poster-area.download-mode .main-title { font-size: 50px !important; color: #1b5e20 !important; letter-spacing: 3px; font-weight: 900;}
-        #poster-area.download-mode .month-circle { top: 70px !important; right: 60px !important; width: 110px !important; height: 110px !important; background-color: #2e7d32 !important; }
-        #poster-area.download-mode .month-circle .month { font-size: 48px !important; }
 
         /* 🌟 下載模式專屬的 Footer 排版 (中置 QR Code + 左右文字) */
         #download-custom-footer {
@@ -113,11 +124,11 @@
         }
 
         .dl-text {
-            font-size: 32px;
+            font-size: 20pt; /* 🌟 調整為 20pt */
             font-weight: 900;
             color: #000000;
             width: 35%;
-            line-height: 1.4;
+            line-height: 1.5;
             /* 加上白色光暈避免與底圖草叢重疊時看不清楚 */
             text-shadow: 2px 2px 4px rgba(255,255,255,0.9), -2px -2px 4px rgba(255,255,255,0.9), 2px -2px 4px rgba(255,255,255,0.9), -2px 2px 4px rgba(255,255,255,0.9);
         }
@@ -233,6 +244,7 @@
     <div class="poster-header">
         <div class="header-left">
             <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
+            <div id="downloadYm" class="dl-ym"></div>
             <h2 class="main-title" id="mainTitle">新竹分社活動月曆</h2>
             <div class="sub-title">✨ 歡迎非社員參加 ✨</div> 
             
@@ -285,12 +297,12 @@
     </div>
 
     <div id="download-custom-footer">
-        <div class="dl-text dl-left">歡迎社員/非社員參與每月活動</div>
+        <div class="dl-text dl-left">歡迎社員/非社員<br>參與每月活動</div>
         <div class="dl-qr-box">
             <div class="dl-qr-title">▼ 掃我報名 ▼</div>
             <img src="qrcode.png" alt="報名QR Code" class="dl-qr-img">
         </div>
-        <div class="dl-text dl-right">更多活動詳情請上本社官網</div>
+        <div class="dl-text dl-right">更多活動詳情<br>請上本社官網</div>
     </div>
 
     <div class="station-footer-grid">
@@ -483,7 +495,8 @@
             tr.innerHTML = `
                 <td>${station}</td>
                 <td>${dateStr}</td>
-                <td style="white-space: nowrap;">${getVal(5)}</td> <td>${getVal(6)}</td>
+                <td style="white-space: nowrap;">${getVal(5)}</td>
+                <td>${getVal(6)}</td>
                 <td class="cell-title">${getVal(7)}</td>
                 <td>${getVal(8) || "---"}</td>
             `;
@@ -494,6 +507,7 @@
     function downloadPoster(region) {
         const poster = document.getElementById('poster-area');
         const mainTitle = document.getElementById('mainTitle');
+        const downloadYm = document.getElementById('downloadYm');
         const targetBtn = document.getElementById(region === 'taoyuan' ? 'btn-taoyuan' : 'btn-hsinchu');
         
         const originalBtnText = targetBtn.innerText;
@@ -502,7 +516,10 @@
 
         prepareTable(region);
 
-        // 🌟 更新海報上的長標題
+        // 🌟 更新海報上的年月標題
+        downloadYm.innerText = `${currentViewYear}年 ${String(currentViewMonth).padStart(2, '0')}月`;
+
+        // 🌟 更新海報上的主標題
         const originalTitleText = mainTitle.innerText;
         mainTitle.innerText = "主婦聯盟合作社新竹分社 活動月曆 (" + (region === 'taoyuan' ? "桃園區" : "新竹區") + ")";
         poster.classList.add('download-mode');
