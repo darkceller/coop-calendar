@@ -62,8 +62,8 @@
         #poster-area.download-mode .maintainer-text,
         #poster-area.download-mode .sub-title,
         #poster-area.download-mode .poster-footer,
-        #poster-area.download-mode .month-circle, /* 隱藏原本右上角的圓圈 */
-        #poster-area.download-mode .header-left img /* 🌟 隱藏 LOGO (Banner) */ { 
+        #poster-area.download-mode .month-circle, 
+        #poster-area.download-mode .header-left img { 
             display: none !important; 
         }
 
@@ -98,7 +98,7 @@
 
         #poster-area.download-mode .poster-header { padding: 60px 40px 30px 40px !important; }
         
-        /* 🌟 共通的純白粗邊框 + 光暈效果 (確保黑色大字在任何背景都極度清晰) */
+        /* 🌟 共通的純白粗邊框 + 光暈效果 */
         .white-stroke-text {
             color: #000000 !important;
             text-shadow: 
@@ -107,23 +107,26 @@
                 4px 4px 10px rgba(255,255,255,0.9) !important;
         }
 
-        /* 🌟 下載模式專屬的 YYYY MM 標題 (位於主標題上方，放大至 60pt) */
-        .dl-ym {
-            display: none;
-            font-size: 60pt !important;
-            font-weight: 900;
-            margin-bottom: 10px;
-            letter-spacing: 6px;
-        }
-        #poster-area.download-mode .dl-ym { display: block !important; }
-
-        /* 🌟 下載模式專屬的主標題 (放大至 90px 並允許換行) */
+        /* 🌟 下載模式專屬的主標題 (放大至 90px 並允許換行，放在上方) */
         #poster-area.download-mode .main-title { 
             font-size: 90px !important; 
             letter-spacing: 4px; 
             font-weight: 900;
             line-height: 1.3 !important;
+            margin-bottom: 0;
         }
+
+        /* 🌟 下載模式專屬的 YYYY MM 標題 (位於主標題下方，字體與主標題一樣 90px) */
+        .dl-ym {
+            display: none;
+            font-size: 90px !important; /* 🌟 改為與主標題完全一樣大 */
+            font-weight: 900;
+            margin-top: 15px; /* 🌟 與上方主標題稍微拉開一點空間 */
+            margin-bottom: 20px;
+            letter-spacing: 6px;
+            line-height: 1.3 !important;
+        }
+        #poster-area.download-mode .dl-ym { display: block !important; }
 
         /* 🌟 下載模式專屬的 Footer 排版 (中置 QR Code + 左右文字) */
         #download-custom-footer {
@@ -139,7 +142,7 @@
         }
 
         .dl-text {
-            font-size: 40pt; /* 🌟 放大至 40pt (2倍) */
+            font-size: 40pt; 
             font-weight: 900;
             width: 35%;
             line-height: 1.4;
@@ -147,7 +150,6 @@
         .dl-left { text-align: left; }
         .dl-right { text-align: right; }
 
-        /* 🌟 配合兩側 40pt 的大字，將 QR Code 區塊也等比放大 */
         .dl-qr-box {
             width: 25%;
             display: flex;
@@ -160,14 +162,14 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .dl-qr-title {
-            font-size: 32px; /* 🌟 QR標題放大 */
+            font-size: 32px; 
             font-weight: 900;
             color: #2e7d32;
             margin-bottom: 10px;
             letter-spacing: 2px;
         }
         .dl-qr-img {
-            width: 180px; /* 🌟 QR圖片放大 */
+            width: 180px; 
             height: 180px;
             display: block;
         }
@@ -258,9 +260,10 @@
         <div class="header-left">
             <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
             
+            <h2 class="main-title" id="mainTitle">新竹分社活動月曆</h2>
+            
             <div id="downloadYm" class="dl-ym white-stroke-text"></div>
             
-            <h2 class="main-title" id="mainTitle">新竹分社活動月曆</h2>
             <div class="sub-title">✨ 歡迎非社員參加 ✨</div> 
             
             <div class="month-nav">
@@ -533,13 +536,13 @@
 
         prepareTable(region);
 
-        // 🌟 寫入 2026 年 4月 格式的頂部大標題
-        downloadYm.innerText = `${currentViewYear} 年 ${currentViewMonth}月`;
-
         // 🌟 更新海報上的主標題，並套用白色光暈框
         const originalTitleText = mainTitle.innerText;
         mainTitle.innerText = "主婦聯盟合作社新竹分社 活動月曆 (" + (region === 'taoyuan' ? "桃園區" : "新竹區") + ")";
         mainTitle.classList.add('white-stroke-text');
+
+        // 🌟 寫入 2026 年 4月 格式的大標題 (排在主標題下方)
+        downloadYm.innerText = `${currentViewYear} 年 ${currentViewMonth}月`;
         
         poster.classList.add('download-mode');
 
@@ -555,7 +558,6 @@
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                // 🌟 復原所有套用的下載專用 Class 與文字
                 poster.classList.remove('download-mode');
                 mainTitle.classList.remove('white-stroke-text');
                 mainTitle.innerText = originalTitleText;
