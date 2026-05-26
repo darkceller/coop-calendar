@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主婦聯盟新竹分社活動月曆 5.5 (100% 視覺復刻版)</title>
+    <title>主婦聯盟新竹分社活動月曆 5.6 (標題回歸修正版)</title>
     
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -26,12 +26,12 @@
         .web-table th, .web-table td { padding: 10px; border-bottom: 1px solid #edf2f7; }
 
         /* ==================================================== */
-        /* 🌟 海報渲染主區塊 (嚴格比對目標圖片) */
+        /* 🌟 海報渲染主區塊 */
         /* ==================================================== */
         #poster-area { 
             position: absolute; left: -9999px; top: -9999px; 
             background-color: #ffffff; width: 1190px; height: 1683px; 
-            padding: 270px 65px 60px 65px; /* 根據原圖下移開始排版的起點 */
+            padding: 50px 65px 60px 65px; /* 回復原本的 padding，給標題空間 */
             box-sizing: border-box; display: flex; flex-direction: column;
             font-family: "Noto Sans TC", sans-serif !important; 
         }
@@ -43,11 +43,33 @@
             background-position: center top !important;
         }
 
+        /* 🌟 消失的標題區塊回來了！ */
+        .poster-header { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; height: 160px;}
+        
+        .header-badge-circle {
+            position: absolute; left: 0px; top: 0px; width: 130px; height: 130px;
+            background-color: #2c5942; color: white; border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-family: Arial, sans-serif !important; 
+        }
+        .header-badge-circle .b-year { font-size: 18px; letter-spacing: 1px; margin-top: 5px; }
+        .header-badge-circle .b-month { font-size: 64px; font-weight: 900; line-height: 1; margin: -2px 0 2px 0; }
+        .header-badge-circle .b-text { font-size: 14px; font-weight: bold; letter-spacing: 1px; }
+
+        .poster-main-title { 
+            font-family: 'Shippori Mincho', 'Noto Serif TC', serif !important;
+            font-size: 72px; font-weight: 900; color: #333333; margin: 15px 0 0 160px; letter-spacing: 6px; text-align: center; 
+        }
+        .poster-sub-title { 
+            font-family: 'Shippori Mincho', 'Noto Serif TC', serif !important;
+            font-size: 42px; font-weight: 900; color: #333333; margin-top: 10px; margin-left: 200px; letter-spacing: 2px; text-align: center; 
+        }
+
+        /* 內容區塊 */
         .poster-body-columns { display: flex; justify-content: space-between; width: 100%; position: relative; }
         .poster-column { width: 500px; display: flex; flex-direction: column; box-sizing: border-box; }
         .category-block { width: 100%; margin-bottom: 30px; }
         
-        /* 🌟 完美還原標題色塊與排版 */
         .category-header-title {
             position: relative; display: inline-block; z-index: 2;
             font-family: 'Shippori Mincho', 'Noto Serif TC', serif !important;
@@ -56,10 +78,10 @@
         .category-header-title::after {
             content: ""; position: absolute; left: 0; right: 0; bottom: 4px; height: 18px; border-radius: 10px; z-index: -1;
         }
-        .title-bg-health::after { background-color: #f8d7da; } /* 樂活養生粉紅底 */
-        .title-bg-cook::after { background-color: #ffe8cc; } /* 料理教做橘色底 */
-        .title-bg-op::after { display: none; } /* 地區營運無底色 */
-        .cat-icon { font-size: 32px; margin-right: 8px; filter: grayscale(100%) opacity(70%); } /* 將Emoji調成低調灰階搭配版面 */
+        .title-bg-health::after { background-color: #f8d7da; } 
+        .title-bg-cook::after { background-color: #ffe8cc; } 
+        .title-bg-op::after { display: none; } 
+        .cat-icon { font-size: 32px; margin-right: 8px; filter: grayscale(100%) opacity(70%); } 
 
         .event-item-row { width: 100%; margin-bottom: 25px; display: flex; flex-direction: column; gap: 8px; }
         
@@ -71,15 +93,13 @@
             font-size: 32px; font-weight: 900; color: #444444; line-height: 1.3; padding-left: 5px; 
         }
 
-        /* 樂活養生與料理教做之間的橫向虛線 */
         .section-divider { border-top: 3px dotted #718096; margin: 15px 0 30px 0; width: 90%; }
 
-        /* 🌟 QR Code 精準絕對定位區 */
+        /* QR Code 絕對定位 */
         .poster-qr-container {
             position: absolute;
-            /* 調整這裡的數字來微調 QR Code 上下左右的位置！ */
-            left: 655px;   /* 數字越大越靠右 */
-            bottom: 232px; /* 數字越大越靠上 */
+            left: 655px;   /* 數字越大越靠右，可依需求微調 */
+            bottom: 232px; /* 數字越大越靠上，可依需求微調 */
             z-index: 10;
         }
         .poster-qr-img { width: 150px; height: 150px; display: block; border-radius: 10px; }
@@ -89,7 +109,7 @@
 <body>
 
 <div class="upload-container">
-    <h2>主婦聯盟新竹分社活動月曆產生器 5.5 (精準復刻版) 📊</h2>
+    <h2>主婦聯盟新竹分社活動月曆產生器 5.6 (標題回歸版) 📊</h2>
     <div id="drop-zone" onclick="document.getElementById('excel-file').click()">
         <p id="drop-text" style="font-weight:bold;">拖曳 Excel 檔案至此區域，或點擊選取檔案</p>
         <input type="file" id="excel-file" onchange="handleFile(this.files)" accept=".xlsx, .xls">
@@ -113,6 +133,17 @@
 </div>
 
 <div id="poster-area">
+    
+    <div class="poster-header">
+        <div class="header-badge-circle">
+            <span class="b-year" id="badgeYear">2026</span>
+            <span class="b-month" id="badgeMonth">6</span>
+            <span class="b-text">MONTH</span>
+        </div>
+        <h1 class="poster-main-title">主婦聯盟消費合作社</h1>
+        <div class="poster-sub-title" id="posterSubTitle">新竹分社 | 活動月曆</div>
+    </div>
+
     <div class="poster-body-columns">
         <div class="poster-column">
             <div class="category-block" id="block-養生" style="display: none;">
@@ -205,7 +236,7 @@
         let dateStr = ""; let timeStr = "";
         
         try {
-            // 解析日期 (提取 2026-06-01)
+            // 解析日期
             const dateMatch = item.rawTime.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
             if (dateMatch) {
                 const m = parseInt(dateMatch[2], 10);
@@ -215,21 +246,19 @@
                 dateStr = `${m}/${d} (${weekDays[eventDate.getDay()]})`;
             }
 
-            // 🌟 解析雙重時間區間 (解決痛點2: 提取 10:00 - 12:00)
-            const timeRangeMatch = item.rawTime.match(/(\d{2}:\d{2})\s*-\s*\d{4}[-/]\d{1,2}[-/]\d{1,2}\s*(\d{2}:\d{2})/);
-            if (timeRangeMatch) {
-                timeStr = `${timeRangeMatch[1]}- ${timeRangeMatch[2]}`;
-            } else {
-                const simpleMatch = item.rawTime.match(/(\d{2}:\d{2})\s*[-~]\s*(\d{2}:\d{2})/);
-                if (simpleMatch) timeStr = `${simpleMatch[1]}- ${simpleMatch[2]}`;
-                else {
-                    const singleMatch = item.rawTime.match(/(\d{2}:\d{2})/);
-                    if (singleMatch) timeStr = singleMatch[1];
-                }
+            // 🌟 重新改寫的暴力時間擷取器 (徹底解決痛點)
+            // 直接在字串中找出所有像是 10:00 這種格式的時間
+            const times = item.rawTime.match(/\d{1,2}:\d{2}/g);
+            if (times && times.length >= 2) {
+                // 如果抓到兩個時間，就用 '-' 連接起來
+                timeStr = `${times[0]}- ${times[1]}`;
+            } else if (times && times.length === 1) {
+                // 如果只有一個時間
+                timeStr = times[0];
             }
         } catch (e) {}
 
-        // 🌟 強制清洗站所字眼 (解決痛點5: 避免新竹新竹縣府站)
+        // 清洗站所字眼
         let rawS = item.station;
         let isTaoyuan = ["桃園", "中壢", "國際", "龍潭"].some(t => rawS.includes(t));
         let prefix = isTaoyuan ? "桃園" : "新竹";
@@ -272,10 +301,24 @@
             document.getElementById(`block-${cat}`).style.display = "block";
         });
 
-        // 控制左欄中間的分隔線顯示
+        // 判斷是否需要加上分隔線
         if(document.getElementById('block-養生').style.display === "block" && document.getElementById('block-料理').style.display === "block") {
             document.getElementById('left-divider').style.display = "block";
         }
+
+        // 🌟 寫入動態標題文字
+        if (filtered.length > 0) {
+            const match = filtered[0].rawTime.match(/(\d{4})[-/](\d{1,2})/);
+            if (match) { 
+                document.getElementById('badgeYear').innerText = match[1]; 
+                document.getElementById('badgeMonth').innerText = parseInt(match[2], 10); 
+            }
+        }
+        
+        let subTitleText = "新竹分社 | 活動月曆";
+        if (mode === 'taoyuan') subTitleText = "新竹分社 | 活動月曆 (桃園區)";
+        if (mode === 'hsinchu') subTitleText = "新竹分社 | 活動月曆 (新竹區)";
+        document.getElementById('posterSubTitle').innerText = subTitleText;
 
         const poster = document.getElementById('poster-area');
         poster.classList.add('download-mode');
