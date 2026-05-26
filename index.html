@@ -3,571 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCGN-COOP 新竹分社活動月曆</title>
-    <meta property="og:title" content="HCGN-COOP 新竹分社活動月曆">
+    <title>主婦聯盟新竹分社活動月曆產生器 5.0 (Canva雙欄直出版)</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { 
-            --bg-color: #f1f1f1; 
+            --bg-color: #f4f6f9; 
             --hcgn-green: #28a745; 
-            --dark-green: #1e7e34;
+            --dark-green: #1b5e20;
             --text-main: #2d3436;
-            --text-sub: #636e72;
-            
-            --color-cooking: #e67e22;   
-            --color-club: #e84393;      
-            --color-producer: #0984e3;  
-            --color-health: #d63031;    
-            --color-outdoor: #27ae60;   
-            --color-meeting: #6c5ce7;   
-            --color-default: #636e72;
-            --color-community-meeting: #000000;
         }
         
         body { 
-            font-family: "Noto Sans TC", "PingFang TC", "LiHei Pro", "Microsoft JhengHei", sans-serif; 
+            font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; 
             background-color: var(--bg-color); 
             margin: 0; 
-            padding: 20px 10px; 
+            padding: 30px 15px; 
             color: var(--text-main); 
         }
 
-        #poster-area { 
-            background: white; border-radius: 20px; 
-            max-width: 1000px; margin: 0 auto 30px auto; box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            overflow: hidden; width: 100%; box-sizing: border-box; background-color: #ffffff;
-            position: relative;
+        /* 上傳控制區塊 */
+        .upload-container {
+            max-width: 1000px; margin: 0 auto 30px auto; background: white;
+            padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
         }
+        .upload-container h2 { margin: 0; color: #2d3748; }
+        #drop-zone {
+            border: 3px dashed #cbd5e1; padding: 40px 20px; border-radius: 10px;
+            background: #f8fafc; cursor: pointer; transition: 0.2s; margin-top: 15px;
+        }
+        #drop-zone:hover { border-color: var(--hcgn-green); background: #f0fdf4; }
+        #excel-file { display: none; }
+
+        /* 網頁即時數據預覽 */
+        .preview-container {
+            max-width: 1000px; margin: 0 auto 40px auto; background: white;
+            padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .preview-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #1e293b; }
+        .web-table-wrapper { overflow-x: auto; max-height: 350px; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .web-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+        .web-table th { background: #f1f5f9; padding: 12px; font-weight: bold; position: sticky; top: 0; border-bottom: 2px solid #cbd5e1; }
+        .web-table td { padding: 12px; border-bottom: 1px solid #edf2f7; }
+
+        /* 下載功能按鈕 */
+        .controls { text-align: center; margin: 20px 0; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;}
+        .btn-download { background-color: var(--hcgn-green); color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.25); transition: 0.3s; display: none; }
+        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.35); }
+        .btn-mix { background-color: #2e7d32; }
+        .btn-taoyuan { background-color: #388e3c; }
+        .btn-hsinchu { background-color: #43a047; }
 
         /* ==================================================== */
-        /* 🌟 Canva 表格下載模式 (A3 比例) */
+        /* 🌟 Canva 雙欄海報渲染主區塊 (A3 精準比例 1190 x 1683) */
         /* ==================================================== */
+        #poster-area { 
+            position: absolute; left: -9999px; top: -9999px; /* 平常隱藏不干擾 */
+            background-color: #ffffff; width: 1190px; height: 1683px; 
+            padding: 60px 50px 50px 50px; box-sizing: border-box;
+            display: flex; flex-direction: column;
+        }
+
         #poster-area.download-mode {
-            margin: 0 !important; border-radius: 0 !important; box-shadow: none !important;
-            max-width: 1190px !important; width: 1190px !important; min-height: 1683px !important; 
-            display: flex !important; flex-direction: column !important;
+            position: static !important;
             background-image: url('background.png') !important;
             background-size: cover !important;
             background-position: center !important;
-            background-color: #e8f5e9 !important; 
-            font-family: "王漢宗顏楷體", "DFKai-SB", "標楷體", serif !important;
         }
 
-        /* 🌟 下載時隱藏網頁版專用元件（包含 LOGO、舊版月份圓圈） */
-        #poster-area.download-mode .event-grid, 
-        #poster-area.download-mode .legend-container, 
-        #poster-area.download-mode .station-footer-grid,
-        #poster-area.download-mode .month-nav,
-        #poster-area.download-mode .admin-btn,
-        #poster-area.download-mode .maintainer-text,
-        #poster-area.download-mode .sub-title,
-        #poster-area.download-mode .poster-footer,
-        #poster-area.download-mode .month-circle, 
-        #poster-area.download-mode .header-left img { 
-            display: none !important; 
-        }
-
-        /* 顯示表格區塊 */
-        #poster-table-container { display: none; width: 100%; padding: 0 50px 30px 50px; box-sizing: border-box; }
-        #poster-area.download-mode #poster-table-container { display: block; flex-grow: 1; }
-
-        .canva-table {
-            width: 100%; border-collapse: collapse; background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;
-            border: 2px solid #2e7d32;
-        }
-        .canva-table th {
-            background-color: #aed581; 
-            color: #000000; 
-            padding: 20px 10px;
-            font-size: 32px; 
-            border: 2px solid #2e7d32;
-            font-weight: 900;
-        }
-        .canva-table td {
-            padding: 22px 12px; border: 2px solid #2e7d32; text-align: center;
-            color: #000000 !important; 
-            font-weight: bold;
-            font-size: 30px !important; 
-        }
+        /* 頂部大 Header 排版 */
+        .poster-header { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
         
-        .canva-table tr:nth-child(odd) { background-color: #FFFDF4; }
-        .canva-table tr:nth-child(even) { background-color: #EFE0C8; }
+        /* 左上角綠色精美年份圓圈 */
+        .header-badge-circle {
+            position: absolute; left: 10px; top: -10px; width: 120px; height: 120px;
+            background-color: #1b5e20; color: white; border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .header-badge-circle .b-year { font-size: 18px; letter-spacing: 1px; }
+        .header-badge-circle .b-month { font-size: 56px; font-weight: 900; line-height: 1; margin: 2px 0; }
+        .header-badge-circle .b-text { font-size: 14px; font-weight: bold; }
+
+        .poster-main-title { font-size: 52px; font-weight: 900; color: #1b5e20; margin: 0; letter-spacing: 2px; text-align: center; }
+        .poster-sub-title { font-size: 34px; font-weight: 900; color: #1b5e20; margin-top: 10px; letter-spacing: 1px; text-align: center; }
+
+        /* 核心雙欄佈局區塊 */
+        .poster-body-columns { display: flex; justify-content: space-between; width: 100%; flex-grow: 1; position: relative; margin-bottom: 30px; }
         
-        .canva-table td.cell-title { text-align: left; padding-left: 20px; font-size: 32px; color: #000000; font-weight: 900; }
+        /* 中間縱向綠色虛線分隔線 */
+        .poster-body-columns::after {
+            content: ""; position: absolute; left: 50%; top: 20px; bottom: 20px;
+            border-left: 3px dashed #aed581; transform: translateX(-50%);
+        }
 
-        #poster-area.download-mode .poster-header { padding: 60px 40px 30px 40px !important; }
+        .poster-column { width: 510px; display: flex; flex-direction: column; gap: 35px; box-sizing: border-box; }
+
+        /* 分組標頭樣式 (樂活養生、料理教做、地區營運) */
+        .category-block { width: 100%; }
+        .category-header-title {
+            font-size: 32px; font-weight: 900; color: #000000; padding: 6px 25px;
+            border-radius: 30px; display: inline-block; margin-bottom: 20px;
+        }
+        /* 根據範本顏色精準套用膠囊背景 */
+        .bg-style-養生 { background-color: #f8d7da; }
+        .bg-style-料理 { background-color: #ffe8cc; }
+        .bg-style-營運 { background-color: #e2e8f0; }
+
+        /* 活動橫列明細排版 */
+        .event-item-row { width: 100%; margin-bottom: 22px; display: flex; flex-direction: column; gap: 6px; }
+        .event-item-meta { font-size: 24px; color: #444; font-weight: bold; }
+        .event-item-meta .meta-date { color: #1b5e20; font-weight: 900; margin-right: 10px; }
+        .event-item-title { font-size: 28px; font-weight: 900; color: #000000; line-height: 1.4; padding-left: 2px; }
         
-        /* 🌟 共通的純白粗邊框 + 光暈效果 */
-        .white-stroke-text {
-            color: #000000 !important;
-            text-shadow: 
-                3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff,
-                0px 3px 0 #fff, 0px -3px 0 #fff, 3px 0px 0 #fff, -3px 0px 0 #fff,
-                4px 4px 10px rgba(255,255,255,0.9) !important;
+        .event-divider { border-top: 2px dotted #cbd5e1; margin-top: 15px; width: 100%; }
+
+        /* 右下角優雅的置底引導 QR Code 區塊 */
+        .poster-qr-container {
+            border: 3px solid #2e7d32; border-radius: 20px; background: rgba(255,255,255,0.9);
+            padding: 20px; display: flex; align-items: center; gap: 20px; margin-top: auto; box-sizing: border-box;
         }
+        .poster-qr-img { width: 120px; height: 120px; display: block; }
+        .poster-qr-text-block { display: flex; flex-direction: column; gap: 8px; }
+        .qr-t1 { font-size: 24px; font-weight: 900; color: #000000; }
+        .qr-t2 { font-size: 22px; font-weight: 900; color: #2e7d32; }
+        .qr-pill { background-color: #c8e6c9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-size: 18px; font-weight: 900; display: inline-block; width: fit-content; }
 
-        /* 🌟 下載模式專屬的主標題 (放大至 90px 並允許換行，放在上方) */
-        #poster-area.download-mode .main-title { 
-            font-size: 90px !important; 
-            letter-spacing: 4px; 
-            font-weight: 900;
-            line-height: 1.3 !important;
-            margin-bottom: 0;
+        /* 置底滿版站所聯絡資訊 Footer */
+        .poster-footer-grid {
+            border-top: 3px solid #1b5e20; padding-top: 25px; display: flex; justify-content: space-between; width: 100%; box-sizing: border-box;
         }
-
-        /* 🌟 下載模式專屬的 YYYY MM 標題 (位於主標題下方，字體與主標題一樣 90px) */
-        .dl-ym {
-            display: none;
-            font-size: 90px !important; /* 🌟 改為與主標題完全一樣大 */
-            font-weight: 900;
-            margin-top: 15px; /* 🌟 與上方主標題稍微拉開一點空間 */
-            margin-bottom: 20px;
-            letter-spacing: 6px;
-            line-height: 1.3 !important;
+        .footer-region-section { width: 48%; display: flex; gap: 15px; }
+        .footer-badge-icon {
+            width: 55px; height: 55px; border-radius: 50%; background-color: #2e7d32; color: white;
+            font-size: 28px; font-weight: 900; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
-        #poster-area.download-mode .dl-ym { display: block !important; }
-
-        /* 🌟 下載模式專屬的 Footer 排版 (中置 QR Code + 左右文字) */
-        #download-custom-footer {
-            display: none;
-            width: 100%;
-            padding: 0 50px 40px 50px;
-            box-sizing: border-box;
-            justify-content: space-between;
-            align-items: center; 
-        }
-        #poster-area.download-mode #download-custom-footer {
-            display: flex !important;
-        }
-
-        .dl-text {
-            font-size: 40pt; 
-            font-weight: 900;
-            width: 35%;
-            line-height: 1.4;
-        }
-        .dl-left { text-align: left; }
-        .dl-right { text-align: right; }
-
-        .dl-qr-box {
-            width: 25%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px;
-            border-radius: 15px;
-            border: 4px solid #2e7d32;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .dl-qr-title {
-            font-size: 32px; 
-            font-weight: 900;
-            color: #2e7d32;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        .dl-qr-img {
-            width: 180px; 
-            height: 180px;
-            display: block;
-        }
-
-        /* ==================================================== */
-
-        .poster-header { position: relative; display: flex; flex-direction: column; align-items: center; padding: 40px 40px 15px 40px; }
-        .header-left { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-        .header-left img { height: auto; width: 100%; max-width: 900px; display: block; }
-        .main-title { font-size: 32px; font-weight: 900; color: var(--text-main); margin: 0; line-height: 1.2; text-align: center; }
-        .sub-title {
-            font-size: 16px; font-weight: 900; color: var(--hcgn-green); background-color: #e8f5e9;
-            padding: 6px 18px; border-radius: 20px; margin-top: -10px; letter-spacing: 1px;
-            border: 1px solid #c8e6c9; box-shadow: 0 2px 5px rgba(40, 167, 69, 0.1);
-        }
-
-        .month-nav { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 10px; background: #fdfdfd; padding: 8px 25px; border-radius: 50px; border: 1px dashed #d1d8e0; }
-        .nav-btn { background: none; border: none; font-size: 15px; font-weight: bold; color: var(--hcgn-green); cursor: pointer; padding: 5px 10px; transition: 0.2s; border-radius: 8px; }
-        .nav-btn:hover { background: #e8f5e9; }
-        .nav-current { font-size: 16px; font-weight: 900; color: #2d3436; }
-
-        .month-circle { position: absolute; top: 40px; right: 40px; width: 85px; height: 85px; border-radius: 50%; background-color: var(--dark-green); color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3); z-index: 2; }
-        .month-circle-inner { text-align: center; line-height: 1.1; }
-        .month-circle-inner .year { font-size: 14px; font-weight: normal; }
-        .month-circle-inner .month { font-size: 36px; font-weight: 900; }
-        .month-circle-inner .unit { font-size: 14px; font-weight: bold; }
-
-        .legend-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 5px; padding: 0 40px; font-size: 13px; color: var(--text-sub); }
-        .legend-item { display: flex; align-items: center; gap: 4px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-
-        .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 30px 40px; }
-        .event-card { background: #fff; border: 1px solid #edf2f7; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; position: relative; transition: all 0.3s ease; }
-        .clickable-card { cursor: pointer; }
-        .clickable-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(40, 167, 69, 0.15); border-color: var(--hcgn-green); }
-        .card-expired { opacity: 0.5; filter: grayscale(0.6); pointer-events: none; }
-        .expired-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); border: 3px solid #d63031; color: #d63031; padding: 5px 15px; font-size: 24px; font-weight: 900; border-radius: 8px; z-index: 10; background: rgba(255,255,255,0.8); pointer-events: none; }
-
-        .card-top-bar { height: 6px; width: 100%; }
-        .card-content { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px;}
-        .date-tag { font-size: 16px; font-weight: 900; color: var(--hcgn-green); display: block; }
-        .tag-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 5px; }
-        .type-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; white-space: nowrap; }
-        .station-badge { background: #f1f2f6; color: #57606f; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-        .link-badge { background: #e3f2fd; color: #1565c0; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 800; white-space: nowrap; display: flex; align-items: center; gap: 3px; }
-        .event-title { font-size: 18px; font-weight: 800; color: #000; line-height: 1.4; margin: 4px 0; min-height: 2.8em;}
-        .info-row { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #444; }
-        .info-icon { width: 16px; text-align: center; color: var(--hcgn-green); }
-        .event-desc { font-size: 13.5px; color: #4b4b4b; background: #fdfdfd; padding: 10px; border-radius: 8px; margin-top: auto; line-height: 1.5; border: 1px dashed #e1e1e1; }
-
-        .station-footer-grid { background: #fdfdfd; padding: 30px 40px; border-top: 2px solid #f1f2f6; display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; width: 100%; box-sizing: border-box; }
-        .station-item { font-size: 13px; line-height: 1.6; color: #555; }
-        .station-item b { color: var(--hcgn-green); font-size: 15px; display: block; margin-bottom: 3px; }
-
-        .poster-footer { padding: 30px 40px; background: transparent; color: #7f8c8d; font-size: 13px; line-height: 1.6; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; box-sizing: border-box; }
-        .footer-left { display: flex; flex-direction: column; gap: 4px; padding-bottom: 5px; }
-        .footer-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px; }
-        .qr-section { display: flex; flex-direction: column; align-items: center; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid #2e7d32; }
-        .qr-title { font-size: 15px; font-weight: 900; color: #2e7d32; margin-bottom: 6px; letter-spacing: 1px; }
-        .permanent-qr { width: 100px; height: 100px; display: block; }
-
-        .footer-admin-block { width: 100%; display: flex; flex-direction: column; align-items: flex-end; }
-        .admin-btn { background: #e2e8f0; color: #475569; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; box-sizing: border-box; margin-bottom: 4px; transition: 0.2s; }
-        .admin-btn:hover { background: #cbd5e1; }
-        .maintainer-text { font-size: 12px; }
-
-        .controls { text-align: center; margin: 30px 0 50px 0; padding: 0 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;}
-        .btn-download { background-color: var(--hcgn-green); color: white; border: none; padding: 14px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; max-width: 250px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: 0.3s; }
-        .btn-download.hsinchu-btn { background-color: var(--color-producer); box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3); }
-
-        @media (max-width: 767px) { 
-            .poster-header { padding: 30px 20px 10px 20px; }
-            .header-left img { width: 100%; max-width: none; }
-            .month-circle { position: relative; top: auto; right: auto; width: 70px; height: 70px; margin-top: 10px;}
-            .event-grid { grid-template-columns: 1fr; padding: 20px; } 
-            .station-footer-grid { grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; } 
-            .poster-footer { flex-direction: column; align-items: center; text-align: center; gap: 20px; padding: 20px; }
-            .footer-right { align-items: center; width: 100%; }
-        }
-        
-        #loading, #no-data { text-align: center; padding: 60px; font-size: 16px; color: #a4b0be; }
+        .footer-stations-text { font-size: 15px; color: #333; line-height: 1.5; font-weight: bold; }
+        .footer-stations-text b { color: #000; font-size: 16px; margin-right: 5px; }
     </style>
 </head>
 <body>
 
-<div id="poster-area">
-    <div class="poster-header">
-        <div class="header-left">
-            <img src="logo.png" alt="主婦聯盟合作社新竹分社 LOGO">
-            
-            <h2 class="main-title" id="mainTitle">新竹分社活動月曆</h2>
-            
-            <div id="downloadYm" class="dl-ym white-stroke-text"></div>
-            
-            <div class="sub-title">✨ 歡迎非社員參加 ✨</div> 
-            
-            <div class="month-nav">
-                <button class="nav-btn" onclick="changeMonth(-1)">◀ 上個月</button>
-                <span class="nav-current" id="navDisplay">載入中...</span>
-                <button class="nav-btn" onclick="changeMonth(1)">下個月 ▶</button>
-            </div>
-        </div>
-        
-        <div class="month-circle" id="monthCircleBox">
-            <div class="month-circle-inner">
-                <div class="year" id="circleYear">--</div>
-                <div class="month" id="circleMonth">--</div>
-                <div class="unit">MONTH</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="legend-container">
-        <div class="legend-item"><span class="dot" style="background:var(--color-cooking)"></span>料理教作</div>
-        <div class="legend-item"><span class="dot" style="background:var(--color-producer)"></span>生產者面對面</div>
-        <div class="legend-item"><span class="dot" style="background:var(--color-outdoor)"></span>戶外參訪</div>
-        <div class="legend-item"><span class="dot" style="background:var(--color-meeting)"></span>議題講座</div>
-        <div class="legend-item"><span class="dot" style="background:var(--color-club)"></span>開心社團</div>
-        <div class="legend-item"><span class="dot" style="background:var(--color-health)"></span>樂活養生</div>
-        <div class="legend-item"><span class="dot" style="background:var(--color-community-meeting)"></span>社務會議</div>
-    </div>
-
-    <div id="loading">✨ 正在整理活動資訊...</div>
-    <div id="no-data" style="display:none;">📭 本月份目前尚無活動資料。</div>
-    
-    <div class="event-grid" id="eventGrid"></div>
-
-    <div id="poster-table-container">
-        <table class="canva-table" id="canvaTable">
-            <thead>
-                <tr>
-                    <th width="12%">站所</th>
-                    <th width="18%">日期</th>
-                    <th width="16%">時間</th>
-                    <th width="15%">活動類型</th>
-                    <th>活動名稱</th>
-                    <th width="12%">講師</th>
-                </tr>
-            </thead>
-            <tbody id="canvaTableBody">
-                </tbody>
-        </table>
-    </div>
-
-    <div id="download-custom-footer">
-        <div class="dl-text dl-left white-stroke-text">歡迎社員/非社員<br>參與每月活動</div>
-        
-        <div class="dl-qr-box">
-            <div class="dl-qr-title">▼ 掃我報名 ▼</div>
-            <img src="qrcode.png" alt="報名QR Code" class="dl-qr-img">
-        </div>
-        
-        <div class="dl-text dl-right white-stroke-text">更多活動詳情<br>請上本社官網</div>
-    </div>
-
-    <div class="station-footer-grid">
-        <div class="station-item region-taoyuan"><b>桃園站</b>桃園市三民路三段28-1號<br>03-333-6089</div>
-        <div class="station-item region-taoyuan"><b>中壢站</b>桃園市中壢區廣州路220號<br>03-465-8105</div>
-        <div class="station-item region-taoyuan"><b>國際站</b>桃園市國際路一段1126號<br>03-2206884</div>
-        <div class="station-item region-taoyuan"><b>龍潭站</b>桃園市龍潭區龍華路245號<br>03-4792665</div>
-        <div class="station-item region-hsinchu"><b>新竹站</b>新竹市東區南大路175號<br>03-561 6258</div>
-        <div class="station-item region-hsinchu"><b>三葉站</b>新竹市東區三民路6號<br>03-533 3314</div>
-        <div class="station-item region-hsinchu"><b>竹北站</b>竹北市六家五路一段318號<br>03-550 4190</div>
-        <div class="station-item region-hsinchu"><b>縣府站</b>竹北市文信路221 號<br>03-558-4239</div>
-        <div class="station-item region-hsinchu"><b>關新站</b>新竹市長春街81號<br>03-668-7065</div>
-    </div>
-
-    <div class="poster-footer">
-        <div class="footer-left">
-            <div style="font-weight: bold; font-size: 14px; color: #555;">版權所有 主婦聯盟生活消費合作社 新竹分社</div>
-            <div id="updateDateDisplay">更新日期：</div>
-        </div>
-        
-        <div class="footer-right">
-            <div class="qr-section">
-                <div class="qr-title">▼ 掃我報名 ▼</div>
-                <img src="qrcode.png" alt="報名QR Code" class="permanent-qr">
-            </div>
-            
-            <div class="footer-admin-block">
-                <button class="admin-btn" onclick="window.location.href='form.html'">✎ 進入活動填報系統</button>
-                <div class="maintainer-text">📧 系統維護：dark.celler@gmail.com</div>
-            </div>
-        </div>
+<div class="upload-container">
+    <h2>主婦聯盟新竹分社活動月曆產生器 5.0 (Canva完美版) 📊</h2>
+    <p style="color:#64748b; margin-top:6px;">直接讀取自後台導出的原始 Excel 試算表。系統將自動進行資料清洗與雙欄自動對齊排版。</p>
+    <div id="drop-zone" onclick="document.getElementById('excel-file').click()">
+        <p style="font-size: 16px; color: #334155; font-weight: bold;">拖曳 Excel 檔案至此區域，或點擊選取檔案</p>
+        <input type="file" id="excel-file" onchange="handleFile(this.files)">
     </div>
 </div>
 
 <div class="controls">
-    <button class="btn-download" id="btn-taoyuan" onclick="downloadPoster('taoyuan')">📥 下載 桃園區海報</button>
-    <button class="btn-download hsinchu-btn" id="btn-hsinchu" onclick="downloadPoster('hsinchu')">📥 下載 新竹區海報</button>
+    <button class="btn-download btn-mix" id="btn-mix" onclick="generatePoster('mix')">📥 下載 桃竹混排海報</button>
+    <button class="btn-download btn-taoyuan" id="btn-taoyuan" onclick="generatePoster('taoyuan')">📥 下載 桃園區海報</button>
+    <button class="btn-download btn-hsinchu" id="btn-hsinchu" onclick="generatePoster('hsinchu')">📥 下載 新竹區海報</button>
+</div>
+
+<div class="preview-container" id="previewContainer" style="display: none;">
+    <div class="preview-title">👀 原始資料讀取成功！網頁端即時清洗預覽：</div>
+    <div class="web-table-wrapper">
+        <table class="web-table">
+            <thead>
+                <tr>
+                    <th>主辦站所</th>
+                    <th>原始舉辦時間</th>
+                    <th>原始活動類型</th>
+                    <th>活動名稱</th>
+                    <th>講師</th>
+                </tr>
+            </thead>
+            <tbody id="webPreviewBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="poster-area">
+    <div class="poster-header">
+        <div class="header-badge-circle">
+            <span class="b-year" id="badgeYear">2026</span>
+            <span class="b-month" id="badgeMonth">6</span>
+            <span class="b-text">MONTH</span>
+        </div>
+        <h1 class="poster-main-title">主婦聯盟消費合作社</h1>
+        <div class="poster-sub-title" id="posterSubTitle">新竹分社 | 活動月曆</div>
+    </div>
+
+    <div class="poster-body-columns">
+        <div class="poster-column">
+            <div class="category-block" id="block-養生" style="display: none;">
+                <div class="category-header-title bg-style-養生">🌸 樂活養生</div>
+                <div id="container-養生"></div>
+            </div>
+            <div class="category-block" id="block-料理" style="display: none;">
+                <div class="category-header-title bg-style-料理">🍳 料理教做</div>
+                <div id="container-料理"></div>
+            </div>
+        </div>
+
+        <div class="poster-column">
+            <div class="category-block" id="block-營運" style="display: none;">
+                <div class="category-header-title bg-style-營運">📖 地區營運</div>
+                <div id="container-營運"></div>
+            </div>
+            
+            <div class="poster-qr-container">
+                <img src="qrcode.png" alt="報名QR" class="poster-qr-img">
+                <div class="poster-qr-text-block">
+                    <div class="qr-t1">從一場活動開始認識我們吧！</div>
+                    <div class="qr-t2">請掃描QR Code線上報名</div>
+                    <div class="qr-pill">社員/非社員皆可參加</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="poster-footer-grid">
+        <div class="footer-region-section">
+            <div class="footer-badge-icon">桃</div>
+            <div class="footer-stations-text">
+                <div><b>桃園站</b>(03)333-6089 桃園市桃園區三民路三段28-1號</div>
+                <div><b>國際站</b>(03)220-6884 桃園市桃園區國際路一段1126號</div>
+                <div><b>龍潭站</b>(03)479-2665 桃園市龍潭區龍華路245號</div>
+                <div><b>中壢站</b>(03)465-8105 桃園市中壢區廣州路220號</div>
+            </div>
+        </div>
+        <div class="footer-region-section">
+            <div class="footer-badge-icon">竹</div>
+            <div class="footer-stations-text">
+                <div><b>新竹站</b>(03)561-6258 新竹市東區南大路175號</div>
+                <div><b>關新站</b>(03)668-7065 新竹市東區長春街81號</div>
+                <div><b>三葉站</b>(03)533-3314 新竹市東區三民路6號1樓</div>
+                <div><b>縣府站</b>(03)558-4239 新竹縣竹北市文信路221號</div>
+                <div><b>竹北站</b>(03)550-4190 新竹縣竹北市六家五路一段318號</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    const spreadsheetId = '1wSLPWvV07NCUcheMy0xIUCikg9kv3V3hsD0jcmHVdZM'; 
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    
-    let currentViewYear;
-    let currentViewMonth;
-    let currentFullRows = []; 
+    let processedRows = []; 
+    let finalYear = "2026";
+    let finalMonth = "6";
 
-    function getTypeStyles(type) {
-        if (!type) return 'var(--color-default)';
-        const t = type.toString();
-        if (t.includes("料理") || t.includes("教作")) return 'var(--color-cooking)';
-        if (t.includes("社團") || t.includes("開心")) return 'var(--color-club)';
-        if (t.includes("生產者") || t.includes("面對面")) return 'var(--color-producer)';
-        if (t.includes("養生") || t.includes("樂活")) return 'var(--color-health)';
-        if (t.includes("參訪") || t.includes("戶外")) return 'var(--color-outdoor)';
-        if (t.includes("議題講座")) return 'var(--color-meeting)';
-        if (t.includes("社務會議")) return 'var(--color-community-meeting)';
-        return 'var(--color-default)';
+    function handleFile(files) {
+        if (!files || files.length === 0) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+            cleanAndLoadData(json);
+        };
+        reader.readAsArrayBuffer(files[0]);
     }
 
-    function initApp() {
-        document.getElementById('updateDateDisplay').innerText = `更新日期：${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        currentViewYear = today.getFullYear();
-        currentViewMonth = today.getMonth() + 1;
-        loadEvents(currentViewYear, currentViewMonth);
-    }
+    // 智慧型原始 Excel 欄位對應與雜訊清洗
+    function cleanAndLoadData(matrix) {
+        if (!matrix || matrix.length < 2) return;
+        const headers = matrix[0].map(h => h ? h.toString().trim() : "");
+        
+        const idxType = headers.findIndex(h => h.includes("類型"));
+        const idxName = headers.findIndex(h => h.includes("名稱"));
+        const idxTime = headers.findIndex(h => h.includes("時間") || h.includes("日期"));
+        const idxStation = headers.findIndex(h => h.includes("主辦") || h.includes("站所") || h.includes("單位"));
+        const idxLecturer = headers.findIndex(h => h.includes("講師") || h.includes("講者"));
 
-    function changeMonth(offset) {
-        let d = new Date(currentViewYear, currentViewMonth - 1 + offset, 1);
-        currentViewYear = d.getFullYear();
-        currentViewMonth = d.getMonth() + 1;
-        loadEvents(currentViewYear, currentViewMonth);
-    }
+        processedRows = [];
+        const previewBody = document.getElementById('webPreviewBody');
+        previewBody.innerHTML = "";
 
-    function loadEvents(year, month) {
-        document.getElementById('circleYear').innerText = year;
-        document.getElementById('circleMonth').innerText = month;
-        document.getElementById('navDisplay').innerText = `${year}年 ${month}月`;
+        for (let i = 1; i < matrix.length; i++) {
+            const row = matrix[i];
+            if (!row || !row[idxName]) continue;
 
-        const sheetName = (year - 2000) + "年" + month + "月";
-        const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&headers=1`;
+            let rawName = row[idxName].toString().trim();
+            // 💡 智慧資料清洗：移除活動標題開頭混亂的日期前綴 (如 2026/06/02 或 6/4 )
+            rawName = rawName.replace(/^[\d\/\.\-\s]+年?[\d\/\.\-\s]+月?[\d\/\.\-\s]+日?\s*/, '')
+                             .replace(/^[\d]+[\/\.][\d]+\s*/, '');
 
-        const grid = document.getElementById('eventGrid');
-        const loading = document.getElementById('loading');
-        const noData = document.getElementById('no-data');
+            const item = {
+                station: row[idxStation] ? row[idxStation].toString().trim().replace("站所","").replace("站","") : "新竹",
+                rawTime: row[idxTime] ? row[idxTime].toString().trim() : "",
+                originalType: row[idxType] ? row[idxType].toString().trim() : "其他",
+                name: rawName,
+                lecturer: row[idxLecturer] ? row[idxLecturer].toString().trim() : "---"
+            };
 
-        grid.innerHTML = ""; noData.style.display = "none"; loading.style.display = "block";
-
-        fetch(url)
-            .then(res => res.text())
-            .then(data => {
-                const jsonStr = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
-                const parsedData = JSON.parse(jsonStr);
-                let rows = parsedData.table.rows;
-                loading.style.display = 'none';
-
-                if (!rows || rows.length === 0) {
-                    noData.style.display = 'block'; return;
-                }
-
-                rows = rows.filter(row => row.c && row.c[7] && row.c[7].v && row.c[7].v !== "活動名稱");
-                
-                rows.sort((a, b) => {
-                    const valA = (a.c[4] ? a.c[4].v : 0).toString();
-                    const valB = (b.c[4] ? b.c[4].v : 0).toString();
-                    return valA.localeCompare(valB);
-                });
-
-                currentFullRows = rows; 
-
-                let validCount = 0;
-                rows.forEach((row) => {
-                    const cols = row.c;
-                    const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? (cols[idx].f || cols[idx].v.toString()).trim() : "";
-                    
-                    if (getVal(10).includes("作廢")) return;
-
-                    const dateRaw = getVal(4);
-                    let displayDate = dateRaw;
-                    let isExpired = false;
-
-                    if(dateRaw.length === 8) {
-                        const y = dateRaw.substring(0,4); const m = dateRaw.substring(4,6); const d = dateRaw.substring(6,8);
-                        if (parseInt(y, 10) !== year || parseInt(m, 10) !== month) return; 
-                        const eventDate = new Date(y, m-1, d);
-                        const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
-                        displayDate = `${m}/${d} (${weekDays[eventDate.getDay()]})`;
-                        if(eventDate < today) isExpired = true;
-                    }
-
-                    validCount++;
-                    const type = getVal(6);
-                    const color = getTypeStyles(type);
-                    const linkUrl = getVal(11); 
-                    const stationName = getVal(3);
-                    const taoyuanStations = ["桃園", "中壢", "國際", "龍潭"];
-                    const regionClass = taoyuanStations.includes(stationName) ? "taoyuan" : "hsinchu";
-
-                    const card = document.createElement('div');
-                    card.className = `event-card ${isExpired ? 'card-expired' : ''} ${linkUrl && !isExpired ? 'clickable-card' : ''}`;
-                    card.setAttribute('data-region', regionClass);
-                    if (linkUrl && !isExpired) { card.onclick = () => window.open(linkUrl, '_blank'); }
-
-                    card.innerHTML = `
-                        ${isExpired ? '<div class="expired-badge">已結束</div>' : ''}
-                        <div class="card-top-bar" style="background:${color}"></div>
-                        <div class="card-content">
-                            <span class="date-tag">${displayDate}</span>
-                            <div class="tag-row">
-                                <span class="type-badge" style="background:${color}">${type}</span>
-                                <span class="station-badge">📍 ${stationName}</span>
-                            </div>
-                            <div class="event-title">${getVal(7)}</div>
-                            <div class="info-row"><span class="info-icon">⏱</span><span>${getVal(5)}</span></div>
-                            ${getVal(9) ? `<div class="event-desc">${getVal(9)}</div>` : ''}
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-                if (validCount === 0) noData.style.display = 'block';
-            })
-            .catch(err => {
-                loading.style.display = 'none';
-                noData.innerText = "📭 目前尚無活動資料。"; noData.style.display = 'block';
-            });
-    }
-
-    function prepareTable(region) {
-        const tableBody = document.getElementById('canvaTableBody');
-        tableBody.innerHTML = "";
-        const taoyuanStations = ["桃園", "中壢", "國際", "龍潭"];
-
-        currentFullRows.forEach(row => {
-            const cols = row.c;
-            const getVal = (idx) => (cols[idx] && cols[idx].v !== null) ? (cols[idx].f || cols[idx].v.toString()).trim() : "";
-            const station = getVal(3);
-            const isTaoyuan = taoyuanStations.includes(station);
-
-            if ((region === 'taoyuan' && !isTaoyuan) || (region === 'hsinchu' && isTaoyuan)) return;
-            if (getVal(10).includes("作廢")) return;
-
-            const dateRaw = getVal(4);
-            const y = dateRaw.substring(0,4); const m = dateRaw.substring(4,6); const d = dateRaw.substring(6,8);
-            const eventDate = new Date(y, m-1, d);
-            const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
-            const dateStr = `${m}/${d}(${weekDays[eventDate.getDay()]})`;
+            if (item.name === "活動名稱" || item.originalType.includes("作廢")) continue;
+            processedRows.push(item);
 
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${station}</td>
-                <td>${dateStr}</td>
-                <td style="white-space: nowrap;">${getVal(5)}</td>
-                <td>${getVal(6)}</td>
-                <td class="cell-title">${getVal(7)}</td>
-                <td>${getVal(8) || "---"}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
+            tr.innerHTML = `<td><b>${item.station}站</b></td><td>${item.rawTime}</td><td>${item.originalType}</td><td>${item.name}</td><td>${item.lecturer}</td>`;
+            previewBody.appendChild(tr);
+        }
+
+        // 從第一筆活動時間戳抓取海報對應的年月
+        if (processedRows.length > 0) {
+            const match = processedRows[0].rawTime.match(/(\d{4})[-/](\d{1,2})/);
+            if (match) { finalYear = match[1]; finalMonth = parseInt(match[2], 10).toString(); }
+        }
+
+        document.getElementById('previewContainer').style.display = 'block';
+        document.querySelectorAll('.btn-download').forEach(btn => btn.style.display = 'inline-block');
+        document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function downloadPoster(region) {
+    // 依細則指引將類型自動歸類至 Canva 指定的三大核心分類 [cite: 4]
+    function mapToCanvaCategory(typeStr) {
+        if (!typeStr) return "營運";
+        const t = typeStr.toString();
+        if (t.includes("料理") || t.includes("教作") || t.includes("教做")) return "料理"; [cite: 4]
+        if (t.includes("社務") || t.includes("會議") || t.includes("地區") || t.includes("營運")) return "營運"; [cite: 4]
+        // 🌸 剩餘的其餘分類 (議題講座、開心社團、生產者面對面等) 依照新玩法通通歸類為「樂活養生」 [cite: 4]
+        return "養ens"; 
+    }
+
+    // 智慧型時間格式與站所地區前綴補完器 
+    function formatTimeAndStation(item) {
+        let dateStr = item.rawTime;
+        let timeStr = "00:00";
+        try {
+            const parts = item.rawTime.split(" ");
+            if (parts.length >= 1) {
+                const dateParts = parts[0].split(/[-/]/);
+                if (dateParts.length === 3) {
+                    const m = parseInt(dateParts[1], 10);
+                    const d = parseInt(dateParts[2], 10);
+                    const eventDate = new Date(parseInt(dateParts[0],10), m - 1, d);
+                    const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+                    dateStr = `${m}/${d} (${weekDays[eventDate.getDay()]})`;
+                }
+            }
+            if (parts.length >= 2) {
+                const tParts = parts[1].split(":");
+                timeStr = `${tParts[0]}:${tParts[1]}`;
+            }
+        } catch (e) {}
+
+        // 💡 補完前綴：自動區分桃園或新竹所屬站所 
+        const taoyuanList = ["桃園", "中壢", "國際", "龍潭"];
+        const prefix = taoyuanList.includes(item.station) ? "桃園" : "新竹"; [cite: 5]
+        
+        return `${dateStr} ${timeStr} ${prefix}${item.station}站`; [cite: 5]
+    }
+
+    function generatePoster(mode) {
+        // 清空三個分組區塊
+        document.getElementById('container-養生').innerHTML = "";
+        document.getElementById('container-料理').innerHTML = "";
+        document.getElementById('container-營運').innerHTML = "";
+        
+        document.getElementById('block-養生').style.display = "none";
+        document.getElementById('block-料理').style.display = "none";
+        document.getElementById('block-營運').style.display = "none";
+
+        const taoyuanList = ["桃園", "中壢", "國際", "龍潭"];
+        
+        // 篩選與排序
+        const filtered = processedRows.filter(item => {
+            const isTaoyuan = taoyuanList.includes(item.station);
+            if (mode === 'taoyuan' && !isTaoyuan) return false;
+            if (mode === 'hsinchu' && isTaoyuan) return false;
+            return true;
+        });
+        filtered.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
+
+        // 動態塞入內容並建立節點
+        filtered.forEach(item => {
+            const cat = mapToCanvaCategory(item.originalType);
+            const container = document.getElementById(`container-${cat === '養ens' ? '養生' : cat}`);
+            document.getElementById(`block-${cat === '養ens' ? '養生' : cat}`).style.display = "block";
+
+            const metaText = formatTimeAndStation(item);
+            const rowDiv = document.createElement('div');
+            rowDiv.className = "event-item-row";
+            
+            // 判斷是否需要加上講師尾碼
+            const lecturerSuffix = (item.lecturer && item.lecturer !== "---" && item.lecturer !== "無") ? `～${item.lecturer}` : "";
+
+            rowDiv.innerHTML = `
+                <div class="event-item-meta">${metaText}</div>
+                <div class="event-item-title">${item.name}${lecturerSuffix}</div>
+                <div class="event-divider"></div>
+            `;
+            container.appendChild(rowDiv);
+        });
+
+        // 寫入對應的年月與抬頭
+        document.getElementById('badgeYear').innerText = finalYear;
+        document.getElementById('badgeMonth').innerText = finalMonth;
+        
+        let subTitleText = "新竹分社 | 活動月曆";
+        if (mode === 'taoyuan') subTitleText = "新竹分社 | 活動月曆 (桃園區)";
+        if (mode === 'hsinchu') subTitleText = "新竹分社 | 活動月曆 (新竹區)";
+        document.getElementById('posterSubTitle').innerText = subTitleText;
+
+        // 啟動製圖機制
         const poster = document.getElementById('poster-area');
-        const mainTitle = document.getElementById('mainTitle');
-        const downloadYm = document.getElementById('downloadYm');
-        const targetBtn = document.getElementById(region === 'taoyuan' ? 'btn-taoyuan' : 'btn-hsinchu');
-        
-        const originalBtnText = targetBtn.innerText;
-        targetBtn.innerText = "⏳ 製作海報中...";
-        targetBtn.disabled = true;
-
-        prepareTable(region);
-
-        // 🌟 更新海報上的主標題，並套用白色光暈框
-        const originalTitleText = mainTitle.innerText;
-        mainTitle.innerText = "主婦聯盟合作社新竹分社 活動月曆 (" + (region === 'taoyuan' ? "桃園區" : "新竹區") + ")";
-        mainTitle.classList.add('white-stroke-text');
-
-        // 🌟 寫入 2026 年 4月 格式的大標題 (排在主標題下方)
-        downloadYm.innerText = `${currentViewYear} 年 ${currentViewMonth}月`;
-        
         poster.classList.add('download-mode');
+
+        const btn = document.getElementById(mode === 'mix' ? 'btn-mix' : (mode === 'taoyuan' ? 'btn-taoyuan' : 'btn-hsinchu'));
+        const originalText = btn.innerText;
+        btn.innerText = "⏳ 高解析印刷海報繪製中...";
+        btn.disabled = true;
 
         setTimeout(() => {
             html2canvas(poster, { 
-                scale: 3, 
-                useCORS: true, 
-                backgroundColor: "#e8f5e9",
-                windowWidth: 1190 
+                scale: 3, // 三倍極致縮放，完美對齊 A3 出版印刷解析度
+                useCORS: true,
+                windowWidth: 1190,
+                windowHeight: 1683
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `活動月曆-${currentViewYear}年${currentViewMonth}月-${region}.png`;
+                link.download = `活動月曆-${finalYear}年${finalMonth}月-${mode === 'mix' ? '全分社' : (mode === 'taoyuan' ? '桃園區' : '新竹區')}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
                 poster.classList.remove('download-mode');
-                mainTitle.classList.remove('white-stroke-text');
-                mainTitle.innerText = originalTitleText;
-                targetBtn.innerText = originalBtnText; 
-                targetBtn.disabled = false;
+                btn.innerText = originalText;
+                btn.disabled = false;
             });
-        }, 500); 
+        }, 600);
     }
-
-    initApp();
 </script>
 </body>
 </html>
