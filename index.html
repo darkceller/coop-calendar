@@ -33,7 +33,6 @@
             border: 3px dashed #cbd5e1; padding: 40px 20px; border-radius: 10px;
             background: #f8fafc; cursor: pointer; transition: 0.2s; margin-top: 15px;
         }
-        #drop-zone:hover { border-color: var(--hcgn-green); background: #f0fdf4; }
         #excel-file { display: none; }
 
         /* 網頁即時數據預覽 */
@@ -59,7 +58,7 @@
         /* 🌟 Canva 雙欄海報渲染主區塊 (A3 精準比例 1190 x 1683) */
         /* ==================================================== */
         #poster-area { 
-            position: absolute; left: -9999px; top: -9999px; /* 平常隱藏不干擾 */
+            position: absolute; left: -9999px; top: -9999px; 
             background-color: #ffffff; width: 1190px; height: 1683px; 
             padding: 60px 50px 50px 50px; box-sizing: border-box;
             display: flex; flex-direction: column;
@@ -72,10 +71,8 @@
             background-position: center !important;
         }
 
-        /* 頂部大 Header 排版 */
         .poster-header { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
         
-        /* 左上角綠色精美年份圓圈 */
         .header-badge-circle {
             position: absolute; left: 10px; top: -10px; width: 120px; height: 120px;
             background-color: #1b5e20; color: white; border-radius: 50%;
@@ -88,10 +85,8 @@
         .poster-main-title { font-size: 52px; font-weight: 900; color: #1b5e20; margin: 0; letter-spacing: 2px; text-align: center; }
         .poster-sub-title { font-size: 34px; font-weight: 900; color: #1b5e20; margin-top: 10px; letter-spacing: 1px; text-align: center; }
 
-        /* 核心雙欄佈局區塊 */
         .poster-body-columns { display: flex; justify-content: space-between; width: 100%; flex-grow: 1; position: relative; margin-bottom: 30px; }
         
-        /* 中間縱向綠色虛線分隔線 */
         .poster-body-columns::after {
             content: ""; position: absolute; left: 50%; top: 20px; bottom: 20px;
             border-left: 3px dashed #aed581; transform: translateX(-50%);
@@ -99,18 +94,15 @@
 
         .poster-column { width: 510px; display: flex; flex-direction: column; gap: 35px; box-sizing: border-box; }
 
-        /* 分組標頭樣式 (樂活養生、料理教做、地區營運) */
         .category-block { width: 100%; }
         .category-header-title {
             font-size: 32px; font-weight: 900; color: #000000; padding: 6px 25px;
             border-radius: 30px; display: inline-block; margin-bottom: 20px;
         }
-        /* 根據範本顏色精準套用膠囊背景 */
         .bg-style-養生 { background-color: #f8d7da; }
         .bg-style-料理 { background-color: #ffe8cc; }
         .bg-style-營運 { background-color: #e2e8f0; }
 
-        /* 活動橫列明細排版 */
         .event-item-row { width: 100%; margin-bottom: 22px; display: flex; flex-direction: column; gap: 6px; }
         .event-item-meta { font-size: 24px; color: #444; font-weight: bold; }
         .event-item-meta .meta-date { color: #1b5e20; font-weight: 900; margin-right: 10px; }
@@ -118,7 +110,6 @@
         
         .event-divider { border-top: 2px dotted #cbd5e1; margin-top: 15px; width: 100%; }
 
-        /* 右下角優雅的置底引導 QR Code 區塊 */
         .poster-qr-container {
             border: 3px solid #2e7d32; border-radius: 20px; background: rgba(255,255,255,0.9);
             padding: 20px; display: flex; align-items: center; gap: 20px; margin-top: auto; box-sizing: border-box;
@@ -129,7 +120,6 @@
         .qr-t2 { font-size: 22px; font-weight: 900; color: #2e7d32; }
         .qr-pill { background-color: #c8e6c9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-size: 18px; font-weight: 900; display: inline-block; width: fit-content; }
 
-        /* 置底滿版站所聯絡資訊 Footer */
         .poster-footer-grid {
             border-top: 3px solid #1b5e20; padding-top: 25px; display: flex; justify-content: space-between; width: 100%; box-sizing: border-box;
         }
@@ -147,9 +137,9 @@
 <div class="upload-container">
     <h2>主婦聯盟新竹分社活動月曆產生器 5.0 (Canva完美版) 📊</h2>
     <p style="color:#64748b; margin-top:6px;">直接讀取自後台導出的原始 Excel 試算表。系統將自動進行資料清洗與雙欄自動對齊排版。</p>
-    <div id="drop-zone" onclick="document.getElementById('excel-file').click()">
-        <p style="font-size: 16px; color: #334155; font-weight: bold;">拖曳 Excel 檔案至此區域，或點擊選取檔案</p>
-        <input type="file" id="excel-file" onchange="handleFile(this.files)">
+    <div id="drop-zone">
+        <p style="font-size: 16px; color: #334155; font-weight: bold;" id="drop-text">拖曳 Excel 檔案至此區域，或點擊選取檔案</p>
+        <input type="file" id="excel-file" accept=".xlsx, .xls" style="display:none;">
     </div>
 </div>
 
@@ -245,80 +235,152 @@
     let finalYear = "2026";
     let finalMonth = "6";
 
+    // 🌟 修正：徹底防禦並阻斷瀏覽器拖曳預設行為
+    window.addEventListener("dragover", function(e) { e.preventDefault(); }, false);
+    window.addEventListener("drop", function(e) { e.preventDefault(); }, false);
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('excel-file');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => handleFile(e.target.files));
+
+    dropZone.addEventListener('dragover', (e) => { 
+        e.preventDefault(); e.stopPropagation();
+        dropZone.style.borderColor = 'var(--hcgn-green)'; 
+        dropZone.style.background = '#f0fdf4';
+    });
+    
+    dropZone.addEventListener('dragleave', (e) => { 
+        e.preventDefault(); e.stopPropagation();
+        dropZone.style.borderColor = '#cbd5e1'; 
+        dropZone.style.background = '#f8fafc';
+    });
+    
+    dropZone.addEventListener('drop', (e) => { 
+        e.preventDefault(); e.stopPropagation();
+        dropZone.style.borderColor = '#cbd5e1';
+        dropZone.style.background = '#f8fafc';
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files);
+        }
+    });
+
     function handleFile(files) {
         if (!files || files.length === 0) return;
+        const file = files[0];
+        document.getElementById('drop-text').innerText = `已選取檔案：${file.name}`;
+        
         const reader = new FileReader();
         reader.onload = function(e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
-            cleanAndLoadData(json);
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                cleanAndLoadData(json);
+            } catch (err) {
+                alert("讀取 Excel 失敗，請確認是否為標準 Excel 檔案。錯誤訊息: " + err.message);
+            }
         };
-        reader.readAsArrayBuffer(files[0]);
+        reader.readAsArrayBuffer(file);
     }
 
-    // 智慧型原始 Excel 欄位對應與雜訊清洗
+    // 🌟 修正：加強資料清洗安全性，精準抓取大數據欄位並防呆
     function cleanAndLoadData(matrix) {
-        if (!matrix || matrix.length < 2) return;
-        const headers = matrix[0].map(h => h ? h.toString().trim() : "");
-        
-        const idxType = headers.findIndex(h => h.includes("類型"));
-        const idxName = headers.findIndex(h => h.includes("名稱"));
-        const idxTime = headers.findIndex(h => h.includes("時間") || h.includes("日期"));
-        const idxStation = headers.findIndex(h => h.includes("主辦") || h.includes("站所") || h.includes("單位"));
-        const idxLecturer = headers.findIndex(h => h.includes("講師") || h.includes("講者"));
+        try {
+            if (!matrix || matrix.length < 2) {
+                alert("Excel 檔案內無足夠數據（少於 2 列）！");
+                return;
+            }
+            
+            const headers = matrix[0].map(h => h ? h.toString().trim() : "");
+            
+            // 精準搜尋欄位定位 (對應活動類型、活動名稱、活動舉辦時間、主辦單位)
+            let idxType = headers.indexOf("活動類型");
+            let idxName = headers.indexOf("活動名稱");
+            let idxTime = headers.indexOf("活動舉辦時間");
+            let idxStation = headers.indexOf("主辦單位");
+            let idxLecturer = headers.indexOf("講師"); // 若無此欄位，會套用保底邏輯
 
-        processedRows = [];
-        const previewBody = document.getElementById('webPreviewBody');
-        previewBody.innerHTML = "";
+            // 模糊搜尋備用機制
+            if (idxType === -1) idxType = headers.findIndex(h => h.includes("類型"));
+            if (idxName === -1) idxName = headers.findIndex(h => h.includes("名稱"));
+            if (idxTime === -1) idxTime = headers.findIndex(h => h.includes("時間") || h.includes("日期"));
+            if (idxStation === -1) idxStation = headers.findIndex(h => h.includes("主辦") || h.includes("站所") || h.includes("單位"));
 
-        for (let i = 1; i < matrix.length; i++) {
-            const row = matrix[i];
-            if (!row || !row[idxName]) continue;
+            // 最終寫死保底常規索引 (A=0, D=3, E=4, F=5)
+            const colType = idxType !== -1 ? idxType : 0;
+            const colName = idxName !== -1 ? idxName : 3;
+            const colTime = idxTime !== -1 ? idxTime : 4;
+            const colStation = idxStation !== -1 ? idxStation : 5;
+            const colLecturer = idxLecturer !== -1 ? idxLecturer : -1;
 
-            let rawName = row[idxName].toString().trim();
-            // 💡 智慧資料清洗：移除活動標題開頭混亂的日期前綴 (如 2026/06/02 或 6/4 )
-            rawName = rawName.replace(/^[\d\/\.\-\s]+年?[\d\/\.\-\s]+月?[\d\/\.\-\s]+日?\s*/, '')
-                             .replace(/^[\d]+[\/\.][\d]+\s*/, '');
+            processedRows = [];
+            const previewBody = document.getElementById('webPreviewBody');
+            previewBody.innerHTML = "";
 
-            const item = {
-                station: row[idxStation] ? row[idxStation].toString().trim().replace("站所","").replace("站","") : "新竹",
-                rawTime: row[idxTime] ? row[idxTime].toString().trim() : "",
-                originalType: row[idxType] ? row[idxType].toString().trim() : "其他",
-                name: rawName,
-                lecturer: row[idxLecturer] ? row[idxLecturer].toString().trim() : "---"
-            };
+            for (let i = 1; i < matrix.length; i++) {
+                const row = matrix[i];
+                if (!row || row.length === 0 || !row[colName]) continue;
 
-            if (item.name === "活動名稱" || item.originalType.includes("作廢")) continue;
-            processedRows.push(item);
+                const rawType = row[colType] ? row[colType].toString().trim() : "其他";
+                const rawName = row[colName] ? row[colName].toString().trim() : "";
+                const rawTime = row[colTime] ? row[colTime].toString().trim() : "";
+                const rawStation = row[colStation] ? row[colStation].toString().trim() : "新竹";
+                const rawLecturer = (colLecturer !== -1 && row[colLecturer]) ? row[colLecturer].toString().trim() : "---";
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td><b>${item.station}站</b></td><td>${item.rawTime}</td><td>${item.originalType}</td><td>${item.name}</td><td>${item.lecturer}</td>`;
-            previewBody.appendChild(tr);
+                if (rawName === "活動名稱" || rawType.includes("作廢")) continue;
+
+                // 清洗開頭的時間前綴
+                let cleanName = rawName.replace(/^[\d\/\.\-\s]+年?[\d\/\.\-\s]+月?[\d\/\.\-\s]+日?\s*/, '')
+                                       .replace(/^[\d]+[\/\.][\d]+\s*/, '');
+
+                const item = {
+                    station: rawStation.replace("站所","").replace("站",""),
+                    rawTime: rawTime,
+                    originalType: rawType,
+                    name: cleanName,
+                    lecturer: rawLecturer
+                };
+
+                processedRows.push(item);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><b>${item.station}站</b></td><td>${item.rawTime}</td><td>${item.originalType}</td><td>${item.name}</td><td>${item.lecturer}</td>`;
+                previewBody.appendChild(tr);
+            }
+
+            if (processedRows.length === 0) {
+                alert("未從檔案中解析出任何有效活動數據，請檢查 Excel 資料內容。");
+                return;
+            }
+
+            // 自動解析年份與月份
+            const firstTime = processedRows[0].rawTime;
+            const match = firstTime.match(/(\d{4})[-/](\d{1,2})/);
+            if (match) { 
+                finalYear = match[1]; 
+                finalMonth = parseInt(match[2], 10).toString(); 
+            }
+
+            document.getElementById('previewContainer').style.display = 'block';
+            document.querySelectorAll('.btn-download').forEach(btn => btn.style.display = 'inline-block');
+            document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
+
+        } catch (err) {
+            alert("資料整理清洗時發生錯誤: " + err.message);
         }
-
-        // 從第一筆活動時間戳抓取海報對應的年月
-        if (processedRows.length > 0) {
-            const match = processedRows[0].rawTime.match(/(\d{4})[-/](\d{1,2})/);
-            if (match) { finalYear = match[1]; finalMonth = parseInt(match[2], 10).toString(); }
-        }
-
-        document.getElementById('previewContainer').style.display = 'block';
-        document.querySelectorAll('.btn-download').forEach(btn => btn.style.display = 'inline-block');
-        document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 依細則指引將類型自動歸類至 Canva 指定的三大核心分類 [cite: 4]
     function mapToCanvaCategory(typeStr) {
         if (!typeStr) return "營運";
         const t = typeStr.toString();
-        if (t.includes("料理") || t.includes("教作") || t.includes("教做")) return "料理"; [cite: 4]
-        if (t.includes("社務") || t.includes("會議") || t.includes("地區") || t.includes("營運")) return "營運"; [cite: 4]
-        // 🌸 剩餘的其餘分類 (議題講座、開心社團、生產者面對面等) 依照新玩法通通歸類為「樂活養生」 [cite: 4]
-        return "養ens"; 
+        if (t.includes("料理") || t.includes("教作") || t.includes("教做")) return "料理";
+        if (t.includes("社務") || t.includes("會議") || t.includes("地區") || t.includes("營運")) return "營運";
+        return "養生"; 
     }
 
-    // 智慧型時間格式與站所地區前綴補完器 
     function formatTimeAndStation(item) {
         let dateStr = item.rawTime;
         let timeStr = "00:00";
@@ -340,15 +402,12 @@
             }
         } catch (e) {}
 
-        // 💡 補完前綴：自動區分桃園或新竹所屬站所 
         const taoyuanList = ["桃園", "中壢", "國際", "龍潭"];
-        const prefix = taoyuanList.includes(item.station) ? "桃園" : "新竹"; [cite: 5]
-        
-        return `${dateStr} ${timeStr} ${prefix}${item.station}站`; [cite: 5]
+        const prefix = taoyuanList.includes(item.station) ? "桃園" : "新竹";
+        return `${dateStr} ${timeStr} ${prefix}${item.station}站`;
     }
 
     function generatePoster(mode) {
-        // 清空三個分組區塊
         document.getElementById('container-養生').innerHTML = "";
         document.getElementById('container-料理').innerHTML = "";
         document.getElementById('container-營運').innerHTML = "";
@@ -359,7 +418,6 @@
 
         const taoyuanList = ["桃園", "中壢", "國際", "龍潭"];
         
-        // 篩選與排序
         const filtered = processedRows.filter(item => {
             const isTaoyuan = taoyuanList.includes(item.station);
             if (mode === 'taoyuan' && !isTaoyuan) return false;
@@ -368,17 +426,15 @@
         });
         filtered.sort((a, b) => a.rawTime.localeCompare(b.rawTime));
 
-        // 動態塞入內容並建立節點
         filtered.forEach(item => {
             const cat = mapToCanvaCategory(item.originalType);
-            const container = document.getElementById(`container-${cat === '養ens' ? '養生' : cat}`);
-            document.getElementById(`block-${cat === '養ens' ? '養生' : cat}`).style.display = "block";
+            const container = document.getElementById(`container-${cat}`);
+            document.getElementById(`block-${cat}`).style.display = "block";
 
             const metaText = formatTimeAndStation(item);
             const rowDiv = document.createElement('div');
             rowDiv.className = "event-item-row";
             
-            // 判斷是否需要加上講師尾碼
             const lecturerSuffix = (item.lecturer && item.lecturer !== "---" && item.lecturer !== "無") ? `～${item.lecturer}` : "";
 
             rowDiv.innerHTML = `
@@ -389,7 +445,6 @@
             container.appendChild(rowDiv);
         });
 
-        // 寫入對應的年月與抬頭
         document.getElementById('badgeYear').innerText = finalYear;
         document.getElementById('badgeMonth').innerText = finalMonth;
         
@@ -398,7 +453,6 @@
         if (mode === 'hsinchu') subTitleText = "新竹分社 | 活動月曆 (新竹區)";
         document.getElementById('posterSubTitle').innerText = subTitleText;
 
-        // 啟動製圖機制
         const poster = document.getElementById('poster-area');
         poster.classList.add('download-mode');
 
@@ -409,7 +463,7 @@
 
         setTimeout(() => {
             html2canvas(poster, { 
-                scale: 3, // 三倍極致縮放，完美對齊 A3 出版印刷解析度
+                scale: 3, 
                 useCORS: true,
                 windowWidth: 1190,
                 windowHeight: 1683
@@ -419,6 +473,11 @@
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
+                poster.classList.remove('download-mode');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                alert("製圖失敗: " + err.message);
                 poster.classList.remove('download-mode');
                 btn.innerText = originalText;
                 btn.disabled = false;
